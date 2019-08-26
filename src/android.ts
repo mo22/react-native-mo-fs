@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 
 interface BlobData {
   blobId: string;
@@ -33,4 +33,4 @@ export interface Module {
   updateImage(blob: BlobData, args?: any): Promise<BlobData>;
 }
 
-export const Module = NativeModules.ReactNativeMoFs as Module;
+export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoFs as Module : undefined;
