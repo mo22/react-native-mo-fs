@@ -1,0 +1,39 @@
+{
+  "name": "react-native-mo-fs",
+  "version": "0.0.1",
+  "description": "react native file system and image tools",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "package.json",
+    "src/*",
+    "lib/*",
+    "android",
+    "ios/**/*.{h,m,pbxproj}",
+    "*.podspec"
+  ],
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mo22/react-native-mo-fs.git"
+  },
+  "author": "Moritz Moeller <mm@mxs.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mo22/react-native-mo-fs/issues"
+  },
+  "homepage": "https://github.com/mo22/react-native-mo-fs#readme",
+  "devDependencies": {
+    "@types/react-native": "^0.60.8",
+    "react": "^16.9.0",
+    "react-native": "^0.60.5",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "mo-core": "^0.1.1"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  }
+}
