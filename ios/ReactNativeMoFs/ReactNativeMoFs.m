@@ -5,13 +5,13 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CoreServices/CoreServices.h>
 
-#if __has_include(<RCTBlob/RCTBlobManager.h>)
-#import <RCTBlob/RCTBlobManager.h>
-#elif __has_include(<RCTBlobManager.h>)
-#import <RCTBlobManager.h>
-#else
+// #if __has_include(<RCTBlob/RCTBlobManager.h>)
+// #import <RCTBlob/RCTBlobManager.h>
+// #elif __has_include(<RCTBlobManager.h>)
+// #import <RCTBlobManager.h>
+// #else
 #import "RCTBlobManager.h"
-#endif
+// #endif
 
 
 
@@ -31,13 +31,10 @@ NSString* mimeTypeForPath(NSString* path) {
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup {
-    return YES;
-}
-
-- (dispatch_queue_t)methodQueue {
-    return dispatch_get_main_queue();
-}
+//RCT_EXPORT_METHOD(test:(id)arg) {
+//    NSLog(@"test %@", arg);
+//    NSLog(@"test %@", [arg class]); // ArrayBuffer -> dictionary ?!
+//}
 
 RCT_EXPORT_METHOD(getMimeType:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     resolve(mimeTypeForPath(extension));

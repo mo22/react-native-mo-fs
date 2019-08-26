@@ -1,6 +1,9 @@
 import * as React from 'react';
-import './patchReactNavigationSafeAreaView';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { NativeModules } from 'react-native';
+
+const buf = new ArrayBuffer(10);
+NativeModules.ReactNativeMoFs.test(buf);
 
 const AppNavigator = createStackNavigator({
   Menu: {

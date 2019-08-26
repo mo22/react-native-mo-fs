@@ -5346,7 +5346,7 @@ react-native-gesture-handler@^1.4.1:
 
 "react-native-mo-fs@git+https://github.com/mo22/react-native-mo-fs.git":
   version "0.1.0"
-  resolved "git+https://github.com/mo22/react-native-mo-fs.git#761b0df332c002204d0f3dca09055c5f106628d2"
+  resolved "git+https://github.com/mo22/react-native-mo-fs.git#da6aaa1ec10a5c58db0382031c5225f7dac874fa"
   dependencies:
     mo-core "^0.1.1"
 
