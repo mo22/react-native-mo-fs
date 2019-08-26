@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		98E498AB22564E84000583FA /* ReactNativeMoFs.m in Sources */ = {isa = PBXBuildFile; fileRef = 98E498AA22564E84000583FA /* ReactNativeMoFs.m */; };
-		98E498AC22564E84000583FA /* ReactNativeMoFs.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 98E498A922564E84000583FA /* ReactNativeMoFs.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -18,7 +17,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				98E498AC22564E84000583FA /* ReactNativeMoFs.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26,7 +24,6 @@
 
 /* Begin PBXFileReference section */
 		98E498A622564E84000583FA /* libReactNativeMoFs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libReactNativeMoFs.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		98E498A922564E84000583FA /* ReactNativeMoFs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReactNativeMoFs.h; sourceTree = "<group>"; };
 		98E498AA22564E84000583FA /* ReactNativeMoFs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReactNativeMoFs.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -60,7 +57,6 @@
 		98E498A822564E84000583FA /* ReactNativeMoFs */ = {
 			isa = PBXGroup;
 			children = (
-				98E498A922564E84000583FA /* ReactNativeMoFs.h */,
 				98E498AA22564E84000583FA /* ReactNativeMoFs.m */,
 			);
 			path = ReactNativeMoFs;

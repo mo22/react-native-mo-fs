@@ -4612,6 +4612,11 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
+mo-core@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/mo-core/-/mo-core-0.1.1.tgz#bfb68a95ea1fead9c61b43b8a1500ce58708a5bd"
+  integrity sha512-n2zpOQjLlB3wZNLLroy75uWwD4XO4Qayxc1swXay4sgTSXJ/OXElG23KF/kolK2xE+o5XHcbwMMegxe+w0K+5Q==
+
 morgan@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.9.1.tgz#0a8d16734a1d9afbc824b99df87e738e58e2da59"
@@ -5382,9 +5387,11 @@ react-native-gesture-handler@^1.4.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-"react-native-mo-safearea@git+https://github.com/mo22/react-native-mo-safearea.git":
+"react-native-mo-fs@git+https://github.com/mo22/react-native-mo-fs.git":
   version "0.0.1"
-  resolved "git+https://github.com/mo22/react-native-mo-safearea.git#54bbac6d7b935e8c7716f6b7cf98040a114b19d8"
+  resolved "git+https://github.com/mo22/react-native-mo-fs.git#2ac9267321d54d23687fac7810ee11d8f97c33a4"
+  dependencies:
+    mo-core "^0.1.1"
 
 react-native-ratings@^6.3.0:
   version "6.3.1"

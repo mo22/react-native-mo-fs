@@ -1,6 +1,5 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "ReactNativeMoFs.h"
 #import <React/RCTUIManager.h>
 #import <React/RCTNetworking.h>
 #import <CommonCrypto/CommonDigest.h>
@@ -25,7 +24,7 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 
-@interface ReactNativeMoFs ()
+@interface ReactNativeMoFs : NSObject <RCTBridgeModule>
 @end
 
 @implementation ReactNativeMoFs
@@ -34,10 +33,6 @@ RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup {
     return YES;
-}
-
-- (NSArray<NSString *> *)supportedEvents {
-    return @[ ];
 }
 
 - (dispatch_queue_t)methodQueue {
@@ -243,7 +238,7 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
 
     UIImage* uiImage = [UIImage imageWithCGImage:[[CIContext new] createCGImage:image fromRect:image.extent]];
 //    NSLog(@"uiImage %@", uiImage);
-    
+
     NSData* output = nil;
     if ([args[@"encoding"] isEqualToString:@"png"]) {
 //        NSLog(@"create png");
