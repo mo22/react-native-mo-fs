@@ -27,10 +27,15 @@ declare global {
 }
 
 export interface UpdateImageArgs {
+  /** new width */
   width?: number;
+  /** new height */
   height?: number;
+  /** 3x3 matrix */
   matrix?: [number, number, number, number, number, number, number, number, number];
+  /** image output type */
   encoding?: 'jpeg'|'png'|'webp';
+  /** image output quality */
   quality?: number; // 0 to 1
 }
 
@@ -47,18 +52,32 @@ export interface Paths {
 }
 
 export interface Stat {
+  /** true if the file or directory exists */
   exists: boolean;
+  /** true if it is a directory */
   dir?: boolean;
+  /** file size in bytes for files */
   size?: number;
+  /** date modified as timestamp if available */
   modified?: number;
 }
 
 
 
 export class Fs {
+  /**
+   * native ios functions. use with caution
+   */
   public static readonly ios = ios;
+
+  /**
+   * native android functions. use with caution
+   */
   public static readonly android = android;
 
+  /**
+   * get mime type by file extension
+   */
   public static async getMimeType(extension: string): Promise<string|undefined> {
     if (ios.Module) {
       return await ios.Module.getMimeType(extension);
@@ -69,6 +88,9 @@ export class Fs {
     }
   }
 
+  /**
+   * get url for sharing a blob
+   */
   public static getBlobURL(blob: Blob): string {
     if (android.Module) {
       return `content://${android.Module.authorities}/${blob.data.blobId}?offset=${blob.data.offset}&size=${blob.data.size}&type=${blob.data.type}`;
@@ -77,6 +99,9 @@ export class Fs {
     }
   }
 
+  /**
+   * get basic paths - document folder, cache folder, etc.
+   */
   public static async getPaths(): Promise<Paths> {
     if (ios.Module) {
       const tmp = await ios.Module.getPaths();
@@ -97,6 +122,9 @@ export class Fs {
     }
   }
 
+  /**
+   * read file to blob
+   */
   public static async readFile(path: string): Promise<Blob> {
     if (ios.Module) {
       const blob = new Blob();
@@ -111,11 +139,17 @@ export class Fs {
     }
   }
 
+  /**
+   * read URL to blob (using fetch)
+   */
   public static async readURL(url: string): Promise<Blob> {
     const tmp = await fetch(url);
     return await tmp.blob();
   }
 
+  /**
+   * write blob to file
+   */
   public static async writeFile(path: string, blob: Blob): Promise<void> {
     if (ios.Module) {
       return await ios.Module.writeFile(path, blob.data);
@@ -126,6 +160,9 @@ export class Fs {
     }
   }
 
+  /**
+   * delete file
+   */
   public static async deleteFile(path: string): Promise<void> {
     if (ios.Module) {
       await ios.Module.deleteFile(path);
@@ -136,6 +173,9 @@ export class Fs {
     }
   }
 
+  /**
+   * rename file
+   */
   public static async renameFile(fromPath: string, toPath: string): Promise<void> {
     if (ios.Module) {
       await ios.Module.renameFile(fromPath, toPath);
@@ -146,6 +186,9 @@ export class Fs {
     }
   }
 
+  /**
+   * list files in directory
+   */
   public static async listDir(path: string): Promise<string[]> {
     if (ios.Module) {
       return await ios.Module.listDir(path);
@@ -156,6 +199,9 @@ export class Fs {
     }
   }
 
+  /**
+   * create directory
+   */
   public static async createDir(path: string): Promise<void> {
     if (ios.Module) {
       await ios.Module.createDir(path);
@@ -166,6 +212,9 @@ export class Fs {
     }
   }
 
+  /**
+   * stat file. checks if file exists, is a dir, file size etc.
+   */
   public static async stat(path: string): Promise<Stat> {
     if (ios.Module) {
       const tmp = await ios.Module.stat(path);
@@ -188,6 +237,9 @@ export class Fs {
     }
   }
 
+  /**
+   * get info about a blob. can calculate md5 / sha1 / sha256.
+   */
   public static async getBlobInfo(blob: Blob, args: { md5?: boolean; sha1?: boolean; sha256?: boolean } = {}): Promise<{ size: number; md5?: string; sha1?: string; sha256?: string; }> {
     if (ios.Module) {
       return await ios.Module.getBlobInfo(blob.data, args);
@@ -198,6 +250,9 @@ export class Fs {
     }
   }
 
+  /**
+   * update / resize an image
+   */
   public static async updateImage(blob: Blob, args: UpdateImageArgs): Promise<Blob> {
     if (ios.Module) {
       const res = new Blob();
