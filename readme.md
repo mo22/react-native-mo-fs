@@ -15,4 +15,5 @@
 - [ ] itembrowser show hash + size + mime type
 - [ ] itembrowser open in?!
 - [ ] load picture from camera and resize?
-- [ ] append to log file?
+- [ ] append to log file? / read and write text file? read/write partial?
+- [ ] readFile: check if RCTBlobManager is there?
