@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { ScrollView, Text } from 'react-native';
-import { NavigationInjectedProps, NavigationActions } from 'react-navigation';
+import { ScrollView, Text, Linking } from 'react-native';
+import { NavigationInjectedProps } from 'react-navigation';
 import { ListItem } from 'react-native-elements';
 import { Fs, Stat } from 'react-native-mo-fs';
 
@@ -68,6 +68,17 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
             subtitle={this.state.sha1}
           />
         )}
+
+        {this.state.blob && (
+          <ListItem
+            chevron={true}
+            title="Open"
+            onPress={() => {
+              Linking.openURL(Fs.getBlobURL(this.state.blob!));
+            }}
+          />
+        )}
+
 
       </ScrollView>
     );
