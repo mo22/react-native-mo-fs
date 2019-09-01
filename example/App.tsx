@@ -1,9 +1,6 @@
 import * as React from 'react';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
-import { NativeModules } from 'react-native';
-
-const buf = new ArrayBuffer(10);
-NativeModules.ReactNativeMoFs.test(buf);
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
 const AppNavigator = createStackNavigator({
   Menu: {
