@@ -10,16 +10,9 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={() => {
-            this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'ScrollViewInsideSafeArea' }));
+            this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'DirBrowser' }));
           }}
-          title="ScrollViewInsideSafeArea"
-        />
-
-        <ListItem
-          onPress={() => {
-            this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'SafeAreaInsideScrollView' }));
-          }}
-          title="SafeAreaInsideScrollView"
+          title="DirBrowser"
         />
 
       </ScrollView>

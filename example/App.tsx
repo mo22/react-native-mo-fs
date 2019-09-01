@@ -9,6 +9,12 @@ const AppNavigator = createStackNavigator({
       title: 'Menu',
     },
   },
+  DirBrowser: {
+    screen: require('./DirBrowser').default,
+    navigationOptions: {
+      title: 'DirBrowser',
+    },
+  },
 });
 
 const AppContainer = createAppContainer(AppNavigator);
