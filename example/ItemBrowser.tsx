@@ -73,8 +73,12 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           <ListItem
             chevron={true}
             title="Open"
-            onPress={() => {
-              Linking.openURL(Fs.getBlobURL(this.state.blob!));
+            onPress={async () => {
+              try {
+                await Linking.openURL(Fs.getBlobURL(this.state.blob!));
+              } catch (e) {
+                console.log(e);
+              }
             }}
           />
         )}
