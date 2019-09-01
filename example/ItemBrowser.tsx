@@ -39,11 +39,11 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           <React.Fragment>
             <ListItem
               title="size"
-              rightTitle={String(this.state.stat.size)}
+              subtitle={String(this.state.stat.size)}
             />
             <ListItem
               title="modified"
-              rightTitle={String(this.state.stat.modified)}
+              subtitle={String(this.state.stat.modified)}
             />
           </React.Fragment>
         )}
@@ -51,21 +51,21 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
         {this.state.mime && (
           <ListItem
             title="mime"
-            rightTitle={this.state.mime}
+            subtitle={this.state.mime}
           />
         )}
 
         {this.state.blob && (
           <ListItem
             title="blob"
-            rightTitle={Fs.getBlobURL(this.state.blob)}
+            subtitle={Fs.getBlobURL(this.state.blob)}
           />
         )}
 
         {this.state.sha1 && (
           <ListItem
             title="sha1"
-            rightTitle={this.state.sha1}
+            subtitle={this.state.sha1}
           />
         )}
 
