@@ -29,6 +29,8 @@ NSString* mimeTypeForPath(NSString* path) {
 
 @implementation ReactNativeMoFs
 
+@synthesize bridge = _bridge;
+
 RCT_EXPORT_MODULE()
 
 //RCT_EXPORT_METHOD(test:(id)arg) {
