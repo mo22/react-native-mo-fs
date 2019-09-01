@@ -15,6 +15,12 @@ const AppNavigator = createStackNavigator({
       title: 'DirBrowser',
     },
   },
+  ItemBrowser: {
+    screen: require('./ItemBrowser').default,
+    navigationOptions: {
+      title: 'ItemBrowser',
+    },
+  },
 });
 
 const AppContainer = createAppContainer(AppNavigator);

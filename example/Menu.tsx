@@ -10,7 +10,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={() => {
-            this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'DirBrowser' }));
+            this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'DirBrowser', key: '', params: { path: '' } }));
           }}
           title="DirBrowser"
         />

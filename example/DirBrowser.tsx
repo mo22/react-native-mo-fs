@@ -5,43 +5,56 @@ import { ListItem } from 'react-native-elements';
 import { Fs } from 'react-native-mo-fs';
 
 interface State {
-  path: string;
   entries: { [name: string]: string };
 }
 
-export default class DirBrowser extends React.Component<NavigationInjectedProps, State> {
+export default class DirBrowser extends React.Component<NavigationInjectedProps<{ path: string; }>, State> {
   public state: State = {
-    path: '',
     entries: {},
   };
 
-  public componentDidMount() {
-    this.setPath('');
-  }
-
-  private async setPath(path: string) {
+  public async componentDidMount() {
+    const path = this.props.navigation.getParam('path');
     if (path === '') {
       const paths = await Fs.getPaths();
-      this.setState({ path: path, entries: paths as any });
+      this.setState({ entries: paths as any });
     } else {
       const entries: { [name: string]: string } = {};
       for (const rs of await Fs.listDir(path)) {
         entries[rs] = path + '/' + rs;
       }
-      this.setState({ path: path, entries: entries });
+      this.setState({ entries: entries });
     }
   }
 
   public render() {
+    const path = this.props.navigation.getParam('path');
     return (
       <ScrollView>
 
-        <Text>{this.state.path}</Text>
+        <Text>{path}</Text>
 
         {Object.entries(this.state.entries).map(([name, path]) => (
           <ListItem
-            onPress={() => {
-              this.setPath(path);
+            onPress={async () => {
+              const stat = await Fs.stat(path);
+              if (stat.dir) {
+                this.props.navigation.dispatch(NavigationActions.navigate({
+                  routeName: 'DirBrowser',
+                  key: path,
+                  params: {
+                    path: path,
+                  },
+                }));
+              } else {
+                this.props.navigation.dispatch(NavigationActions.navigate({
+                  routeName: 'ItemBrowser',
+                  key: path,
+                  params: {
+                    path: path,
+                  },
+                }));
+              }
             }}
             chevron={true}
             title={name}

@@ -11,4 +11,8 @@
 
 - native ArrayBuffer? not supported?
 
-## Reason
+## TODO
+- [ ] itembrowser show hash + size + mime type
+- [ ] itembrowser open in?!
+- [ ] load picture from camera and resize?
+- [ ] append to log file?
