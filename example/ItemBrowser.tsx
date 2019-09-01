@@ -7,6 +7,8 @@ import { Fs, Stat } from 'react-native-mo-fs';
 interface State {
   stat?: Stat;
   mime?: string;
+  blob?: Blob;
+  sha1?: string;
 }
 
 export default class ItemBrowser extends React.Component<NavigationInjectedProps<{ path: string; }>, State> {
@@ -21,9 +23,8 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
     this.setState({ mime: mime });
     if (stat.exists && !stat.dir) {
       const blob = await Fs.readFile(path);
-      console.log('blob', blob);
-      const info = await Fs.getBlobInfo(blob);
-      console.log('info', info);
+      const info = await Fs.getBlobInfo(blob, { sha1: true });
+      this.setState({ blob: blob, sha1: info.sha1 });
     }
   }
 
@@ -51,6 +52,20 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           <ListItem
             title="mime"
             rightTitle={this.state.mime}
+          />
+        )}
+
+        {this.state.blob && (
+          <ListItem
+            title="blob"
+            rightTitle={Fs.getBlobURL(this.state.blob)}
+          />
+        )}
+
+        {this.state.sha1 && (
+          <ListItem
+            title="sha1"
+            rightTitle={this.state.sha1}
           />
         )}
 
