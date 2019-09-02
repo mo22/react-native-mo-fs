@@ -38,9 +38,12 @@
   ```
 
 ## TODO
-- [ ] itembrowser open in?!
-- [ ] load picture from camera and resize?
+- [ ] load picture from camera and resize and save in documents?
+
+- [ ] read/write with offset?
 - [ ] append to log file? / read and write text file? read/write partial?
+
+- [ ] itembrowser open in?!
 - [ ] https://github.com/react-native-community/react-native-image-picker
 - [ ] linking / open file types
 - [ ] CameraRoll show photos page
