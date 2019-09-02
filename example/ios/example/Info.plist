@@ -73,6 +73,10 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>example</string>
+  <key>NSCameraUsageDescription</key>
+  <string>example</string>
   <key>UIFileSharingEnabled</key>
   <true/>
   <key>CFBundleDocumentTypes</key>

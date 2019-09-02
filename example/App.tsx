@@ -22,12 +22,6 @@ const AppNavigator = createStackNavigator({
       title: 'ItemBrowser',
     },
   },
-  GalleryBrowser: {
-    screen: require('./GalleryBrowser').default,
-    navigationOptions: {
-      title: 'GalleryBrowser',
-    },
-  },
 });
 
 const AppContainer = createAppContainer(AppNavigator);
