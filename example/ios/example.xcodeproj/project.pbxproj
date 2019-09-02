@@ -17,6 +17,8 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* exampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* exampleTests.m */; };
 		8BA71F90B7F7B9A0C17788AC /* libPods-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DACE6AE3F61B70EA073FED95 /* libPods-example.a */; };
+		98686230231D94AC002F652A /* example.png in Resources */ = {isa = PBXBuildFile; fileRef = 9868622E231D94AC002F652A /* example.png */; };
+		98686231231D94AC002F652A /* example.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9868622F231D94AC002F652A /* example.pdf */; };
 		D4CECAFB6E7E907F990359AE /* libPods-exampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64D3C181A3E47C16C4405C83 /* libPods-exampleTests.a */; };
 		D99F7F8446C0DE1CF271345D /* libPods-example-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 541F8B6856F2F68BB93F0D5A /* libPods-example-tvOS.a */; };
 		ED0CCD0BD1D4F641F1BDD855 /* libPods-example-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F9EF3F48D10433ACC5D6CB /* libPods-example-tvOSTests.a */; };
@@ -70,6 +72,8 @@
 		8211049E1BC38D9E7DF206F7 /* Pods-example-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-example-tvOS/Pods-example-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		8B8E8896ED4D0C5985307735 /* Pods-exampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-exampleTests.debug.xcconfig"; path = "Target Support Files/Pods-exampleTests/Pods-exampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8E7190F97061431B81BDBF3E /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		9868622E231D94AC002F652A /* example.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = example.png; path = example/example.png; sourceTree = "<group>"; };
+		9868622F231D94AC002F652A /* example.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = example.pdf; path = example/example.pdf; sourceTree = "<group>"; };
 		9DFE9BE84957498AB872A54C /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		9EFE9266CDB342D5A08CCF5D /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		A9C258E64CF4BF1A4AAD15DC /* Pods-example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example.release.xcconfig"; path = "Target Support Files/Pods-example/Pods-example.release.xcconfig"; sourceTree = "<group>"; };
@@ -156,6 +160,8 @@
 		13B07FAE1A68108700A75B9A /* example */ = {
 			isa = PBXGroup;
 			children = (
+				9868622F231D94AC002F652A /* example.pdf */,
+				9868622E231D94AC002F652A /* example.png */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -381,8 +387,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98686230231D94AC002F652A /* example.png in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				98686231231D94AC002F652A /* example.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -83,6 +83,20 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           />
         )}
 
+        {this.state.blob && (
+          <ListItem
+            chevron={true}
+            title="Open 2"
+            onPress={async () => {
+              try {
+                await Linking.openURL('file://' + path);
+              } catch (e) {
+                console.log(e);
+              }
+            }}
+          />
+        )}
+
 
       </ScrollView>
     );

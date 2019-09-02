@@ -48,7 +48,9 @@ RCT_EXPORT_METHOD(getPaths:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
 RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSError* error = nil;
+    NSLog(@"readFile [%@]", path);
     NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
+    NSLog(@"readFile [%@] [%@] [%@]", path, data, error);
     if (!data) {
         reject(@"", @"", error);
         return;
