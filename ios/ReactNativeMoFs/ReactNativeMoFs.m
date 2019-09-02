@@ -33,11 +33,6 @@ NSString* mimeTypeForPath(NSString* path) {
 
 RCT_EXPORT_MODULE()
 
-//RCT_EXPORT_METHOD(test:(id)arg) {
-//    NSLog(@"test %@", arg);
-//    NSLog(@"test %@", [arg class]); // ArrayBuffer -> dictionary ?!
-//}
-
 RCT_EXPORT_METHOD(getMimeType:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     resolve(mimeTypeForPath(extension));
 }

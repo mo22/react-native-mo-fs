@@ -29,8 +29,10 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
               if (res.error) return;
               console.log(res);
 
-              const blob1 = await Fs.readURL(res.origURL!);
-              console.log('blob1', blob1);
+              // hmm no
+              // const blob1 = await Fs.readURL(res.origURL!);
+              // console.log('blob1', blob1);
+
               const blob2 = await Fs.readFile(res.uri.replace('file://', ''));
               console.log('blob2', blob2);
 
