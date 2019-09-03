@@ -16,16 +16,11 @@ static void methodSwizzle(Class cls1, SEL sel1, Class cls2, SEL sel2) {
     Method m1 = class_getInstanceMethod(cls1, sel1); // original
     Method m2 = class_getInstanceMethod(cls2, sel2); // new
     assert(m2);
-    // m1 might be null
-    
-    // create original function
+    // @TODO: m1 might be null?
     class_addMethod(cls1, sel2, method_getImplementation(m1), method_getTypeEncoding(m1));
-
     if (m1) {
-        NSLog(@"method_exchangeImplementations");
         method_exchangeImplementations(m1, m2);
     } else {
-        NSLog(@"class_addMethod");
         class_addMethod(cls1, sel1, method_getImplementation(m2), method_getTypeEncoding(m2));
     }
 }
