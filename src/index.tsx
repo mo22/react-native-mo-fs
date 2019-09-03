@@ -133,14 +133,14 @@ export class Fs {
    */
   public static async getPaths(): Promise<Paths> {
     if (ios.Module) {
-      const tmp = await ios.Module.getPaths();
+      const tmp = ios.Module.paths;
       return {
         ...tmp,
         cache: tmp.caches,
         docs: tmp.document,
       };
     } else if (android.Module) {
-      const tmp = await android.Module.getPaths();
+      const tmp = android.Module.paths;
       return {
         ...tmp,
         cache: tmp.externalCache || tmp.data || tmp.files,

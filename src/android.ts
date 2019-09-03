@@ -11,15 +11,15 @@ interface BlobData {
 
 export interface Module {
   authorities: string;
-  getMimeType(extension: string): Promise<string|undefined>;
-  readBlob(blob: BlobData, mode: 'base64'|'utf8'): Promise<string>;
-  createBlob(str: string, mode: 'base64'|'utf8'): Promise<BlobData>;
-  getPaths(): Promise<{
+  paths: {
     externalCache?: string;
     files: string;
     packageResource: string;
     data?: string;
-  }>;
+  };
+  getMimeType(extension: string): Promise<string|undefined>;
+  readBlob(blob: BlobData, mode: 'base64'|'utf8'): Promise<string>;
+  createBlob(str: string, mode: 'base64'|'utf8'): Promise<BlobData>;
   readFile(path: string): Promise<BlobData>;
   writeFile(path: string, data: BlobData): Promise<void>;
   appendFile(path: string, data: BlobData): Promise<void>;
