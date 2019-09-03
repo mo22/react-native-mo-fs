@@ -126,8 +126,10 @@ RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)b
         reject(@"", @"blob not found", nil);
         return;
     }
-    [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
     NSError* error = nil;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
+    }
     NSFileHandle* fp = [NSFileHandle fileHandleForWritingToURL:[NSURL fileURLWithPath:path] error:&error];
     if (error) {
         reject(@"", [error localizedDescription], error);
