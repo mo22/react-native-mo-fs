@@ -40,22 +40,19 @@
   Need to modify AppDelegate: https://facebook.github.io/react-native/docs/linking
 
 ## TODO
-- [ ] load picture from camera save in documents
-  -> ImagePicker -> save with date in docs
-
 - [ ] for existing picture in ItemBRowser: create thumbnail and show
+  -> check mime type
 
+- [ ] read text file and show...
 
-
-- [ ] open in - add intent handler?
+- [ ] handle open in - intent + linking stuff?
 
 - [ ] itembrowser open in?!
   https://github.com/Elyx0/react-native-document-picker/blob/master/ios/RNDocumentPicker/RNDocumentPicker.m
+  android send intent
 
 - [ ] read/write with offset?
-- [ ] append to log file? / read and write text file? read/write partial?
-- [ ] blob to text / text from blob?
 
-- [ ] handle open doc:
-  09-02 20:40:39.061 27999 28010 I ActivityManager: START u0 {act=android.intent.action.SEND cat=[android.intent.category.DEFAULT] typ=application/pdf flg=0xb080001 cmp=com.example/.MainActivity clip={application/pdf U:content://com.android.providers.downloads.documents/document/695} (has extras)} from uid 10051
-  09-02 20:40:39.061 27999 28010 I ActivityManager: Ignoring FLAG_ACTIVITY_NEW_DOCUMENT, launchMode is "singleInstance" or "singleTask"
+- [ ] append to log file? / read and write text file? read/write partial?
+
+- [ ] blob to text / text from blob?

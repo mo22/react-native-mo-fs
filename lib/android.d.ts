@@ -9,7 +9,7 @@ interface BlobData {
 export interface Module {
     authorities: string;
     getMimeType(extension: string): Promise<string | undefined>;
-    readBlob(blob: BlobData, mode: 'base64' | 'utf8'): Promise<string>;
+    readBlob(blob: Blob, mode: 'base64' | 'utf8'): Promise<string>;
     createBlob(str: string, mode: 'base64' | 'utf8'): Promise<BlobData>;
     getPaths(): Promise<{
         externalCache?: string;
@@ -19,6 +19,7 @@ export interface Module {
     }>;
     readFile(path: string): Promise<BlobData>;
     writeFile(path: string, data: BlobData): Promise<void>;
+    appendTextFile(path: string, data: string): Promise<void>;
     deleteFile(path: string): Promise<void>;
     renameFile(fromPath: string, toPath: string): Promise<void>;
     listDir(path: string): Promise<string[]>;
@@ -28,7 +29,7 @@ export interface Module {
         length?: number;
         lastModified?: number;
     }>;
-    getBlobInfo(blob: BlobData, args?: {
+    getBlobInfo(blob: Blob, args?: {
         md5?: boolean;
         sha1?: boolean;
         sha256?: boolean;
@@ -38,7 +39,7 @@ export interface Module {
         md5?: string;
         sha256?: string;
     }>;
-    updateImage(blob: BlobData, args?: any): Promise<BlobData>;
+    updateImage(blob: Blob, args?: any): Promise<BlobData>;
 }
 export declare const Module: Module | undefined;
 export {};
