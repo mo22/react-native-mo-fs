@@ -1,14 +1,17 @@
 package de.mxs.reactnativemofs;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
+import androidx.exifinterface.media.ExifInterface;
 import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -36,6 +39,16 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     ReactNativeMoFs(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
+        reactContext.addActivityEventListener(new ActivityEventListener() {
+            @Override
+            public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+                Log.i("XXX", "onActivityResult " + requestCode + " " + resultCode + " " + data);
+            }
+            @Override
+            public void onNewIntent(Intent intent) {
+                Log.i("XXX", "onNewIntent " + intent);
+            }
+        });
     }
 
     @Override
@@ -48,6 +61,16 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     public Map<String, Object> getConstants() {
         HashMap<String, Object> res = new HashMap<>();
         res.put("authorities", getReactApplicationContext().getPackageName() + ".ReactNativeMoFs");
+        HashMap<String, String> paths = new HashMap<>();
+        if (getReactApplicationContext().getExternalCacheDir() != null) {
+            paths.put("externalCache", getReactApplicationContext().getExternalCacheDir().getAbsolutePath());
+        }
+        paths.put("files", getReactApplicationContext().getFilesDir().getAbsolutePath());
+        paths.put("packageResource", getReactApplicationContext().getPackageResourcePath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            paths.put("data", getReactApplicationContext().getDataDir().getAbsolutePath());
+        }
+        res.put("paths", paths);
         return res;
     }
 
@@ -94,23 +117,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         blob.putInt("offset", 0);
         blob.putString("blobId", blobId);
         promise.resolve(blob);
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void getPaths(Promise promise) {
-        WritableMap res = Arguments.createMap();
-        if (getReactApplicationContext().getExternalCacheDir() != null) {
-            res.putString("externalCache", getReactApplicationContext().getExternalCacheDir().getAbsolutePath());
-        }
-        res.putString("files", getReactApplicationContext().getFilesDir().getAbsolutePath());
-        res.putString("packageResource", getReactApplicationContext().getPackageResourcePath());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            res.putString("data", getReactApplicationContext().getDataDir().getAbsolutePath());
-        }
-        // String sAssets = "file:///android_asset/" + "index.htm";
-        // file:///android_res/drawable/image.png" ?
-        promise.resolve(res);
     }
 
     @SuppressWarnings("unused")

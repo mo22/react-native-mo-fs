@@ -31,6 +31,26 @@ NSString* mimeTypeForPath(NSString* path) {
 
 RCT_EXPORT_MODULE()
 
++ (BOOL)requiresMainQueueSetup {
+    return YES;
+}
+
+- (instancetype)init {
+    self = [super init];
+    NSLog(@"XXX init!");
+    return self;
+}
+
+- (NSDictionary *)constantsToExport {
+    NSMutableDictionary* constants = [NSMutableDictionary new];
+    constants[@"paths"] = @{
+        @"bundle": [[NSBundle mainBundle] bundlePath],
+        @"document": [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],
+        @"caches": [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject],
+    };
+    return constants;
+}
+
 RCT_EXPORT_METHOD(getMimeType:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     resolve(mimeTypeForPath(extension));
 }
@@ -74,14 +94,6 @@ RCT_EXPORT_METHOD(createBlob:(NSString*)str mode:(NSString*)mode resolve:(RCTPro
         @"size": @([data length]),
         @"offset": @(0),
         @"blobId": blobId,
-    });
-}
-
-RCT_EXPORT_METHOD(getPaths:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    resolve(@{
-        @"bundle": [[NSBundle mainBundle] bundlePath],
-        @"document": [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],
-        @"caches": [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject],
     });
 }
 
