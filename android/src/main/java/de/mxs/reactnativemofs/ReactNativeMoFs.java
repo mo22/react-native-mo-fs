@@ -457,12 +457,35 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
 //        intent.setAction(Intent.ACTION_PICK);
-        intent.setType("image/*"); // ?
+        intent.setType("*/*"); // ?
+//        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple);
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+//            intent = Intent.createChooser(intent, null);
+//        }
+
+
+        ActivityEventListener listener = new ActivityEventListener() {
+            @Override
+            public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+                if (requestCode == 13131) {
+                    Log.i("XXX", "got response!");
+                }
+            }
+            @Override
+            public void onNewIntent(Intent intent) {
+            }
+        };
+        getReactApplicationContext().addActivityEventListener(listener);
+
         Activity activity = getReactApplicationContext().getCurrentActivity();
         if (activity == null) throw new RuntimeException("activity == null");
-        activity.startActivityForResult(intent, 1);
-//        public boolean startActivityForResult(Intent intent, int code, Bundle bundle) {
+        activity.startActivityForResult(intent, 13131);
+
+
+        //        public boolean startActivityForResult(Intent intent, int code, Bundle bundle) {
 
 //        if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
 //            Activity activity = getReactApplicationContext().getCurrentActivity();
