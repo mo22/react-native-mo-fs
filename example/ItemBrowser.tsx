@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, Text, Linking, Image } from 'react-native';
+import { ScrollView, Text, Image } from 'react-native';
 import { NavigationInjectedProps } from 'react-navigation';
 import { ListItem } from 'react-native-elements';
 import { Fs, Stat } from 'react-native-mo-fs';
@@ -113,21 +113,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
             title="Open"
             onPress={async () => {
               try {
-                await Linking.openURL(Fs.getBlobURL(this.state.blob!));
-              } catch (e) {
-                console.log(e);
-              }
-            }}
-          />
-        )}
-
-        {this.state.blob && (
-          <ListItem
-            chevron={true}
-            title="Open 2"
-            onPress={async () => {
-              try {
-                await Linking.openURL('file://' + path);
+                await Fs.ios.Module!.shareURL(Fs.getBlobURL(this.state.blob!));
               } catch (e) {
                 console.log(e);
               }

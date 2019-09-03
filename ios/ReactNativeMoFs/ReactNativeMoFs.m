@@ -414,4 +414,12 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     });
 }
 
+RCT_EXPORT_METHOD(shareFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSURL *url = [NSURL fileURLWithPath:path];
+    UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:url];
+//    [popup setDelegate:self];
+    [popup presentPreviewAnimated:YES];
+    resolve(nil);
+}
+
 @end
