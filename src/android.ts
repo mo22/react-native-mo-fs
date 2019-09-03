@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, Platform, NativeEventEmitter, EmitterSubscription } from 'react-native';
 
 interface BlobData {
   blobId: string;
@@ -36,4 +36,12 @@ export interface Module {
   updateImage(blob: BlobData, args?: any): Promise<BlobData>;
 }
 
+export interface LinkEvent {
+  url: string;
+}
+
 export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoFs as Module : undefined;
+
+export const Events = Module ? new NativeEventEmitter(NativeModules.ReactNativeMoFs) as {
+  addListener(eventType: 'ReactNativeMoFsLink', listener: (event: LinkEvent) => void): EmitterSubscription;
+} : undefined;
