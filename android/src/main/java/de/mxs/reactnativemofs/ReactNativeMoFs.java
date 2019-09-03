@@ -398,4 +398,29 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         promise.resolve(blob2);
     }
 
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void shareURL(String url, Promise promise) {
+
+//        Uri.
+//        Uri.fromFile(file)
+//        FileProvider.getUriForFile(context, context.packageName + ".provider", file)
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("application/pdf");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(url));
+
+        if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
+            Log.i("XXX", "start handle?");
+            getReactApplicationContext().startActivity(
+                Intent.createChooser(intent, "title")
+            );
+        } else {
+            Log.i("XXX", "cannot handle?");
+        }
+        promise.resolve(null);
+    }
+
 }
