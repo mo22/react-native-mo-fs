@@ -105,10 +105,15 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         return res;
     }
 
+    private String getMimeTypePath(String path) {
+        String[] tmp = path.split("\\.");
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(tmp[tmp.length - 1]);
+    }
+
     @SuppressWarnings("unused")
     @ReactMethod
     public void getMimeType(String extension, Promise promise) {
-        promise.resolve(MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension));
+        promise.resolve(getMimeTypePath(extension));
     }
 
     @SuppressWarnings("unused")
@@ -402,20 +407,22 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void sendFileChooser(String path, String type, String title, Promise promise) {
+    public void sendIntentChooser(ReadableMap args, Promise promise) {
+        String path = args.getString("path");
+        String type = args.hasKey("type") ? args.getString("type") : null;
+        if (type == null) type = getMimeTypePath(path);
         Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".provider", new File(path));
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType(type);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-
-//        intent.putExtra(Intent.EXTRA_SUBJECT, file.name)
-//        intent.putExtra(Intent.EXTRA_TEXT, file.name)
-
+        if (args.hasKey("subject")) intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
+        if (args.hasKey("text")) intent.putExtra(Intent.EXTRA_TEXT, args.getString("text"));
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
             Activity activity = getReactApplicationContext().getCurrentActivity();
             if (activity == null) throw new RuntimeException("activity == null");
+            String title = args.hasKey("title") ? args.getString("title") : "";
             activity.startActivity(Intent.createChooser(intent, title));
             promise.resolve(null);
         } else {
@@ -423,4 +430,48 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         }
     }
 
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void viewIntentChooser(ReadableMap args, Promise promise) {
+        Uri uri = Uri.parse(args.getString("uri"));
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(uri);
+        if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
+            Activity activity = getReactApplicationContext().getCurrentActivity();
+            if (activity == null) throw new RuntimeException("activity == null");
+            String title = args.hasKey("title") ? args.getString("title") : "";
+            activity.startActivity(Intent.createChooser(intent, title));
+            promise.resolve(null);
+        } else {
+            promise.reject(new Exception("cannot handle file type"));
+        }
+    }
+
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void getContent(ReadableMap args, Promise promise) {
+        //    getContent(args: { type?: string; }): Promise<void>;
+
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        intent.setAction(Intent.ACTION_PICK);
+        intent.setType("image/*"); // ?
+        Activity activity = getReactApplicationContext().getCurrentActivity();
+        if (activity == null) throw new RuntimeException("activity == null");
+        activity.startActivityForResult(intent, 1);
+//        public boolean startActivityForResult(Intent intent, int code, Bundle bundle) {
+
+//        if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
+//            Activity activity = getReactApplicationContext().getCurrentActivity();
+//            if (activity == null) throw new RuntimeException("activity == null");
+//            String title = args.hasKey("title") ? args.getString("title") : "";
+//            activity.startActivity(Intent.createChooser(intent, title));
+//            promise.resolve(null);
+//        } else {
+//            promise.reject(new Exception("cannot handle file type"));
+//        }
+    }
 }

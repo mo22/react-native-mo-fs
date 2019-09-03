@@ -65,6 +65,15 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 
+@interface ReactNativeMoFsPickerDelegate : NSObject <UIDocumentPickerDelegate>
+@property RCTPromiseResolveBlock resolve;
+@property RCTPromiseRejectBlock reject;
+@end
+@implementation ReactNativeMoFsPickerDelegate
+@end
+
+
+
 @interface ReactNativeMoFs : RCTEventEmitter
 @property NSMutableSet* refs;
 @end
@@ -469,11 +478,14 @@ RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:
         if (args[@"annotation"]) {
             controller.annotation = args[@"annotation"];
         }
+        NSLog(@"UTI %@", controller.UTI);
+        NSLog(@"URL %@", controller.URL);
+        NSLog(@"annotation %@", controller.annotation);
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
         delegate.resolve = resolve;
         delegate.reject = reject;
         [self.refs addObject:delegate];
-        [controller setDelegate:delegate];
+        controller.delegate = delegate;
         if ([args[@"type"] isEqualToString:@"preview"]) {
             [controller presentPreviewAnimated:YES];
         } else if ([args[@"type"] isEqualToString:@"openin"]) {
@@ -488,6 +500,22 @@ RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:
 
 RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray* utis = [NSArray new];
+//        UIDocumentPickerModeImport,
+//        UIDocumentPickerModeOpen,
+//        UIDocumentPickerModeExportToService,
+//        UIDocumentPickerModeMoveToService
+        UIDocumentPickerViewController* controller = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:utis inMode:UIDocumentPickerModeImport];
+        ReactNativeMoFsPickerDelegate* delegate = [ReactNativeMoFsPickerDelegate new];
+        delegate.resolve = resolve;
+        delegate.reject = reject;
+        [self.refs addObject:delegate];
+        controller.delegate = delegate;
+        controller.modalPresentationStyle = UIModalPresentationFormSheet;
+        if (@available(iOS 11.0, *)) {
+            controller.allowsMultipleSelection = YES; // @TODO
+        }
+        [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
     });
 }
 
