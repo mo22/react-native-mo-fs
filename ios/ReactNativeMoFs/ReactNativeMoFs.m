@@ -32,12 +32,10 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 
-@interface ReactNativeMoFs : NSObject <RCTBridgeModule>
+@interface ReactNativeMoFs : RCTEventEmitter
 @end
 
 @implementation ReactNativeMoFs
-
-@synthesize bridge = _bridge;
 
 RCT_EXPORT_MODULE()
 
@@ -45,10 +43,13 @@ RCT_EXPORT_MODULE()
     return YES;
 }
 
+- (NSArray<NSString *> *)supportedEvents {
+    return @[ ];
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {
-        NSLog(@"XXX init!");
         static id<UIApplicationDelegate> appDelegate;
         if (appDelegate == nil) {
             methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:openURL:options:));
@@ -63,7 +64,11 @@ RCT_EXPORT_MODULE()
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
     NSLog(@"hooked application openURL %@ options %@", url, options);
-    return NO;
+//    2019-09-03 15:36:35.232695+0200 example[1077:558569] hooked application openURL file:///private/var/mobile/Containers/Data/Application/B39F5FFC-C223-4EAA-80E7-92CBCAF8D2AF/tmp/org.reactjs.native.example.example-Inbox/2018_07_24_12_51_03.pdf options {
+//        UIApplicationOpenURLOptionsOpenInPlaceKey = 0;
+//    }
+    // calls original method (swizzeled)
+    return [self application:application openURL:url options:options];
 }
 
 - (NSDictionary *)constantsToExport {

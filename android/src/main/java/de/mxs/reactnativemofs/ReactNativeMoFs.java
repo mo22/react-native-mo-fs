@@ -47,6 +47,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             @Override
             public void onNewIntent(Intent intent) {
                 Log.i("XXX", "onNewIntent " + intent);
+//                09-03 15:37:21.516  2561  2561 I XXX     : onNewIntent Intent { act=android.intent.action.SEND typ=application/pdf flg=0x13000001 cmp=com.example/.MainActivity clip={application/pdf U:content://com.android.providers.downloads.documents/document/695} (has extras) }
+                // send event...
             }
         });
     }
