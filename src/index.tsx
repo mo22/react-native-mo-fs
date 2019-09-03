@@ -79,6 +79,7 @@ export class Fs {
    * get mime type by file extension
    */
   public static async getMimeType(extension: string): Promise<string|undefined> {
+    // get extension from path?
     if (ios.Module) {
       return await ios.Module.getMimeType(extension);
     } else if (android.Module) {

@@ -20,7 +20,9 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
     const path = this.props.navigation.getParam('path');
     const stat = await Fs.stat(path);
     this.setState({ stat: stat });
+    console.log('path', path);
     const mime = await Fs.getMimeType(path);
+    console.log('mime', mime);
     this.setState({ mime: mime });
     if (stat.exists && !stat.dir) {
       const blob = await Fs.readFile(path);
