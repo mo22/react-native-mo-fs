@@ -9,7 +9,7 @@ interface BlobData {
 export interface Module {
     authorities: string;
     getMimeType(extension: string): Promise<string | undefined>;
-    readBlob(blob: Blob, mode: 'base64' | 'utf8'): Promise<string>;
+    readBlob(blob: BlobData, mode: 'base64' | 'utf8'): Promise<string>;
     createBlob(str: string, mode: 'base64' | 'utf8'): Promise<BlobData>;
     getPaths(): Promise<{
         externalCache?: string;
@@ -29,7 +29,7 @@ export interface Module {
         length?: number;
         lastModified?: number;
     }>;
-    getBlobInfo(blob: Blob, args?: {
+    getBlobInfo(blob: BlobData, args?: {
         md5?: boolean;
         sha1?: boolean;
         sha256?: boolean;
@@ -39,7 +39,7 @@ export interface Module {
         md5?: string;
         sha256?: string;
     }>;
-    updateImage(blob: Blob, args?: any): Promise<BlobData>;
+    updateImage(blob: BlobData, args?: any): Promise<BlobData>;
 }
 export declare const Module: Module | undefined;
 export {};

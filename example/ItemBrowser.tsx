@@ -37,13 +37,8 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
       }
       if (blob.type === 'text/plain' || blob.type === 'application/json') {
         const text = await Fs.ios!.Module!.readBlob(blob, 'utf8');
+        console.log(text);
       }
-      // // read as string?
-      // {
-      //   const t1 = await fetch(Fs.getBlobURL(blob));
-      //   const t2 = await t1.arrayBuffer();
-      //   console.log('text', t2);
-      // }
     }
   }
 
