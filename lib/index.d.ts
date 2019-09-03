@@ -17,6 +17,31 @@ declare global {
         readonly type: string;
     }
 }
+export interface BlobInfoArgs {
+    /** calculate hex md5 of blob */
+    md5?: boolean;
+    /** calculate hex sha1 of blob */
+    sha1?: boolean;
+    /** calculate hex sha256 of blob */
+    sha256?: boolean;
+    /** get image dimensions and info */
+    image?: boolean;
+}
+export interface BlobInfo {
+    /** size of blob */
+    size: number;
+    /** hex md5 */
+    md5?: string;
+    /** hex sha1 */
+    sha1?: string;
+    /** hex sha256 */
+    sha256?: string;
+    /** image info */
+    image?: {
+        width: number;
+        height: number;
+    };
+}
 export interface UpdateImageArgs {
     /** new width */
     width?: number;
@@ -122,6 +147,7 @@ export declare class Fs {
         md5?: boolean;
         sha1?: boolean;
         sha256?: boolean;
+        image?: boolean;
     }): Promise<{
         size: number;
         md5?: string;

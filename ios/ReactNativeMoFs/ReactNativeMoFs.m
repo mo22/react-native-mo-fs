@@ -95,7 +95,7 @@ RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resol
     NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
     NSLog(@"readFile [%@] [%@] [%@]", path, data, error);
     if (!data) {
-        reject(@"", @"", error);
+        reject(@"ESYS", [error description], error);
         return;
     }
     NSString* blobId = [blobManager store:data];
@@ -171,11 +171,13 @@ RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)b
     return YES;
 }
 
-RCT_EXPORT_METHOD(deleteFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    // @TODO: option for recursive?
+RCT_EXPORT_METHOD(deleteFile:(NSString*)path recursive:(BOOL)recursive resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSError* error = nil;
-    [self deleteRecursive:path error:&error];
-//    [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+    if (recursive) {
+        [self deleteRecursive:path error:&error];
+    } else {
+        [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+    }
     if (error) {
         reject(@"", @"", error);
         return;
@@ -257,6 +259,17 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         NSMutableString *output = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH * 2];
         for (int i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) [output appendFormat:@"%02x", digest[i]];
         res[@"sha256"] = output;
+    }
+    if (args[@"image"]) {
+        CIImage* image = [CIImage imageWithData:data];
+        if (image) {
+            res[@"image"] = @{
+                @"props": image.properties,
+                @"url": [image.url absoluteString],
+                @"width": @(image.extent.size.width),
+                @"height": @(image.extent.size.height),
+            };
+        }
     }
     resolve(res);
 }

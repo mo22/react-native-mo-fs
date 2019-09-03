@@ -25,7 +25,8 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
     this.setState({ mime: mime });
     if (stat.exists && !stat.dir) {
       const blob = await Fs.readFile(path);
-      const info = await Fs.getBlobInfo(blob, { sha1: true });
+      const info = await Fs.getBlobInfo(blob, { sha1: true, image: true });
+      console.log('info', info);
       this.setState({ blob: blob, sha1: info.sha1 });
       if (blob.type === 'image/jpeg' || blob.type === 'image/png') {
         console.log('info', info);
