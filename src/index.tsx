@@ -295,7 +295,7 @@ export class Fs {
         exists: tmp !== undefined,
         dir: tmp && tmp.NSFileType === 'NSFileTypeDirectory',
         size: tmp && tmp.NSFileSize || undefined,
-        modified: tmp && tmp.NSFileModificationDate ? (tmp.NSFileModificationDate * 1000) : undefined,
+        modified: tmp && tmp.NSFileModificationDate ? Date.parse(tmp.NSFileModificationDate) : undefined,
       };
     } else if (android.Module) {
       const tmp = await android.Module.stat(path);
