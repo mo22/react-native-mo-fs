@@ -40,8 +40,7 @@
   Need to modify AppDelegate: https://facebook.github.io/react-native/docs/linking
 
 ## TODO
-- [ ] ios: stat mtime? globInfo image attributes?
-- [ ] android: check error messages / image attributes?
+- [ ] getBlobInfo: exif?
 
 - [ ] createThumbnail?
 - [ ] writeTextFile?
