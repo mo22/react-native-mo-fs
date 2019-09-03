@@ -300,17 +300,18 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             }
             if (args.hasKey("image") && args.getBoolean("image")) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                WritableMap image = Arguments.createMap();
-                image.putDouble("width", bmp.getWidth());
-                image.putDouble("height", bmp.getHeight());
-                res.putMap("image", image);
+                if (bmp != null) {
+                    WritableMap image = Arguments.createMap();
+                    image.putDouble("width", bmp.getWidth());
+                    image.putDouble("height", bmp.getHeight());
+                    res.putMap("image", image);
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
-                    Log.i("XXX", "got exif " + exif);
-                    Log.i("XXX", "got orientation " + exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1));
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
+                        Log.i("XXX", "got exif " + exif);
+                        Log.i("XXX", "got orientation " + exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1));
+                    }
                 }
-
             }
             promise.resolve(res);
         } catch (Exception e) {
