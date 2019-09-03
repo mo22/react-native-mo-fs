@@ -56,11 +56,11 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 Log.i("XXX", "extras=" + Arrays.asList(intent.getExtras().keySet().toArray()));
                 Uri uri = (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
                 Log.i("XXX", "uri=" + uri);
-
                 // action=android.intent.action.SEND
                 // data=null
                 // dataString=null
                 // extras=[referrer.code, android.intent.extra.SUBJECT, referrer.string, android.intent.extra.STREAM, android.intent.extra.TITLE]
+                // uri=content://com.android.providers.downloads.documents/document/695
             }
         });
     }
