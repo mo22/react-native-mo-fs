@@ -14,6 +14,8 @@ export interface Module {
         caches: string;
     };
     getMimeType(extension: string): Promise<string | undefined>;
+    getUtiFromMimeType(mimeType: string): Promise<string | undefined>;
+    getUti(extension: string): Promise<string | undefined>;
     readBlob(blob: BlobData, mode: 'base64' | 'utf8'): Promise<string>;
     createBlob(str: string, mode: 'base64' | 'utf8'): Promise<BlobData>;
     readFile(path: string): Promise<BlobData>;
