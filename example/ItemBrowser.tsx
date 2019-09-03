@@ -120,7 +120,6 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
                 if (Fs.android.Module) {
                   await Fs.android.Module.sendIntentChooser({ path: path });
                 }
-                // await Fs.ios.Module!.shareURL(Fs.getBlobURL(this.state.blob!));
               } catch (e) {
                 console.log(e);
               }
