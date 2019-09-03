@@ -126,15 +126,34 @@ RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)b
         reject(@"", @"blob not found", nil);
         return;
     }
-    @try {
-        NSFileHandle* fp = [NSFileHandle fileHandleForWritingAtPath:path];
+    NSError* error = nil;
+    NSFileHandle* fp = [NSFileHandle fileHandleForWritingToURL:[NSURL fileURLWithPath:path] error:&error];
+    if (error) {
+        reject(@"", [error localizedDescription], error);
+        return;
+    }
+    if (@available(iOS 13.0, *)) {
+        [fp seekToEndReturningOffset:nil error:&error];
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
+        [fp writeData:data error:&error];
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
+        [fp closeAndReturnError:&error];
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
+    } else {
         [fp seekToEndOfFile];
         [fp writeData:data];
         [fp closeFile];
-        resolve(nil);
-    } @catch (NSException* exception) {
-        reject(@"", exception.reason, nil);
     }
+    resolve(nil);
 }
 
 - (BOOL)deleteRecursive:(NSString*)path error:(NSError**)error {
@@ -253,9 +272,9 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     if (args[@"image"]) {
         CIImage* image = [CIImage imageWithData:data];
         if (image) {
+            NSLog(@"props %@", image.properties);
+            NSLog(@"url %@", image.url);
             res[@"image"] = @{
-                @"props": image.properties,
-                @"url": [image.url absoluteString],
                 @"width": @(image.extent.size.width),
                 @"height": @(image.extent.size.height),
             };
