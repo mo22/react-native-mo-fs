@@ -43,6 +43,8 @@
 - [ ] ios: stat mtime? globInfo image attributes?
 - [ ] android: check error messages / image attributes?
 
+- [ ] readBlob arraybuffer
+- [ ] getBlobInfo exif
 - [ ] createThumbnail?
 - [ ] writeTextFile?
 
