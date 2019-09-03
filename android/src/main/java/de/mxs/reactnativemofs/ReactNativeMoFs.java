@@ -402,27 +402,21 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void shareFile(String path, Promise promise) {
-        Log.i("XXX", "shareFile " + path);
-
+    public void sendFileChooser(String path, String type, String title, Promise promise) {
         Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".provider", new File(path));
-//        String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.setType("image/jpeg");
+        intent.setType(type);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
-            Log.i("XXX", "start handle?");
-            getReactApplicationContext().getCurrentActivity().startActivity(
-                Intent.createChooser(intent, "title")
-            );
+            Activity activity = getReactApplicationContext().getCurrentActivity();
+            if (activity == null) throw new RuntimeException("activity == null");
+            activity.startActivity(Intent.createChooser(intent, title));
+            promise.resolve(null);
         } else {
-            Log.i("XXX", "cannot handle?");
+            promise.reject(new Exception("cannot handle file type"));
         }
-        promise.resolve(null);
     }
 
 }

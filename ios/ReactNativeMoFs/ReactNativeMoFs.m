@@ -56,7 +56,9 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 
-@interface ReactNativeMoFs : RCTEventEmitter
+@interface ReactNativeMoFs : RCTEventEmitter {
+    ReactNativeMoFsInteractionDelegate* interactionDelegate;
+}
 @end
 
 @implementation ReactNativeMoFs
@@ -440,13 +442,20 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
 RCT_EXPORT_METHOD(shareURL:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSLog(@"shareURL %@", url);
     dispatch_async(dispatch_get_main_queue(), ^{
+        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
         UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL URLWithString:url]];
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
+        self->interactionDelegate = delegate;
         // keep delegate...?
         [popup setDelegate:delegate];
-//        [popup presentPreviewAnimated:YES]; // works.
-        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
-        [popup presentOpenInMenuFromRect:CGRectZero inView:view animated:YES];
+
+        // works.
+        // [popup presentPreviewAnimated:YES];
+        
+        // works.
+//        [popup presentOpenInMenuFromRect:CGRectZero inView:view animated:YES];
+        
+        [popup presentOptionsMenuFromRect:CGRectZero inView:view animated:YES];
         resolve(nil);
     });
 }
