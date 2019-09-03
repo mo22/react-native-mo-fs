@@ -162,12 +162,17 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void appendTextFile(String path, String str, Promise promise) {
+    public void appendFile(String path, ReadableMap blob, Promise promise) {
         BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+        byte[] data = blobModule.resolve(blob);
+        if (data == null) {
+            promise.reject(new Error("not found"));
+            return;
+        }
         try {
             File file = new File(path);
             FileOutputStream fos = new FileOutputStream(file, true);
-            fos.write(str.getBytes());
+            fos.write(data);
             fos.close();
             promise.resolve(null);
         } catch (IOException e) {
