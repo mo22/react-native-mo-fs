@@ -41,19 +41,15 @@
 
 ## TODO
 
-- [ ] choose existing document?
-  https://github.com/blockpass-org/react-native-document-picker
-
 - [ ] getBlobInfo: exif?
 
 - [ ] createThumbnail?
+  width?: number, height?: number, cover?: boolean, type?
 
 - [ ] handle open in - intent + linking stuff?
   -> send event
   -> event listener?
   -> initial event?
-
-- [ ] open existing file in another app
 
 
 android:
