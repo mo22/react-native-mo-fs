@@ -15,7 +15,6 @@ export default class DirBrowser extends React.Component<NavigationInjectedProps<
 
   public async componentDidMount() {
     const path = this.props.navigation.getParam('path');
-    console.log(path);
     if (path === '') {
       const paths = await Fs.getPaths();
       this.setState({ entries: paths as any });
