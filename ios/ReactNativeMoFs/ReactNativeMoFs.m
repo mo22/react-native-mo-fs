@@ -444,7 +444,9 @@ RCT_EXPORT_METHOD(shareURL:(NSString*)url resolve:(RCTPromiseResolveBlock)resolv
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
         // keep delegate...?
         [popup setDelegate:delegate];
-        [popup presentPreviewAnimated:YES];
+//        [popup presentPreviewAnimated:YES]; // works.
+        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
+        [popup presentOpenInMenuFromRect:CGRectZero inView:view animated:YES];
         resolve(nil);
     });
 }

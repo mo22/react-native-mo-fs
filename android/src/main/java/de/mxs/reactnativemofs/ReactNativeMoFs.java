@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+
+import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
 
 import android.net.Uri;
@@ -400,18 +402,17 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void shareURL(String url, Promise promise) {
-        Log.i("XXX", "shareURL " + url);
+    public void shareFile(String path, Promise promise) {
+        Log.i("XXX", "shareFile " + path);
 
-//        Uri.
-//        Uri.fromFile(file)
-//        FileProvider.getUriForFile(context, context.packageName + ".provider", file)
+        Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".provider", new File(path));
+//        String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
 
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.setType("application/pdf");
+        intent.setType("image/jpeg");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(url));
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
 
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
             Log.i("XXX", "start handle?");

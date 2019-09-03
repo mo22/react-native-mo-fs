@@ -117,7 +117,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
                   await Fs.ios.Module.shareURL('file://' + path);
                 }
                 if (Fs.android.Module) {
-                  await Fs.android.Module.shareURL('file://' + path);
+                  await Fs.android.Module.shareFile(path);
                 }
                 // await Fs.ios.Module!.shareURL(Fs.getBlobURL(this.state.blob!));
               } catch (e) {
