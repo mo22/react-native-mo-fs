@@ -49,5 +49,8 @@
 - [ ] createThumbnail?
 
 - [ ] handle open in - intent + linking stuff?
+  -> send event
+  -> event listener?
+  -> initial event?
 
 - [ ] open existing file in another app
