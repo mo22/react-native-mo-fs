@@ -123,6 +123,36 @@ export class Fs {
   }
 
   /**
+   * read blob to utf8 or base64 string
+   */
+  public static async readBlob(blob: Blob, mode: 'base64'|'utf8'): Promise<string> {
+    if (ios.Module) {
+      return await ios.Module.readBlob(blob.data, mode);
+    } else if (android.Module) {
+      return await android.Module.readBlob(blob.data, mode);
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
+   * read blob to utf8 or base64 string
+   */
+  public static async createBlob(str: string, mode: 'base64'|'utf8'): Promise<Blob> {
+    if (ios.Module) {
+      const blob = new Blob();
+      blob.data = await ios.Module.createBlob(str, mode);
+      return blob;
+    } else if (android.Module) {
+      const blob = new Blob();
+      blob.data = await android.Module.createBlob(str, mode);
+      return blob;
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
    * read file to blob
    */
   public static async readFile(path: string): Promise<Blob> {
