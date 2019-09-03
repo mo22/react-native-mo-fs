@@ -470,13 +470,18 @@ RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:
         UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
         NSString* path = args[@"path"];
         UIDocumentInteractionController* controller = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
+        NSLog(@"initial %@ %@ %@", controller.UTI, controller.name, controller.annotation);
         if (args[@"uti"]) {
             controller.UTI = args[@"uti"];
         } else {
+            NSLog(@"test %@ %@", path, utiForPath(path));
             controller.UTI = utiForPath(path);
         }
         if (args[@"annotation"]) {
             controller.annotation = args[@"annotation"];
+        }
+        if (args[@"name"]) {
+            controller.name = args[@"name"];
         }
         NSLog(@"UTI %@", controller.UTI);
         NSLog(@"URL %@", controller.URL);
