@@ -9,7 +9,7 @@ interface State {
   mime?: string;
   blob?: Blob;
   sha1?: string;
-  uri?: string;
+  uti?: string;
   thumbnail?: Blob;
   text?: string;
 }
