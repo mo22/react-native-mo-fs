@@ -52,6 +52,20 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
             blob.close();
             Alert.alert('Success', 'Imported to ' + path);
           }}
+          title="create png"
+        />
+
+        <ListItem
+          onPress={async () => {
+            const data = 'Hello world!';
+            const blob = await Fs.createBlob(data, 'utf8');
+            const paths = await Fs.getPaths();
+            const path = paths.docs + '/' + moment().format('YYYY-MM-DD HH:mm:ss') + '.txt';
+            await Fs.writeFile(path, blob);
+            blob.close();
+            Alert.alert('Success', 'Imported to ' + path);
+          }}
+          title="create txt"
         />
 
       </ScrollView>
