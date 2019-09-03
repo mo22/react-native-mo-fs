@@ -39,7 +39,7 @@ RCT_EXPORT_METHOD(readBlob:(NSDictionary<NSString*,id>*)blob mode:(NSString*)mod
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data = [blobManager resolve:blob];
     if (!data) {
-        reject(@"", @"ENOBLOB", nil);
+        reject(@"", @"blob not found", nil);
         return;
     }
     if ([mode isEqualToString:@"base64"]) {
@@ -49,7 +49,7 @@ RCT_EXPORT_METHOD(readBlob:(NSDictionary<NSString*,id>*)blob mode:(NSString*)mod
         NSString* res = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         resolve(res);
     } else {
-        reject(@"", @"EMODE", nil);
+        reject(@"", @"invalid mode", nil);
         return;
     }
 }
@@ -60,13 +60,13 @@ RCT_EXPORT_METHOD(createBlob:(NSString*)str mode:(NSString*)mode resolve:(RCTPro
     if ([mode isEqualToString:@"base64"]) {
         data = [[NSData alloc] initWithBase64EncodedString:str options:0];
         if (!data) {
-            reject(@"", @"EBASE64", nil);
+            reject(@"", @"invalid base64", nil);
             return;
         }
     } else if ([mode isEqualToString:@"utf8"]) {
         data = [str dataUsingEncoding:NSUTF8StringEncoding];
     } else {
-        reject(@"", @"EMODE", nil);
+        reject(@"", @"invalid mode", nil);
         return;
     }
     NSString* blobId = [blobManager store:data];
@@ -74,8 +74,6 @@ RCT_EXPORT_METHOD(createBlob:(NSString*)str mode:(NSString*)mode resolve:(RCTPro
         @"size": @([data length]),
         @"offset": @(0),
         @"blobId": blobId,
-//        @"type": mimeTypeForPath(path),
-//        @"name": [path lastPathComponent],
     });
 }
 
@@ -88,14 +86,11 @@ RCT_EXPORT_METHOD(getPaths:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
 }
 
 RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    // @TODO: offset, size?
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSError* error = nil;
-    NSLog(@"readFile [%@]", path);
     NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
-    NSLog(@"readFile [%@] [%@] [%@]", path, data, error);
     if (!data) {
-        reject(@"ESYS", [error description], error);
+        reject(@"", [error localizedDescription], error);
         return;
     }
     NSString* blobId = [blobManager store:data];
@@ -112,13 +107,13 @@ RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)bl
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data = [blobManager resolve:blob];
     if (!data) {
-        reject(@"", @"ENOBLOB", nil);
+        reject(@"", @"blob not found", nil);
         return;
     }
     NSError* error = nil;
     [data writeToFile:path options:NSDataWritingAtomic error:&error];
     if (error) {
-        reject(@"", @"", error);
+        reject(@"", [error localizedDescription], error);
         return;
     }
     resolve(nil);
@@ -128,21 +123,17 @@ RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)b
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data = [blobManager resolve:blob];
     if (!data) {
-        reject(@"", @"ENOBLOB", nil);
+        reject(@"", @"blob not found", nil);
         return;
     }
     @try {
         NSFileHandle* fp = [NSFileHandle fileHandleForWritingAtPath:path];
-        if (!fp) {
-            reject(@"EFILE", @"", nil);
-            return;
-        }
         [fp seekToEndOfFile];
         [fp writeData:data];
         [fp closeFile];
         resolve(nil);
     } @catch (NSException* exception) {
-        reject(@"ESYS", exception.reason, nil);
+        reject(@"", exception.reason, nil);
     }
 }
 
@@ -179,7 +170,7 @@ RCT_EXPORT_METHOD(deleteFile:(NSString*)path recursive:(BOOL)recursive resolve:(
         [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     }
     if (error) {
-        reject(@"", @"", error);
+        reject(@"", [error localizedDescription], error);
         return;
     }
     resolve(nil);
@@ -189,7 +180,7 @@ RCT_EXPORT_METHOD(renameFile:(NSString*)path to:(NSString*)path2 resolve:(RCTPro
     NSError* error = nil;
     [[NSFileManager defaultManager] moveItemAtPath:path toPath:path2 error:&error];
     if (error) {
-        reject(@"", @"", error);
+        reject(@"", [error localizedDescription], error);
         return;
     }
     resolve(nil);
@@ -199,7 +190,7 @@ RCT_EXPORT_METHOD(listDir:(NSString*)path resolve:(RCTPromiseResolveBlock)resolv
     NSError* error = nil;
     NSArray<NSString*>* entries = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:&error];
     if (error) {
-        reject(@"", @"", error);
+        reject(@"", [error localizedDescription], error);
         return;
     }
     resolve(entries);
@@ -209,7 +200,7 @@ RCT_EXPORT_METHOD(createDir:(NSString*)path resolve:(RCTPromiseResolveBlock)reso
     NSError* error = nil;
     [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
     if (error) {
-        reject(@"", @"", error);
+        reject(@"", [error localizedDescription], error);
         return;
     }
     resolve(nil);
@@ -220,8 +211,7 @@ RCT_EXPORT_METHOD(stat:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve r
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         NSDictionary<NSFileAttributeKey, id>* stat = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
         if (error) {
-            NSLog(@"stat error %@", error);
-            reject(@"", @"", error);
+            reject(@"", [error localizedDescription], error);
             return;
         }
         resolve(stat);
@@ -234,7 +224,7 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data = [blobManager resolve:blob];
     if (!data) {
-        reject(@"", @"ENOBLOB", nil);
+        reject(@"", @"blob not found", nil);
         return;
     }
     NSMutableDictionary* res = [NSMutableDictionary new];
@@ -275,21 +265,17 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
 }
 
 RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-//    NSLog(@"updateImage %@", args);
-
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data = [blobManager resolve:blob];
     if (!data) {
-        reject(@"", @"ENOBLOB", nil);
+        reject(@"", @"blob not found", nil);
         return;
     }
     CIImage* image = [CIImage imageWithData:data];
     if (!image) {
-        reject(@"", @"ENOIMAGE", nil);
+        reject(@"", @"blob not an image", nil);
         return;
     }
-//    NSLog(@"image %@", image);
-
     if (args[@"matrix"]) {
         // input: [ a b tx ]
         //        [ c d ty ]
@@ -302,30 +288,18 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
             [args[@"matrix"][2] floatValue],
             [args[@"matrix"][5] floatValue]
         );
-//        NSLog(@"transform=%@", NSStringFromCGAffineTransform(transform));
         image = [image imageByApplyingTransform:transform];
     }
-
     if (args[@"width"]) {
         image = [image imageByCroppingToRect:CGRectMake(0, 0, [args[@"width"] floatValue], [args[@"height"] floatValue])];
     }
-
     UIImage* uiImage = [UIImage imageWithCGImage:[[CIContext new] createCGImage:image fromRect:image.extent]];
-//    NSLog(@"uiImage %@", uiImage);
-
     NSData* output = nil;
     if ([args[@"encoding"] isEqualToString:@"png"]) {
-//        NSLog(@"create png");
-//        output = [[CIContext new] PNGRepresentationOfImage:image format:kCIFormatARGB8 colorSpace:CGColorSpaceCreateDeviceRGB() options:@{}];
         output = UIImagePNGRepresentation(uiImage);
     } else {
-//        NSLog(@"create jpeg %f", [args[@"quality"] floatValue]);
-//        output = [[CIContext new] JPEGRepresentationOfImage:image colorSpace:CGColorSpaceCreateDeviceRGB() options:@{
-//            (__bridge NSString *)kCGImageDestinationLossyCompressionQuality: args[@"quality"]
-//        }];
         output = UIImageJPEGRepresentation(uiImage, [args[@"quality"] floatValue]);
     }
-//    NSLog(@"output %lu", (unsigned long)output.length);
     NSString* blobId = [blobManager store:output];
     resolve(@{
         @"size": @([output length]),

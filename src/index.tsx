@@ -311,7 +311,7 @@ export class Fs {
   }
 
   /**
-   * get info about a blob. can calculate md5 / sha1 / sha256. get image size.
+   * get info about a blob. can calculate md5 / sha1 / sha256.
    */
   public static async getBlobInfo(blob: Blob, args: BlobInfoArgs = {}): Promise<BlobInfo> {
     if (ios.Module) {
