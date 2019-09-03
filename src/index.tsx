@@ -1,5 +1,6 @@
 import * as ios from './ios';
 import * as android from './android';
+import * as base64 from 'base64-arraybuffer';
 
 
 
@@ -153,7 +154,12 @@ export class Fs {
   /**
    * read blob to utf8 or base64 string
    */
-  public static async readBlob(blob: Blob, mode: 'base64'|'utf8'): Promise<string> {
+  public static async readBlob(blob: Blob, mode: 'arraybuffer'): Promise<ArrayBuffer>;
+  public static async readBlob(blob: Blob, mode: 'base64'|'utf8'): Promise<string>;
+  public static async readBlob(blob: Blob, mode: 'base64'|'utf8'|'arraybuffer'): Promise<string|ArrayBuffer> {
+    if (mode === 'arraybuffer') {
+      return base64.decode(await this.readBlob(blob, 'base64'));
+    }
     if (ios.Module) {
       return await ios.Module.readBlob(blob.data, mode);
     } else if (android.Module) {
@@ -166,7 +172,14 @@ export class Fs {
   /**
    * read blob to utf8 or base64 string
    */
-  public static async createBlob(str: string, mode: 'base64'|'utf8'): Promise<Blob> {
+  public static async createBlob(str: ArrayBuffer, mode: 'arraybuffer'): Promise<Blob>;
+  public static async createBlob(str: string, mode: 'base64'|'utf8'): Promise<Blob>;
+  public static async createBlob(str: string|ArrayBuffer, mode: 'base64'|'utf8'|'arraybuffer'): Promise<Blob> {
+    if (mode === 'arraybuffer') {
+      if (typeof str === 'string') throw new Error('str must be a ArrayBuffer');
+      return await this.createBlob(base64.encode(str), 'base64');
+    }
+    if (typeof str !== 'string') throw new Error('str must be a string');
     if (ios.Module) {
       const blob = new Blob();
       blob.data = await ios.Module.createBlob(str, mode);

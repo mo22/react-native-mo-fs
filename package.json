@@ -1,6 +1,6 @@
 {
   "name": "react-native-mo-fs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "react native file system and image tools",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -30,6 +30,7 @@
     "typescript": "^3.6.2"
   },
   "dependencies": {
+    "base64-arraybuffer": "^0.2.0",
     "mo-core": "^0.1.1"
   },
   "peerDependencies": {

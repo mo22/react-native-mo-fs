@@ -99,10 +99,12 @@ export declare class Fs {
     /**
      * read blob to utf8 or base64 string
      */
+    static readBlob(blob: Blob, mode: 'arraybuffer'): Promise<ArrayBuffer>;
     static readBlob(blob: Blob, mode: 'base64' | 'utf8'): Promise<string>;
     /**
      * read blob to utf8 or base64 string
      */
+    static createBlob(str: ArrayBuffer, mode: 'arraybuffer'): Promise<Blob>;
     static createBlob(str: string, mode: 'base64' | 'utf8'): Promise<Blob>;
     /**
      * read file to blob
