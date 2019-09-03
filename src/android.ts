@@ -34,7 +34,7 @@ export interface Module {
   }>;
   getBlobInfo(blob: BlobData, args?: any): Promise<any>;
   updateImage(blob: BlobData, args?: any): Promise<BlobData>;
-  shareFile(path: string): Promise<void>;
+  sendFileChooser(path: string, mimeType: string, title: string): Promise<void>;
 }
 
 export interface LinkEvent {
