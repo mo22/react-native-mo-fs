@@ -131,15 +131,19 @@ RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)b
         reject(@"", @"ENOBLOB", nil);
         return;
     }
-    NSFileHandle* fp = [NSFileHandle fileHandleForWritingAtPath:path];
-    if (!fp) {
-        reject(@"EFILE", @"", nil);
-        return;
+    @try {
+        NSFileHandle* fp = [NSFileHandle fileHandleForWritingAtPath:path];
+        if (!fp) {
+            reject(@"EFILE", @"", nil);
+            return;
+        }
+        [fp seekToEndOfFile];
+        [fp writeData:data];
+        [fp closeFile];
+        resolve(nil);
+    } @catch (NSException* exception) {
+        reject(@"ESYS", exception.reason, nil);
     }
-    [fp seekToEndOfFile];
-    [fp writeData:data];
-    [fp closeFile];
-    resolve(nil);
 }
 
 - (BOOL)deleteRecursive:(NSString*)path error:(NSError**)error {

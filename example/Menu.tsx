@@ -82,7 +82,11 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={async () => {
-            await Fs.readFile('/blah');
+            try {
+              await Fs.readFile('/blah');
+            } catch (e) {
+              Alert.alert('Error', String(e));
+            }
           }}
           title="read non existent"
         />
@@ -92,9 +96,15 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
             const blob = await Fs.createBlob('', 'utf8');
             try {
               await Fs.writeFile('/blah/blubb', blob);
-            } finally {
-              blob.close();
+            } catch (e) {
+              Alert.alert('Error', String(e));
             }
+            try {
+              await Fs.appendFile('/blah/blubb', blob);
+            } catch (e) {
+              Alert.alert('Error', String(e));
+            }
+            blob.close();
           }}
           title="write non existent"
         />
