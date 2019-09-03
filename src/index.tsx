@@ -164,7 +164,9 @@ export class Fs {
     } else if (android.Module) {
       const blob = new Blob();
       blob.data = await android.Module.readFile(path);
-      (blob as any).type = await this.getMimeType(path);
+      const type = await this.getMimeType(path);
+      console.log('readFile XXX', blob, type);
+      if (type !== undefined) (blob as any).type = type;
       return blob;
     } else {
       throw new Error('platform not supported');
