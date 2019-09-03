@@ -141,7 +141,7 @@ export declare class Fs {
      */
     static stat(path: string): Promise<Stat>;
     /**
-     * get info about a blob. can calculate md5 / sha1 / sha256.
+     * get info about a blob. can calculate md5 / sha1 / sha256. get image size.
      */
     static getBlobInfo(blob: Blob, args?: BlobInfoArgs): Promise<BlobInfo>;
     /**
