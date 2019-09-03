@@ -80,6 +80,26 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
           title="append log"
         />
 
+        <ListItem
+          onPress={async () => {
+            await Fs.readFile('/blah');
+          }}
+          title="read non existent"
+        />
+
+        <ListItem
+          onPress={async () => {
+            const blob = await Fs.createBlob('', 'utf8');
+            try {
+              await Fs.writeFile('/blah/blubb', blob);
+            } finally {
+              blob.close();
+            }
+          }}
+          title="write non existent"
+        />
+
+
       </ScrollView>
     );
   }
