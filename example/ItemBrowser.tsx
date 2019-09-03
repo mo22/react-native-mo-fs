@@ -30,9 +30,13 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
       this.setState({ blob: blob, sha1: info.sha1 });
       if (blob.type === 'image/jpeg' || blob.type === 'image/png') {
         console.log('info', info);
+        // get image size?
         const thumbnail = await Fs.updateImage(blob, {
-          width: 64,
-          height: 64,
+          matrix: [
+            0.2, 0, 0,
+            0, 0.2, 0,
+            0, 0, 1,
+          ],
           encoding: 'jpeg',
           quality: 10,
         });
