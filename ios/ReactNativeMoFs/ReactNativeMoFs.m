@@ -276,7 +276,6 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         CIImage* image = [CIImage imageWithData:data];
         if (image) {
             NSLog(@"props %@", image.properties);
-            NSLog(@"url %@", image.url);
             res[@"image"] = @{
                 @"width": @(image.extent.size.width),
                 @"height": @(image.extent.size.height),

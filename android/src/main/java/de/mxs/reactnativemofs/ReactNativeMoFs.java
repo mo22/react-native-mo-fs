@@ -3,8 +3,10 @@ package de.mxs.reactnativemofs;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.os.Build;
 import android.util.Base64;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.facebook.react.bridge.Arguments;
@@ -18,6 +20,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.blob.BlobModule;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -301,6 +304,12 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 image.putDouble("width", bmp.getWidth());
                 image.putDouble("height", bmp.getHeight());
                 res.putMap("image", image);
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
+                    Log.i("XXX", "got exif " + exif);
+                }
+
             }
             promise.resolve(res);
         } catch (Exception e) {
