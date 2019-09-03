@@ -452,6 +452,9 @@ RCT_EXPORT_METHOD(showDocumentPreview:(NSString*)path resolve:(RCTPromiseResolve
 RCT_EXPORT_METHOD(showDocumentOpenIn:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
+        NSLog(@"url %@", popup.URL);
+        NSLog(@"uti %@", popup.UTI);
+        // send/pass UTI?
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
         self->interactionDelegate = delegate;
         [popup setDelegate:delegate];

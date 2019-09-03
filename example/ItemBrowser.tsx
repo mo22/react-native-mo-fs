@@ -114,7 +114,8 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
             onPress={async () => {
               try {
                 if (Fs.ios.Module) {
-                  await Fs.ios.Module.shareURL('file://' + path);
+                  // await Fs.ios.Module.showDocumentOptions(path);
+                  await Fs.ios.Module.showDocumentOpenIn(path);
                 }
                 if (Fs.android.Module) {
                   await Fs.android.Module.sendFileChooser(path, await Fs.getMimeType(path) || 'application/octet-setream', 'Choose wisely');
