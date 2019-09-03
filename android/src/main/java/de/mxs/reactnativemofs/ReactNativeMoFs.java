@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Build;
+import android.util.Base64;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
@@ -52,6 +53,47 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getMimeType(String extension, Promise promise) {
         promise.resolve(MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension));
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void readBlob(ReadableMap blob, String mode, Promise promise) {
+        BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+        byte[] data = blobModule.resolve(blob);
+        if (data == null) {
+            promise.reject(new Error("not found"));
+            return;
+        }
+        if (mode.equals("base64")) {
+            promise.resolve(Base64.encodeToString(data, 0));
+        } else if (mode.equals("utf8")) {
+            promise.resolve(new String(data));
+        } else {
+            promise.reject(new Error("unknown mode"));
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void createBlob(String str, String mode, Promise promise) {
+        BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+        byte[] buffer;
+        if (mode.equals("base64")) {
+            buffer = Base64.decode(str, 0);
+        } else if (mode.equals("utf8")) {
+            buffer = str.getBytes();
+        } else {
+            promise.reject(new Error("unknown mode"));
+            return;
+        }
+        String blobId = blobModule.store(buffer);
+        WritableMap blob = Arguments.createMap();
+        blob.putInt("size", buffer.length);
+        blob.putInt("offset", 0);
+        blob.putString("blobId", blobId);
+//        blob.putString("type", "application/octet-string");
+//        blob.putString("name", path); // only last?
+        promise.resolve(blob);
     }
 
     @SuppressWarnings("unused")
@@ -110,6 +152,22 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             File file = new File(path);
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(data);
+            fos.close();
+            promise.resolve(null);
+        } catch (IOException e) {
+            e.printStackTrace();
+            promise.reject(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void appendTextFile(String path, String str, Promise promise) {
+        BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+        try {
+            File file = new File(path);
+            FileOutputStream fos = new FileOutputStream(file, true);
+            fos.write(str.getBytes());
             fos.close();
             promise.resolve(null);
         } catch (IOException e) {
