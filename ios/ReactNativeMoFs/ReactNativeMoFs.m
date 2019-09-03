@@ -109,7 +109,6 @@ RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resol
 }
 
 RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    // @TODO: offset, size?
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data = [blobManager resolve:blob];
     if (!data) {
@@ -125,14 +124,20 @@ RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)bl
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(appendTextFile:(NSString*)path str:(NSString*)str resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
+    NSData* data = [blobManager resolve:blob];
+    if (!data) {
+        reject(@"", @"ENOBLOB", nil);
+        return;
+    }
     NSFileHandle* fp = [NSFileHandle fileHandleForWritingAtPath:path];
     if (!fp) {
         reject(@"EFILE", @"", nil);
         return;
     }
     [fp seekToEndOfFile];
-    [fp writeData:[str dataUsingEncoding:NSUTF8StringEncoding]];
+    [fp writeData:data];
     [fp closeFile];
     resolve(nil);
 }
