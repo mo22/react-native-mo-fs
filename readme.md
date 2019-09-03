@@ -64,3 +64,4 @@ showDocumentInteractionController({ path, uti, annotation, type: 'preview'|'open
 showDocumentPickerView({ utis, UIDocumentPickerModeImport?,  })
 pass promise to delegate
 keep delegates in NSMutableSet
+finish delegates
