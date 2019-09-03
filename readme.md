@@ -41,8 +41,13 @@
 
 ## TODO
 - [ ] load picture from camera save in documents
+  -> ImagePicker -> save with date in docs
 
-- [ ] for existing picture in ItemBRowser: create thumbnail
+- [ ] for existing picture in ItemBRowser: create thumbnail and show
+
+
+
+- [ ] open in - add intent handler?
 
 - [ ] itembrowser open in?!
   https://github.com/Elyx0/react-native-document-picker/blob/master/ios/RNDocumentPicker/RNDocumentPicker.m

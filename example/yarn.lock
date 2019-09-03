@@ -4586,6 +4586,11 @@ mo-core@^0.1.1:
   resolved "https://registry.yarnpkg.com/mo-core/-/mo-core-0.1.1.tgz#bfb68a95ea1fead9c61b43b8a1500ce58708a5bd"
   integrity sha512-n2zpOQjLlB3wZNLLroy75uWwD4XO4Qayxc1swXay4sgTSXJ/OXElG23KF/kolK2xE+o5XHcbwMMegxe+w0K+5Q==
 
+moment@^2.24.0:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+
 morgan@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.9.1.tgz#0a8d16734a1d9afbc824b99df87e738e58e2da59"

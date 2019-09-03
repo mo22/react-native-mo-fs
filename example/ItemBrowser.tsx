@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, Text, Linking } from 'react-native';
+import { ScrollView, Text, Linking, Image } from 'react-native';
 import { NavigationInjectedProps } from 'react-navigation';
 import { ListItem } from 'react-native-elements';
 import { Fs, Stat } from 'react-native-mo-fs';
@@ -9,6 +9,7 @@ interface State {
   mime?: string;
   blob?: Blob;
   sha1?: string;
+  thumbnail?: Blob;
 }
 
 export default class ItemBrowser extends React.Component<NavigationInjectedProps<{ path: string; }>, State> {
@@ -25,6 +26,23 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
       const blob = await Fs.readFile(path);
       const info = await Fs.getBlobInfo(blob, { sha1: true });
       this.setState({ blob: blob, sha1: info.sha1 });
+      const thumbnail = await Fs.updateImage(blob, {
+        width: 128,
+        height: 128,
+        encoding: 'jpeg',
+        quality: 10,
+      });
+      blob.close();
+      if (this.state.thumbnail) {
+        this.state.thumbnail.close();
+      }
+      this.setState({ thumbnail: thumbnail });
+    }
+  }
+
+  public componentWillUnmount() {
+    if (this.state.thumbnail) {
+      this.state.thumbnail.close();
     }
   }
 
@@ -59,6 +77,13 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           <ListItem
             title="blob"
             subtitle={Fs.getBlobURL(this.state.blob)}
+          />
+        )}
+
+        {this.state.blob && (
+          <ListItem
+            title="blob.type"
+            subtitle={this.state.blob.type}
           />
         )}
 
@@ -97,6 +122,11 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           />
         )}
 
+        {this.state.thumbnail && (
+          <Image
+            source={{ uri: Fs.getBlobURL(this.state.thumbnail) }}
+          />
+        )}
 
       </ScrollView>
     );
