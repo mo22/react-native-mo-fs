@@ -327,6 +327,7 @@ export class Fs {
    * update / resize an image
    */
   public static async updateImage(blob: Blob, args: UpdateImageArgs): Promise<Blob> {
+    if (args.quality !== undefined && (args.quality < 0 || args.quality > 1)) throw new Error('quality must be 0..1');
     if (ios.Module) {
       const res = new Blob();
       res.data = await ios.Module.updateImage(blob.data, args);
