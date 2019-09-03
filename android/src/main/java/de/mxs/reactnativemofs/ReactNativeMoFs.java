@@ -401,6 +401,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void shareURL(String url, Promise promise) {
+        Log.i("XXX", "shareURL " + url);
 
 //        Uri.
 //        Uri.fromFile(file)
@@ -414,7 +415,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
             Log.i("XXX", "start handle?");
-            getReactApplicationContext().startActivity(
+            getReactApplicationContext().getCurrentActivity().startActivity(
                 Intent.createChooser(intent, "title")
             );
         } else {

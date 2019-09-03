@@ -33,6 +33,29 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 
+@interface ReactNativeMoFsInteractionDelegate : NSObject <UIDocumentInteractionControllerDelegate>
+@end
+@implementation ReactNativeMoFsInteractionDelegate
+
+- (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
+    NSLog(@"ASD1");
+}
+- (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(nullable NSString *)application {
+    NSLog(@"ASD2");
+}
+- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(nullable NSString *)application {
+    NSLog(@"ASD3");
+}
+
+- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
+    NSLog(@"ASD4");
+    return RCTSharedApplication().delegate.window.rootViewController;
+}
+
+@end
+
+
+
 @interface ReactNativeMoFs : RCTEventEmitter
 @end
 
@@ -415,10 +438,15 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
 }
 
 RCT_EXPORT_METHOD(shareURL:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL URLWithString:url]];
-//    [popup setDelegate:self];
-    [popup presentPreviewAnimated:YES];
-    resolve(nil);
+    NSLog(@"shareURL %@", url);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL URLWithString:url]];
+        ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
+        // keep delegate...?
+        [popup setDelegate:delegate];
+        [popup presentPreviewAnimated:YES];
+        resolve(nil);
+    });
 }
 
 @end
