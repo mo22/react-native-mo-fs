@@ -13,8 +13,11 @@
 #endif
 
 static void methodSwizzle(Class cls1, SEL sel1, Class cls2, SEL sel2) {
+    // https://nshipster.com/method-swizzling/
     Method m1 = class_getInstanceMethod(cls1, sel1);
     Method m2 = class_getInstanceMethod(cls2, sel2);
+    NSLog(@"%@ %s = %p", cls1, sel_getName(sel1), m1);
+    NSLog(@"%@ %s = %p", cls2, sel_getName(sel2), m2);
 //    IMP m2i = method_getImplementation(m2);
 //    if (m1 == nil) {
 //        NSLog(@"methodSwizzle add");
@@ -54,7 +57,6 @@ RCT_EXPORT_MODULE()
     if (self) {
         static id<UIApplicationDelegate> appDelegate;
         if (appDelegate == nil) {
-            NSLog(@"swizzle");
             methodSwizzle(
               [[RCTSharedApplication() delegate] class],
               @selector(application:openURL:options:),
@@ -76,6 +78,10 @@ RCT_EXPORT_MODULE()
 //        UIApplicationOpenURLOptionsOpenInPlaceKey = 0;
 //    }
     // calls original method (swizzeled)
+    // this is an endless loop
+//    id any = self;
+//    return [any application:application openURL:url options:options];
+    // AppDelegate swizzled_application:openURL:options:
     return [self swizzled_application:application openURL:url options:options];
 }
 

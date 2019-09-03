@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import androidx.exifinterface.media.ExifInterface;
+
+import android.net.Uri;
 import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
@@ -30,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,8 +50,17 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             @Override
             public void onNewIntent(Intent intent) {
                 Log.i("XXX", "onNewIntent " + intent);
-//                09-03 15:37:21.516  2561  2561 I XXX     : onNewIntent Intent { act=android.intent.action.SEND typ=application/pdf flg=0x13000001 cmp=com.example/.MainActivity clip={application/pdf U:content://com.android.providers.downloads.documents/document/695} (has extras) }
-                // send event...
+                Log.i("XXX", "action=" + intent.getAction());
+                Log.i("XXX", "data=" + intent.getData());
+                Log.i("XXX", "dataString=" + intent.getDataString());
+                Log.i("XXX", "extras=" + Arrays.asList(intent.getExtras().keySet().toArray()));
+                Uri uri = (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
+                Log.i("XXX", "uri=" + uri);
+
+                // action=android.intent.action.SEND
+                // data=null
+                // dataString=null
+                // extras=[referrer.code, android.intent.extra.SUBJECT, referrer.string, android.intent.extra.STREAM, android.intent.extra.TITLE]
             }
         });
     }

@@ -54,7 +54,8 @@
    options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
   NSLog(@"application openURL %@ options %@", url, options);
-  return [RCTLinkingManager application:application openURL:url options:options];
+  return NO;
+//  return [RCTLinkingManager application:application openURL:url options:options];
 }
 
 @end
