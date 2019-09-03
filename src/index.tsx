@@ -291,7 +291,6 @@ export class Fs {
   public static async stat(path: string): Promise<Stat> {
     if (ios.Module) {
       const tmp = await ios.Module.stat(path);
-      console.log('ASDSD', tmp);
       return {
         exists: tmp !== undefined,
         dir: tmp && tmp.NSFileType === 'NSFileTypeDirectory',
