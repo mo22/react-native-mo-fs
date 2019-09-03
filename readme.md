@@ -40,9 +40,11 @@
   Need to modify AppDelegate: https://facebook.github.io/react-native/docs/linking
 
 ## TODO
-- [ ] append text to log file
+- [ ] ios: stat mtime? globInfo image attributes?
+- [ ] android: check error messages / image attributes?
 
-- [ ] get image size?
+- [ ] createThumbnail?
+- [ ] writeTextFile?
 
 - [ ] handle open in - intent + linking stuff?
 
