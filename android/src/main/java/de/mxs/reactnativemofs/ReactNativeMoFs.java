@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Build;
 import android.util.Base64;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.facebook.react.bridge.Arguments;
@@ -61,7 +60,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
         byte[] data = blobModule.resolve(blob);
         if (data == null) {
-            promise.reject(new Error("not found"));
+            promise.reject(new Error("blob not found"));
             return;
         }
         if (mode.equals("base64")) {
@@ -91,8 +90,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         blob.putInt("size", buffer.length);
         blob.putInt("offset", 0);
         blob.putString("blobId", blobId);
-//        blob.putString("type", "application/octet-string");
-//        blob.putString("name", path); // only last?
         promise.resolve(blob);
     }
 
@@ -145,7 +142,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
         byte[] data = blobModule.resolve(blob);
         if (data == null) {
-            promise.reject(new Error("not found"));
+            promise.reject(new Error("blob not found"));
             return;
         }
         try {
@@ -166,7 +163,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
         byte[] data = blobModule.resolve(blob);
         if (data == null) {
-            promise.reject(new Error("not found"));
+            promise.reject(new Error("blob not found"));
             return;
         }
         try {
@@ -269,7 +266,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
             byte[] data = blobModule.resolve(blob);
             if (data == null) {
-                promise.reject(new Error("not found"));
+                promise.reject(new Error("blob not found"));
                 return;
             }
             WritableMap res = Arguments.createMap();
@@ -298,6 +295,13 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
                 res.putString("sha256", sb.toString());
             }
+            if (args.hasKey("image") && args.getBoolean("image")) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                WritableMap image = Arguments.createMap();
+                image.putDouble("width", bmp.getWidth());
+                image.putDouble("height", bmp.getHeight());
+                res.putMap("image", image);
+            }
             promise.resolve(res);
         } catch (Exception e) {
             promise.reject(e);
@@ -310,36 +314,24 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
         byte[] data = blobModule.resolve(blob);
         if (data == null) {
-            promise.reject(new Error("not found"));
+            promise.reject(new Error("blob not found"));
             return;
         }
-
-        Log.i("XXX", "updateImage " + args);
-
         Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-        Log.i("XXX", "bmp=" + bmp.getWidth() + "x" + bmp.getHeight());
-
         int width = args.hasKey("width") ? args.getInt("width") : bmp.getWidth();
         int height = args.hasKey("height") ? args.getInt("height") : bmp.getHeight();
-        Log.i("XXX", "width=" + width + " height=" + height);
-
         Matrix m = new Matrix();
         if (args.hasKey("matrix")) {
             ReadableArray a = args.getArray("matrix");
             if (a != null) {
                 float[] v = new float[9];
                 for (int i=0; i<v.length; i++) {
-                    Log.i("XXX", "matrix[" + i + "]=" + a.getDouble(i));
                     v[i] = (float)a.getDouble(i);
                 }
                 m.setValues(v);
             }
         }
-        Log.i("XXX", "m=" + m);
-
         Bitmap bmp2 = Bitmap.createBitmap(bmp, 0, 0, width, height, m, true);
-        Log.i("XXX", "bmp2=" + bmp2.getWidth() + "x" + bmp2.getHeight());
-
         int quality = args.hasKey("quality") ? (int)(args.getDouble("quality") * 100) : 100;
         Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
         if (args.hasKey("encoding") && "png".equals(args.getString("encoding"))) {
@@ -350,7 +342,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bmp2.compress(format, quality, stream);
         byte[] output = stream.toByteArray();
-
         String blobId = blobModule.store(output);
         WritableMap blob2 = Arguments.createMap();
         blob2.putInt("size", output.length);
@@ -359,7 +350,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         blob2.putString("type", "image/jpeg");
         blob2.putString("name", blob.getString("name"));
         promise.resolve(blob2);
-
     }
 
 }
