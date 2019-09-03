@@ -439,22 +439,36 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     });
 }
 
-RCT_EXPORT_METHOD(shareURL:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSLog(@"shareURL %@", url);
+RCT_EXPORT_METHOD(showDocumentPreview:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
-        UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL URLWithString:url]];
+        UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
         self->interactionDelegate = delegate;
-        // keep delegate...?
         [popup setDelegate:delegate];
+        [popup presentPreviewAnimated:YES];
+        resolve(nil);
+    });
+}
 
-        // works.
-        // [popup presentPreviewAnimated:YES];
-        
-        // works.
-//        [popup presentOpenInMenuFromRect:CGRectZero inView:view animated:YES];
-        
+RCT_EXPORT_METHOD(showDocumentOpenIn:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
+        ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
+        self->interactionDelegate = delegate;
+        [popup setDelegate:delegate];
+        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
+        [popup presentOpenInMenuFromRect:CGRectZero inView:view animated:YES];
+        resolve(nil);
+    });
+}
+
+RCT_EXPORT_METHOD(showDocumentOptions:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
+        ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
+        self->interactionDelegate = delegate;
+        [popup setDelegate:delegate];
+        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
         [popup presentOptionsMenuFromRect:CGRectZero inView:view animated:YES];
         resolve(nil);
     });
