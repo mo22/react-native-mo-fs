@@ -92,6 +92,10 @@ export declare class Fs {
      */
     static writeFile(path: string, blob: Blob): Promise<void>;
     /**
+     * append blob to file
+     */
+    static appendFile(path: string, blob: Blob): Promise<void>;
+    /**
      * delete file
      */
     static deleteFile(path: string): Promise<void>;

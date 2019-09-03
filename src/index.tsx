@@ -191,6 +191,19 @@ export class Fs {
   }
 
   /**
+   * append blob to file
+   */
+  public static async appendFile(path: string, blob: Blob): Promise<void> {
+    if (ios.Module) {
+      return await ios.Module.appendFile(path, blob.data);
+    } else if (android.Module) {
+      return await android.Module.appendFile(path, blob.data);
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
    * delete file
    */
   public static async deleteFile(path: string): Promise<void> {
