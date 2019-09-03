@@ -10,6 +10,7 @@ interface State {
   blob?: Blob;
   sha1?: string;
   thumbnail?: Blob;
+  text?: string;
 }
 
 export default class ItemBrowser extends React.Component<NavigationInjectedProps<{ path: string; }>, State> {
@@ -20,9 +21,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
     const path = this.props.navigation.getParam('path');
     const stat = await Fs.stat(path);
     this.setState({ stat: stat });
-    console.log('path', path);
     const mime = await Fs.getMimeType(path);
-    console.log('mime', mime);
     this.setState({ mime: mime });
     if (stat.exists && !stat.dir) {
       const blob = await Fs.readFile(path);
@@ -44,7 +43,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
       }
       if (blob.type === 'text/plain' || blob.type === 'application/json') {
         const text = await Fs.readBlob(blob, 'utf8');
-        console.log(text);
+        this.setState({ text: text.slice(0, 8000) });
       }
     }
   }
@@ -139,6 +138,10 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
             style={{ width: 100, height: 100 }}
             source={{ uri: Fs.getBlobURL(this.state.thumbnail) }}
           />
+        )}
+
+        {this.state.text && (
+          <Text>{this.state.text}</Text>
         )}
 
       </ScrollView>
