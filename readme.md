@@ -40,12 +40,12 @@
   Need to modify AppDelegate: https://facebook.github.io/react-native/docs/linking
 
 ## TODO
+
+- [ ] choose existing document?
+  https://github.com/blockpass-org/react-native-document-picker
+
 - [ ] getBlobInfo: exif?
 
 - [ ] createThumbnail?
 
 - [ ] handle open in - intent + linking stuff?
-
-- [ ] itembrowser open in?!
-  https://github.com/Elyx0/react-native-document-picker/blob/master/ios/RNDocumentPicker/RNDocumentPicker.m
-  android send intent
