@@ -409,6 +409,10 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         intent.setType(type);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
+
+//        intent.putExtra(Intent.EXTRA_SUBJECT, file.name)
+//        intent.putExtra(Intent.EXTRA_TEXT, file.name)
+
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
             Activity activity = getReactApplicationContext().getCurrentActivity();
             if (activity == null) throw new RuntimeException("activity == null");

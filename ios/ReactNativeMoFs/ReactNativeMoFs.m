@@ -454,6 +454,9 @@ RCT_EXPORT_METHOD(showDocumentOpenIn:(NSString*)path resolve:(RCTPromiseResolveB
         UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
         NSLog(@"url %@", popup.URL);
         NSLog(@"uti %@", popup.UTI);
+//        self.documentInteractionController.UTI = @"net.whatsapp.movie";
+//        self.documentInteractionController.annotation = @"Check out my video on www.channel.wtf";
+
         // send/pass UTI?
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
         self->interactionDelegate = delegate;
