@@ -54,3 +54,17 @@
   -> initial event?
 
 - [ ] open existing file in another app
+
+
+android:
+sendIntentChooser({ path, type, title, subject, text })
+viewIntentChooser() ?
+getContent({ type })
+
+
+
+ios:
+showDocumentInteractionController({ path, uti, annotation, type: 'preview'|'openin'|'options' })
+showDocumentPickerView({ utis, UIDocumentPickerModeImport?,  })
+pass promise to delegate
+keep delegates in NSMutableSet
