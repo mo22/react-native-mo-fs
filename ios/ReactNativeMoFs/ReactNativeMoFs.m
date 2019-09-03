@@ -24,8 +24,16 @@ static void methodSwizzle(Class cls1, SEL sel1, Class cls2, SEL sel2) {
     }
 }
 
+NSString* utiForPath(NSString* path) {
+    return CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef _Nonnull)([path pathExtension]), nil));
+}
+
+NSString* utiForMimeType(NSString* mimeType) {
+    return CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef _Nonnull)mimeType, NULL));
+}
+
 NSString* mimeTypeForPath(NSString* path) {
-    NSString* uti = CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef _Nonnull)([path pathExtension]), nil));
+    NSString* uti = utiForPath(path);
     NSString* mime = CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef _Nonnull)(uti), kUTTagClassMIMEType));
     if (!mime) return @"application/octet-stream";
     return mime;
@@ -34,6 +42,8 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 @interface ReactNativeMoFsInteractionDelegate : NSObject <UIDocumentInteractionControllerDelegate>
+@property RCTPromiseResolveBlock resolve;
+@property RCTPromiseRejectBlock reject;
 @end
 @implementation ReactNativeMoFsInteractionDelegate
 - (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
@@ -55,9 +65,8 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 
-@interface ReactNativeMoFs : RCTEventEmitter {
-    ReactNativeMoFsInteractionDelegate* interactionDelegate;
-}
+@interface ReactNativeMoFs : RCTEventEmitter
+@property NSMutableSet* refs;
 @end
 
 @implementation ReactNativeMoFs
@@ -75,6 +84,7 @@ RCT_EXPORT_MODULE()
 - (instancetype)init {
     self = [super init];
     if (self) {
+        self.refs = [NSMutableSet new];
         static id<UIApplicationDelegate> appDelegate;
         if (appDelegate == nil) {
             appDelegate = RCTSharedApplication().delegate;
@@ -118,6 +128,14 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(getMimeType:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     resolve(mimeTypeForPath(extension));
+}
+
+RCT_EXPORT_METHOD(getUtiFromMimeType:(NSString*)mimeType resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    resolve(utiForMimeType(mimeType));
+}
+
+RCT_EXPORT_METHOD(getUti:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    resolve(utiForPath(extension));
 }
 
 RCT_EXPORT_METHOD(readBlob:(NSDictionary<NSString*,id>*)blob mode:(NSString*)mode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
@@ -438,44 +456,38 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     });
 }
 
-RCT_EXPORT_METHOD(showDocumentPreview:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
+        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
+        NSString* path = args[@"path"];
+        UIDocumentInteractionController* controller = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
+        if (args[@"uti"]) {
+            controller.UTI = args[@"uti"];
+        } else {
+            controller.UTI = utiForPath(path);
+        }
+        if (args[@"annotation"]) {
+            controller.annotation = args[@"annotation"];
+        }
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
-        self->interactionDelegate = delegate;
-        [popup setDelegate:delegate];
-        [popup presentPreviewAnimated:YES];
-        resolve(nil);
+        delegate.resolve = resolve;
+        delegate.reject = reject;
+        [self.refs addObject:delegate];
+        [controller setDelegate:delegate];
+        if ([args[@"type"] isEqualToString:@"preview"]) {
+            [controller presentPreviewAnimated:YES];
+        } else if ([args[@"type"] isEqualToString:@"openin"]) {
+            [controller presentOpenInMenuFromRect:CGRectZero inView:view animated:YES];
+        } else if ([args[@"type"] isEqualToString:@"options"]) {
+            [controller presentOptionsMenuFromRect:CGRectZero inView:view animated:YES];
+        } else {
+            reject(@"", @"invalid type", nil);
+        }
     });
 }
 
-RCT_EXPORT_METHOD(showDocumentOpenIn:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
-        NSLog(@"url %@", popup.URL);
-        NSLog(@"uti %@", popup.UTI);
-//        self.documentInteractionController.UTI = @"net.whatsapp.movie";
-//        self.documentInteractionController.annotation = @"Check out my video on www.channel.wtf";
-
-        // send/pass UTI?
-        ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
-        self->interactionDelegate = delegate;
-        [popup setDelegate:delegate];
-        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
-        [popup presentOpenInMenuFromRect:CGRectZero inView:view animated:YES];
-        resolve(nil);
-    });
-}
-
-RCT_EXPORT_METHOD(showDocumentOptions:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIDocumentInteractionController* popup = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
-        ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
-        self->interactionDelegate = delegate;
-        [popup setDelegate:delegate];
-        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
-        [popup presentOptionsMenuFromRect:CGRectZero inView:view animated:YES];
-        resolve(nil);
     });
 }
 
