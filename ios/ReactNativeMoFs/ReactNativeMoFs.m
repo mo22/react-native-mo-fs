@@ -67,6 +67,10 @@ RCT_EXPORT_MODULE()
 
 - (BOOL)swizzled_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
+    [self sendEventWithName:@"ReactNativeMoFsLink" body:@{
+        @"url": [url absoluteString],
+        @"options": options,
+    }];
     NSLog(@"hooked application openURL %@ options %@", url, options);
 //    2019-09-03 15:36:35.232695+0200 example[1077:558569] hooked application openURL file:///private/var/mobile/Containers/Data/Application/B39F5FFC-C223-4EAA-80E7-92CBCAF8D2AF/tmp/org.reactjs.native.example.example-Inbox/2018_07_24_12_51_03.pdf options {
 //        UIApplicationOpenURLOptionsOpenInPlaceKey = 0;

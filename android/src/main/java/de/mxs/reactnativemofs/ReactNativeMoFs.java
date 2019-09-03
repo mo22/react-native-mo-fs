@@ -24,6 +24,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.blob.BlobModule;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -55,12 +56,21 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 Log.i("XXX", "type=" + intent.getType());
                 Log.i("XXX", "dataString=" + intent.getDataString());
                 Log.i("XXX", "extras=" + Arrays.asList(intent.getExtras().keySet().toArray()));
-                Uri uri = (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
-                Log.i("XXX", "uri=" + uri);
-
-                // ACTION_VIEW with getData()
-                // ACTION_SEND with EXTRA_STREAM ?
-
+//                Uri uri = (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
+//                Log.i("XXX", "uri=" + uri);
+                WritableMap args = Arguments.createMap();
+                args.putString("action", intent.getAction());
+                args.putString("type", intent.getType());
+                if (intent.getData() != null) {
+                    args.putString("url", intent.getData().toString());
+                }
+                if (intent.getExtras().containsKey(Intent.EXTRA_STREAM)) {
+                    Uri uri = (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
+                    if (uri != null) {
+                        args.putString("url", uri.toString());
+                    }
+                }
+                getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoFsLink", args);
                 // action=android.intent.action.SEND
                 // data=null
                 // dataString=null
