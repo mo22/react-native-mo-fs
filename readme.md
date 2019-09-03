@@ -49,3 +49,5 @@
 - [ ] createThumbnail?
 
 - [ ] handle open in - intent + linking stuff?
+
+- [ ] open existing file in another app
