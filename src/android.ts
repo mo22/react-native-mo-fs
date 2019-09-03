@@ -34,7 +34,10 @@ export interface Module {
   }>;
   getBlobInfo(blob: BlobData, args?: any): Promise<any>;
   updateImage(blob: BlobData, args?: any): Promise<BlobData>;
-  sendFileChooser(path: string, mimeType: string, title: string): Promise<void>;
+  sendIntentChooser(args: { path: string; type?: string; title?: string; subject?: string; text?: string; }): Promise<void>;
+  // viewIntentChooser() ?
+  getContent(args: { type?: string; }): Promise<void>;
+
 }
 
 export interface LinkEvent {

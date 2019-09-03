@@ -39,9 +39,15 @@ export interface Module {
     }>;
     getBlobInfo(blob: BlobData, args?: any): Promise<any>;
     updateImage(blob: BlobData, args?: any): Promise<BlobData>;
-    showDocumentPreview(path: string): Promise<void>;
-    showDocumentOpenIn(path: string): Promise<void>;
-    showDocumentOptions(path: string): Promise<void>;
+    showDocumentInteractionController(args: {
+        path: string;
+        uti: string;
+        annotation?: string;
+        type: 'preview' | 'openin' | 'options';
+    }): Promise<void>;
+    showDocumentPickerView(args: {
+        utis?: string[];
+    }): Promise<void>;
 }
 export interface LinkEvent {
     url: string;
