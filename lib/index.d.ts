@@ -143,17 +143,7 @@ export declare class Fs {
     /**
      * get info about a blob. can calculate md5 / sha1 / sha256.
      */
-    static getBlobInfo(blob: Blob, args?: {
-        md5?: boolean;
-        sha1?: boolean;
-        sha256?: boolean;
-        image?: boolean;
-    }): Promise<{
-        size: number;
-        md5?: string;
-        sha1?: string;
-        sha256?: string;
-    }>;
+    static getBlobInfo(blob: Blob, args?: BlobInfoArgs): Promise<BlobInfo>;
     /**
      * update / resize an image
      */
