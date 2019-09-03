@@ -96,11 +96,13 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
             const blob = await Fs.createBlob('', 'utf8');
             try {
               await Fs.writeFile('/blah/blubb', blob);
+              Alert.alert('Success', 'write succesful');
             } catch (e) {
               Alert.alert('Error', String(e));
             }
             try {
               await Fs.appendFile('/blah/blubb', blob);
+              Alert.alert('Success', 'append succesful');
             } catch (e) {
               Alert.alert('Error', String(e));
             }

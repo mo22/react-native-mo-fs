@@ -41,8 +41,10 @@
 
 ## TODO
 - [ ] append text to log file
+- [ ] getBlobInfo: image size and metadata?
 
-- [ ] get image size?
+- [ ] image resize tool function
+- [ ] appendText/writeText tool functions
 
 - [ ] handle open in - intent + linking stuff?
 
