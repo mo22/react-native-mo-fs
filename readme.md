@@ -43,9 +43,6 @@
 - [ ] getBlobInfo: exif?
 
 - [ ] createThumbnail?
-- [ ] writeTextFile?
-
-- [ ] readBlob: arraybuffer?
 
 - [ ] handle open in - intent + linking stuff?
 

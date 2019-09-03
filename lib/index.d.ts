@@ -111,6 +111,10 @@ export declare class Fs {
      */
     static readFile(path: string): Promise<Blob>;
     /**
+     * read file to text
+     */
+    static readTextFile(path: string): Promise<string>;
+    /**
      * read URL to blob (using fetch)
      */
     static readURL(url: string): Promise<Blob>;
@@ -119,9 +123,17 @@ export declare class Fs {
      */
     static writeFile(path: string, blob: Blob): Promise<void>;
     /**
+     * write text to file
+     */
+    static writeTextFile(path: string, text: string): Promise<void>;
+    /**
      * append blob to file
      */
     static appendFile(path: string, blob: Blob): Promise<void>;
+    /**
+     * append text to file
+     */
+    static appendTextFile(path: string, text: string): Promise<void>;
     /**
      * delete file
      */

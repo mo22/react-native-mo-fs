@@ -213,6 +213,18 @@ export class Fs {
   }
 
   /**
+   * read file to text
+   */
+  public static async readTextFile(path: string): Promise<string> {
+    const blob = await this.readFile(path);
+    try {
+      return await this.readBlob(blob, 'utf8');
+    } finally {
+      blob.close();
+    }
+  }
+
+  /**
    * read URL to blob (using fetch)
    */
   public static async readURL(url: string): Promise<Blob> {
@@ -234,6 +246,18 @@ export class Fs {
   }
 
   /**
+   * write text to file
+   */
+  public static async writeTextFile(path: string, text: string): Promise<void> {
+    const blob = await this.createBlob(text, 'utf8');
+    try {
+      await this.writeFile(path, blob);
+    } finally {
+      blob.close();
+    }
+  }
+
+  /**
    * append blob to file
    */
   public static async appendFile(path: string, blob: Blob): Promise<void> {
@@ -243,6 +267,18 @@ export class Fs {
       return await android.Module.appendFile(path, blob.data);
     } else {
       throw new Error('platform not supported');
+    }
+  }
+
+  /**
+   * append text to file
+   */
+  public static async appendTextFile(path: string, text: string): Promise<void> {
+    const blob = await this.createBlob(text, 'utf8');
+    try {
+      await this.appendFile(path, blob);
+    } finally {
+      blob.close();
     }
   }
 
