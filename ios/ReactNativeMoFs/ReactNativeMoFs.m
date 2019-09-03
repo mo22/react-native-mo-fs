@@ -5,13 +5,11 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CoreServices/CoreServices.h>
 
-// #if __has_include(<RCTBlob/RCTBlobManager.h>)
-// #import <RCTBlob/RCTBlobManager.h>
-// #elif __has_include(<RCTBlobManager.h>)
-// #import <RCTBlobManager.h>
-// #else
+#if __has_include(<RCTBlob/RCTBlobManager.h>)
+#import <RCTBlob/RCTBlobManager.h>
+#else
 #import "RCTBlobManager.h"
-// #endif
+#endif
 
 
 
@@ -37,6 +35,50 @@ RCT_EXPORT_METHOD(getMimeType:(NSString*)extension resolve:(RCTPromiseResolveBlo
     resolve(mimeTypeForPath(extension));
 }
 
+RCT_EXPORT_METHOD(readBlob:(NSDictionary<NSString*,id>*)blob mode:(NSString*)mode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
+    NSData* data = [blobManager resolve:blob];
+    if (!data) {
+        reject(@"", @"ENOBLOB", nil);
+        return;
+    }
+    if ([mode isEqualToString:@"base64"]) {
+        NSString* res = [data base64EncodedStringWithOptions:0];
+        resolve(res);
+    } else if ([mode isEqualToString:@"utf8"]) {
+        NSString* res = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        resolve(res);
+    } else {
+        reject(@"", @"EMODE", nil);
+        return;
+    }
+}
+
+RCT_EXPORT_METHOD(createBlob:(NSString*)str mode:(NSString*)mode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
+    NSData* data;
+    if ([mode isEqualToString:@"base64"]) {
+        data = [[NSData alloc] initWithBase64EncodedString:str options:0];
+        if (!data) {
+            reject(@"", @"EBASE64", nil);
+            return;
+        }
+    } else if ([mode isEqualToString:@"utf8"]) {
+        data = [str dataUsingEncoding:NSUTF8StringEncoding];
+    } else {
+        reject(@"", @"EMODE", nil);
+        return;
+    }
+    NSString* blobId = [blobManager store:data];
+    resolve(@{
+        @"size": @([data length]),
+        @"offset": @(0),
+        @"blobId": blobId,
+//        @"type": mimeTypeForPath(path),
+//        @"name": [path lastPathComponent],
+    });
+}
+
 RCT_EXPORT_METHOD(getPaths:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     resolve(@{
         @"bundle": [[NSBundle mainBundle] bundlePath],
@@ -46,6 +88,7 @@ RCT_EXPORT_METHOD(getPaths:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
 }
 
 RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    // @TODO: offset, size?
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSError* error = nil;
     NSLog(@"readFile [%@]", path);
@@ -66,6 +109,7 @@ RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resol
 }
 
 RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    // @TODO: offset, size?
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data = [blobManager resolve:blob];
     if (!data) {
@@ -107,7 +151,7 @@ RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)bl
 }
 
 RCT_EXPORT_METHOD(deleteFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    // recursive?
+    // @TODO: option for recursive?
     NSError* error = nil;
     [self deleteRecursive:path error:&error];
 //    [[NSFileManager defaultManager] removeItemAtPath:path error:&error];

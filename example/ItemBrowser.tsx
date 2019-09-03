@@ -26,23 +26,33 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
       const blob = await Fs.readFile(path);
       const info = await Fs.getBlobInfo(blob, { sha1: true });
       this.setState({ blob: blob, sha1: info.sha1 });
-      const thumbnail = await Fs.updateImage(blob, {
-        width: 128,
-        height: 128,
-        encoding: 'jpeg',
-        quality: 10,
-      });
-      blob.close();
-      if (this.state.thumbnail) {
-        this.state.thumbnail.close();
+      console.log('hello', blob.type);
+      if (blob.type === 'image/jpeg' || blob.type === 'image/png') {
+        console.log('create thumbnail');
+        const thumbnail = await Fs.updateImage(blob, {
+          width: 128,
+          height: 128,
+          encoding: 'jpeg',
+          quality: 10,
+        });
+        console.log('got', thumbnail);
+        this.setState({ thumbnail: thumbnail });
       }
-      this.setState({ thumbnail: thumbnail });
+      // read as string?
+      {
+        const t1 = await fetch(Fs.getBlobURL(blob));
+        const t2 = await t1.arrayBuffer();
+        console.log('text', t2);
+      }
     }
   }
 
   public componentWillUnmount() {
     if (this.state.thumbnail) {
       this.state.thumbnail.close();
+    }
+    if (this.state.blob) {
+      this.state.blob.close();
     }
   }
 
