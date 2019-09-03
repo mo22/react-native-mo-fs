@@ -39,7 +39,9 @@ export interface Module {
     }>;
     getBlobInfo(blob: BlobData, args?: any): Promise<any>;
     updateImage(blob: BlobData, args?: any): Promise<BlobData>;
-    shareURL(path: string): Promise<void>;
+    showDocumentPreview(path: string): Promise<void>;
+    showDocumentOpenIn(path: string): Promise<void>;
+    showDocumentOptions(path: string): Promise<void>;
 }
 export interface LinkEvent {
     url: string;
