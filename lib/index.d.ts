@@ -85,6 +85,10 @@ export declare class Fs {
      */
     static readonly android: typeof android;
     /**
+     * basic paths - document folder, cache folder, etc.
+     */
+    static readonly paths: Paths;
+    /**
      * get mime type by file extension
      */
     static getMimeType(extension: string): Promise<string | undefined>;
@@ -92,10 +96,6 @@ export declare class Fs {
      * get url for sharing a blob
      */
     static getBlobURL(blob: Blob): string;
-    /**
-     * get basic paths - document folder, cache folder, etc.
-     */
-    static getPaths(): Promise<Paths>;
     /**
      * read blob to utf8 or base64 string
      */

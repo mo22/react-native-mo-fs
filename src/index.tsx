@@ -104,6 +104,22 @@ export class Fs {
   public static readonly android = android;
 
   /**
+   * basic paths - document folder, cache folder, etc.
+   */
+  public static readonly paths: Paths = ios.Module ? {
+    ...ios.Module.paths,
+    cache: ios.Module.paths.caches,
+    docs: ios.Module.paths.document,
+  } : android.Module ? {
+    ...android.Module.paths,
+    cache: android.Module.paths.externalCache || android.Module.paths.data || android.Module.paths.files,
+    docs: android.Module.paths.files,
+  } : {
+    cache: '',
+    docs: '',
+  };
+
+  /**
    * get mime type by file extension
    */
   public static async getMimeType(extension: string): Promise<string|undefined> {
@@ -125,29 +141,6 @@ export class Fs {
       return `content://${android.Module.authorities}/${blob.data.blobId}?offset=${blob.data.offset}&size=${blob.data.size}&type=${blob.data.type}`;
     } else {
       return URL.createObjectURL(blob);
-    }
-  }
-
-  /**
-   * get basic paths - document folder, cache folder, etc.
-   */
-  public static async getPaths(): Promise<Paths> {
-    if (ios.Module) {
-      const tmp = ios.Module.paths;
-      return {
-        ...tmp,
-        cache: tmp.caches,
-        docs: tmp.document,
-      };
-    } else if (android.Module) {
-      const tmp = android.Module.paths;
-      return {
-        ...tmp,
-        cache: tmp.externalCache || tmp.data || tmp.files,
-        docs: tmp.files,
-      };
-    } else {
-      throw new Error('platform not supported');
     }
   }
 
