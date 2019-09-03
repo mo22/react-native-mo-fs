@@ -34,7 +34,7 @@ export interface Module {
         NSFileGroupOwnerAccountName?: null | string;
         NSFileSize?: null | number;
         NSFilePosixPermissions?: null | number;
-        NSFileModificationDate?: null | string;
+        NSFileModificationDate?: null | number;
     }>;
     getBlobInfo(blob: BlobData, args?: {
         md5?: boolean;
