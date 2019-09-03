@@ -41,7 +41,7 @@ export interface Module {
     updateImage(blob: BlobData, args?: any): Promise<BlobData>;
     showDocumentInteractionController(args: {
         path: string;
-        uti: string;
+        uti?: string;
         annotation?: string;
         type: 'preview' | 'openin' | 'options';
     }): Promise<void>;
