@@ -231,7 +231,13 @@ RCT_EXPORT_METHOD(createDir:(NSString*)path resolve:(RCTPromiseResolveBlock)reso
 RCT_EXPORT_METHOD(stat:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSError* error = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        NSDictionary<NSFileAttributeKey, id>* stat = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
+        NSMutableDictionary<NSFileAttributeKey, id>* stat = [NSMutableDictionary dictionaryWithDictionary:[[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error]];
+        if (stat[NSFileModificationDate]) {
+            stat[NSFileModificationDate] = @([stat[NSFileModificationDate] timeIntervalSince1970]);
+        }
+        if (stat[NSFileCreationDate]) {
+            stat[NSFileCreationDate] = @([stat[NSFileCreationDate] timeIntervalSince1970]);
+        }
         if (error) {
             reject(@"", [error localizedDescription], error);
             return;
