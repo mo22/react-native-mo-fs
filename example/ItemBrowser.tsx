@@ -38,12 +38,12 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
         console.log('got', thumbnail);
         this.setState({ thumbnail: thumbnail });
       }
-      // read as string?
-      {
-        const t1 = await fetch(Fs.getBlobURL(blob));
-        const t2 = await t1.arrayBuffer();
-        console.log('text', t2);
-      }
+      // // read as string?
+      // {
+      //   const t1 = await fetch(Fs.getBlobURL(blob));
+      //   const t2 = await t1.arrayBuffer();
+      //   console.log('text', t2);
+      // }
     }
   }
 
@@ -134,6 +134,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
 
         {this.state.thumbnail && (
           <Image
+            style={{ width: 100, height: 100 }}
             source={{ uri: Fs.getBlobURL(this.state.thumbnail) }}
           />
         )}
