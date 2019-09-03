@@ -4,6 +4,7 @@
 #import <React/RCTNetworking.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CoreServices/CoreServices.h>
+#import <objc/runtime.h>
 
 #if __has_include(<RCTBlob/RCTBlobManager.h>)
 #import <RCTBlob/RCTBlobManager.h>
@@ -11,7 +12,16 @@
 #import "RCTBlobManager.h"
 #endif
 
-
+static void methodSwizzle(Class cls1, Class cls2, SEL sel) {
+    Method m1 = class_getInstanceMethod(cls1, sel);
+    Method m2 = class_getInstanceMethod(cls2, sel);
+    IMP m2i = method_getImplementation(m2);
+    if (m1 == nil) {
+        class_addMethod(cls1, sel, m2i, method_getTypeEncoding(m1));
+    } else {
+        method_exchangeImplementations(m1, m2);
+    }
+}
 
 NSString* mimeTypeForPath(NSString* path) {
     NSString* uti = CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef _Nonnull)([path pathExtension]), nil));
@@ -37,8 +47,23 @@ RCT_EXPORT_MODULE()
 
 - (instancetype)init {
     self = [super init];
-    NSLog(@"XXX init!");
+    if (self) {
+        NSLog(@"XXX init!");
+        static id<UIApplicationDelegate> appDelegate;
+        if (appDelegate == nil) {
+            methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:openURL:options:));
+            appDelegate = RCTSharedApplication().delegate;
+            [UIApplication sharedApplication].delegate = nil;
+            RCTSharedApplication().delegate = appDelegate;
+        }
+    }
     return self;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+    NSLog(@"hooked application openURL %@ options %@", url, options);
+    return NO;
 }
 
 - (NSDictionary *)constantsToExport {
