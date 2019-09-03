@@ -68,6 +68,18 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
           title="create txt"
         />
 
+        <ListItem
+          onPress={async () => {
+            const data = new Date().toISOString() + '\n';
+            const blob = await Fs.createBlob(data, 'utf8');
+            const paths = await Fs.getPaths();
+            const path = paths.docs + '/append.txt';
+            await Fs.appendFile(path, blob);
+            blob.close();
+          }}
+          title="append log"
+        />
+
       </ScrollView>
     );
   }

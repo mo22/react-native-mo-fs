@@ -40,16 +40,12 @@
   Need to modify AppDelegate: https://facebook.github.io/react-native/docs/linking
 
 ## TODO
-- [ ] for existing picture in ItemBRowser: create thumbnail and show
-  -> check mime type
+- [ ] append text to log file
 
-- [ ] read text file and show...
+- [ ] get image size?
 
 - [ ] handle open in - intent + linking stuff?
 
 - [ ] itembrowser open in?!
   https://github.com/Elyx0/react-native-document-picker/blob/master/ios/RNDocumentPicker/RNDocumentPicker.m
   android send intent
-
-- [ ] read/write with offset?
-- [ ] append to log file? / read and write text file? read/write partial?
