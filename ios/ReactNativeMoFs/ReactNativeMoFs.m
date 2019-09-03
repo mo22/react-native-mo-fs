@@ -36,22 +36,21 @@ NSString* mimeTypeForPath(NSString* path) {
 @interface ReactNativeMoFsInteractionDelegate : NSObject <UIDocumentInteractionControllerDelegate>
 @end
 @implementation ReactNativeMoFsInteractionDelegate
-
 - (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
-    NSLog(@"ASD1");
+    NSLog(@"documentInteractionControllerDidDismissOpenInMenu");
+}
+- (void)documentInteractionControllerDidDismissOptionsMenu:(UIDocumentInteractionController *)controller {
+    NSLog(@"documentInteractionControllerDidDismissOptionsMenu");
 }
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(nullable NSString *)application {
-    NSLog(@"ASD2");
+    NSLog(@"willBeginSendingToApplication");
 }
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(nullable NSString *)application {
-    NSLog(@"ASD3");
+    NSLog(@"didEndSendingToApplication");
 }
-
 - (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
-    NSLog(@"ASD4");
     return RCTSharedApplication().delegate.window.rootViewController;
 }
-
 @end
 
 
