@@ -20,7 +20,7 @@ export interface Module {
   }>;
   readFile(path: string): Promise<BlobData>;
   writeFile(path: string, data: BlobData): Promise<void>;
-  appendTextFile(path: string, data: string): Promise<void>;
+  appendFile(path: string, data: BlobData): Promise<void>;
   deleteFile(path: string): Promise<void>;
   renameFile(fromPath: string, toPath: string): Promise<void>;
   listDir(path: string): Promise<string[]>;

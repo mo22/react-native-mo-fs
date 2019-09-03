@@ -52,7 +52,4 @@
   android send intent
 
 - [ ] read/write with offset?
-
 - [ ] append to log file? / read and write text file? read/write partial?
-
-- [ ] blob to text / text from blob?
