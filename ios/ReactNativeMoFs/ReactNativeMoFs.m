@@ -16,12 +16,11 @@ static void methodSwizzle(Class cls1, SEL sel1, Class cls2, SEL sel2) {
     Method m1 = class_getInstanceMethod(cls1, sel1); // original
     Method m2 = class_getInstanceMethod(cls2, sel2); // new
     assert(m2);
-    // @TODO: m1 might be null?
-    class_addMethod(cls1, sel2, method_getImplementation(m1), method_getTypeEncoding(m1));
     if (m1) {
+        assert(class_addMethod(cls1, sel2, method_getImplementation(m1), method_getTypeEncoding(m1)));
         method_exchangeImplementations(m1, m2);
     } else {
-        class_addMethod(cls1, sel1, method_getImplementation(m2), method_getTypeEncoding(m2));
+        assert(class_addMethod(cls1, sel1, method_getImplementation(m2), method_getTypeEncoding(m2)));
     }
 }
 
@@ -59,10 +58,6 @@ RCT_EXPORT_MODULE()
                 [appDelegate class], @selector(application:openURL:options:),
                 [self class],@selector(swizzled_application:openURL:options:)
             );
-//            Method m1 = class_getInstanceMethod([appDelegate class], @selector(application:openURL:options:));
-//            Method m2 = class_getInstanceMethod([self class], @selector(swizzled_application:openURL:options:));
-//            class_addMethod([appDelegate class], @selector(swizzled_application:openURL:options:), method_getImplementation(m1), NULL);
-//            method_setImplementation(m1, method_getImplementation(m2));
             [UIApplication sharedApplication].delegate = nil;
             RCTSharedApplication().delegate = appDelegate;
         }
@@ -76,19 +71,12 @@ RCT_EXPORT_MODULE()
 //    2019-09-03 15:36:35.232695+0200 example[1077:558569] hooked application openURL file:///private/var/mobile/Containers/Data/Application/B39F5FFC-C223-4EAA-80E7-92CBCAF8D2AF/tmp/org.reactjs.native.example.example-Inbox/2018_07_24_12_51_03.pdf options {
 //        UIApplicationOpenURLOptionsOpenInPlaceKey = 0;
 //    }
-    // calls original method (swizzeled)
-    // this is an endless loop
-//    id any = self;
-//    return [any application:application openURL:url options:options];
-    // AppDelegate swizzled_application:openURL:options:
-    return [self swizzled_application:application openURL:url options:options];
-//    return NO;
+    if ([self respondsToSelector:@selector(swizzled_application:openURL:options:)]) {
+        return [self swizzled_application:application openURL:url options:options];
+    } else {
+        return NO;
+    }
 }
-
-//- (BOOL)orig_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
-//{
-//    return NO;
-//}
 
 - (NSDictionary *)constantsToExport {
     NSMutableDictionary* constants = [NSMutableDictionary new];
