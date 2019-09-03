@@ -37,7 +37,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
             0, 0, 1,
           ],
           encoding: 'jpeg',
-          quality: 10,
+          quality: 0.5,
         });
         this.setState({ thumbnail: thumbnail });
       }

@@ -276,6 +276,30 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         CIImage* image = [CIImage imageWithData:data];
         if (image) {
             NSLog(@"props %@", image.properties);
+//            ColorModel = RGB;
+//            Depth = 8;
+//            Orientation = 1;
+//            PixelHeight = 1334;
+//            PixelWidth = 750;
+//            ProfileName = "sRGB IEC61966-2.1";
+//            "{Exif}" =     {
+//                ColorSpace = 1;
+//                PixelXDimension = 750;
+//                PixelYDimension = 1334;
+//            };
+//            "{JFIF}" =     {
+//                DensityUnit = 0;
+//                JFIFVersion =         (
+//                    1,
+//                    0,
+//                    1
+//                );
+//                XDensity = 72;
+//                YDensity = 72;
+//            };
+//            "{TIFF}" =     {
+//                Orientation = 1;
+//            };
             res[@"image"] = @{
                 @"width": @(image.extent.size.width),
                 @"height": @(image.extent.size.height),

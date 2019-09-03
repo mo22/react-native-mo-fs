@@ -308,6 +308,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
                     Log.i("XXX", "got exif " + exif);
+                    Log.i("XXX", "got orientation " + exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1));
                 }
 
             }
