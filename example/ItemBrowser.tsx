@@ -9,6 +9,7 @@ interface State {
   mime?: string;
   blob?: Blob;
   sha1?: string;
+  uri?: string;
   thumbnail?: Blob;
   text?: string;
 }
@@ -23,6 +24,9 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
     this.setState({ stat: stat });
     const mime = await Fs.getMimeType(path);
     this.setState({ mime: mime });
+    if (Fs.ios.Module) {
+      this.setState({ uri: await Fs.ios.Module.getUti(path) });
+    }
     if (stat.exists && !stat.dir) {
       const blob = await Fs.readFile(path);
       const info = await Fs.getBlobInfo(blob, { sha1: true, image: true });
@@ -83,6 +87,13 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           <ListItem
             title="mime"
             subtitle={this.state.mime}
+          />
+        )}
+
+        {this.state.uti && (
+          <ListItem
+            title="uti"
+            subtitle={this.state.uti}
           />
         )}
 
