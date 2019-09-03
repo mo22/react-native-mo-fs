@@ -52,10 +52,15 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 Log.i("XXX", "onNewIntent " + intent);
                 Log.i("XXX", "action=" + intent.getAction());
                 Log.i("XXX", "data=" + intent.getData());
+                Log.i("XXX", "type=" + intent.getType());
                 Log.i("XXX", "dataString=" + intent.getDataString());
                 Log.i("XXX", "extras=" + Arrays.asList(intent.getExtras().keySet().toArray()));
                 Uri uri = (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
                 Log.i("XXX", "uri=" + uri);
+
+                // ACTION_VIEW with getData()
+                // ACTION_SEND with EXTRA_STREAM ?
+
                 // action=android.intent.action.SEND
                 // data=null
                 // dataString=null

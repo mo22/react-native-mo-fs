@@ -13,19 +13,21 @@
 #endif
 
 static void methodSwizzle(Class cls1, SEL sel1, Class cls2, SEL sel2) {
-    // https://nshipster.com/method-swizzling/
-    Method m1 = class_getInstanceMethod(cls1, sel1);
-    Method m2 = class_getInstanceMethod(cls2, sel2);
-    NSLog(@"%@ %s = %p", cls1, sel_getName(sel1), m1);
-    NSLog(@"%@ %s = %p", cls2, sel_getName(sel2), m2);
-//    IMP m2i = method_getImplementation(m2);
-//    if (m1 == nil) {
-//        NSLog(@"methodSwizzle add");
-//        class_addMethod(cls1, sel, m2i, method_getTypeEncoding(m1));
-//    } else {
-    NSLog(@"methodSwizzle exchange");
-    method_exchangeImplementations(m1, m2);
-//    }
+    Method m1 = class_getInstanceMethod(cls1, sel1); // original
+    Method m2 = class_getInstanceMethod(cls2, sel2); // new
+    assert(m2);
+    // m1 might be null
+    
+    // create original function
+    class_addMethod(cls1, sel2, method_getImplementation(m1), method_getTypeEncoding(m1));
+
+    if (m1) {
+        NSLog(@"method_exchangeImplementations");
+        method_exchangeImplementations(m1, m2);
+    } else {
+        NSLog(@"class_addMethod");
+        class_addMethod(cls1, sel1, method_getImplementation(m2), method_getTypeEncoding(m2));
+    }
 }
 
 NSString* mimeTypeForPath(NSString* path) {
@@ -57,13 +59,15 @@ RCT_EXPORT_MODULE()
     if (self) {
         static id<UIApplicationDelegate> appDelegate;
         if (appDelegate == nil) {
-            methodSwizzle(
-              [[RCTSharedApplication() delegate] class],
-              @selector(application:openURL:options:),
-              [self class],
-              @selector(swizzled_application:openURL:options:)
-            );
             appDelegate = RCTSharedApplication().delegate;
+            methodSwizzle(
+                [appDelegate class], @selector(application:openURL:options:),
+                [self class],@selector(swizzled_application:openURL:options:)
+            );
+//            Method m1 = class_getInstanceMethod([appDelegate class], @selector(application:openURL:options:));
+//            Method m2 = class_getInstanceMethod([self class], @selector(swizzled_application:openURL:options:));
+//            class_addMethod([appDelegate class], @selector(swizzled_application:openURL:options:), method_getImplementation(m1), NULL);
+//            method_setImplementation(m1, method_getImplementation(m2));
             [UIApplication sharedApplication].delegate = nil;
             RCTSharedApplication().delegate = appDelegate;
         }
@@ -83,7 +87,13 @@ RCT_EXPORT_MODULE()
 //    return [any application:application openURL:url options:options];
     // AppDelegate swizzled_application:openURL:options:
     return [self swizzled_application:application openURL:url options:options];
+//    return NO;
 }
+
+//- (BOOL)orig_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+//{
+//    return NO;
+//}
 
 - (NSDictionary *)constantsToExport {
     NSMutableDictionary* constants = [NSMutableDictionary new];
