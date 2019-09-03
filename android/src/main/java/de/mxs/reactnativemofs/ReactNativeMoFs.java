@@ -472,6 +472,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                 if (requestCode == 13131) {
                     Log.i("XXX", "got response!");
+//                    09-03 21:05:37.192 32540 32540 I XXX     : onActivityResult 13131 -1 Intent { dat=content://com.android.providers.downloads.documents/document/14 flg=0x1 }
+//                        09-03 21:05:37.192 32540 32540 I XXX     : got response!
                 }
             }
             @Override
