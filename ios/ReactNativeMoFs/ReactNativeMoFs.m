@@ -125,6 +125,18 @@ RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)bl
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(appendTextFile:(NSString*)path str:(NSString*)str resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSFileHandle* fp = [NSFileHandle fileHandleForWritingAtPath:path];
+    if (!fp) {
+        reject(@"EFILE", @"", nil);
+        return;
+    }
+    [fp seekToEndOfFile];
+    [fp writeData:[str dataUsingEncoding:NSUTF8StringEncoding]];
+    [fp closeFile];
+    resolve(nil);
+}
+
 - (BOOL)deleteRecursive:(NSString*)path error:(NSError**)error {
     NSError* err = nil;
     BOOL dir = NO;
