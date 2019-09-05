@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/mo22/react-native-mo-fs#readme",
   "devDependencies": {
-    "@types/react-native": "^0.60.9",
+    "@types/react-native": "^0.60.11",
     "react": "^16.9.0",
     "react-native": "^0.60.5",
     "typescript": "^3.6.2"
