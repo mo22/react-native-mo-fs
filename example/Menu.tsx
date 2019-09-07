@@ -48,7 +48,12 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
               // read the url?
               console.log('res', res);
               if (res) {
-                const blob = await Fs.readURL(res[0]);
+                const url = res[0];
+                console.log('url', url);
+                const path = decodeURIComponent(url.slice(7));
+                console.log('path', path);
+                // const blob = await Fs.readURL(url);
+                const blob = await Fs.readFile(path);
                 console.log('blob', blob);
               }
             }
