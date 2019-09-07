@@ -515,20 +515,26 @@ RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:
 RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSMutableArray* utis = [NSMutableArray new];
-        [utis addObject:@"public.data"]; // everything? public.item public.content
+        if (args[@"utis"]) {
+            [utis addObjectsFromArray:args[@"utis"]];
+        } else {
+            [utis addObject:@"public.item"]; // public.data public.item public.content
+        }
+        // mode?
 //        UIDocumentPickerModeImport,
 //        UIDocumentPickerModeOpen,
 //        UIDocumentPickerModeExportToService,
 //        UIDocumentPickerModeMoveToService
-        UIDocumentPickerViewController* controller = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:utis inMode:UIDocumentPickerModeImport];
+        UIDocumentPickerViewController* controller = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:utis inMode:UIDocumentPickerModeOpen];
         ReactNativeMoFsPickerDelegate* delegate = [ReactNativeMoFsPickerDelegate new];
         delegate.resolve = resolve;
         delegate.reject = reject;
+        delegate.refs = self.refs;
         [self.refs addObject:delegate];
         controller.delegate = delegate;
         controller.modalPresentationStyle = UIModalPresentationFormSheet;
         if (@available(iOS 11.0, *)) {
-            controller.allowsMultipleSelection = YES; // @TODO
+            controller.allowsMultipleSelection = [args[@"multiple"] boolValue];
         }
         [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
     });
