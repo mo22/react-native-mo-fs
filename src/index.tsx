@@ -405,19 +405,21 @@ export class Fs {
    */
   public static async resizeImage(blob: Blob, args: ResizeImageArgs): Promise<Blob> {
     const info = await this.getBlobInfo(blob, { image: true });
-    console.log('info', info);
-    console.log('args', args);
-
-    const scale = args.maxWidth / info.image!.width;
-
-    // matrix: [
-    //   0.2, 0, 0,
-    //   0, 0.2, 0,
-    //   0, 0, 1,
-    // ],
-
-    // matrix: scale. and translate if fill?
-    // width / height ?
+    let scale = 1;
+    let width = info.image!.width;
+    let height = info.image!.height;
+    if (args.fill) {
+      scale = Math.max(args.maxWidth / width, args.maxHeight / height);
+      width *= scale;
+      height *= scale;
+      // crop...?
+      console.log('TODO w', width, args.maxWidth);
+      console.log('TODO h', height, args.maxHeight);
+    } else {
+      scale = Math.min(args.maxWidth / width, args.maxHeight / height);
+      width *= scale;
+      height *= scale;
+    }
     return await this.updateImage(blob, {
       ...args,
       matrix: [
@@ -425,8 +427,8 @@ export class Fs {
         0, scale, 0,
         0, 0, 1,
       ],
-      width: args.maxWidth,
-      height: args.maxHeight,
+      width: width,
+      height: height,
     });
   }
 
