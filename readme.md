@@ -48,6 +48,3 @@
   -> send event
   -> event listener?
   -> initial event?
-
-- [ ] showDocumentInteractionController openin / options:
-  - The URL archive of type “public.url” contains invalid data.
