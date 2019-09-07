@@ -18,6 +18,7 @@ import android.webkit.MimeTypeMap;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -48,10 +49,28 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     ReactNativeMoFs(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
+
+        reactContext.addLifecycleEventListener(new LifecycleEventListener() {
+            @Override
+            public void onHostResume() {
+                Activity activity = getReactApplicationContext().getCurrentActivity();
+                if (activity != null) {
+                    Intent intent = activity.getIntent();
+                    Log.i("XXX", "initial activity intent " + intent);
+                }
+            }
+            @Override
+            public void onHostPause() {
+            }
+            @Override
+            public void onHostDestroy() {
+            }
+        });
+
         reactContext.addActivityEventListener(new ActivityEventListener() {
             @Override
             public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-                Log.i("XXX", "onActivityResult " + requestCode + " " + resultCode + " " + data);
+                Log.i("XXX", "onActivityResult");
             }
             @Override
             public void onNewIntent(Intent intent) {
@@ -75,12 +94,11 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                         args.putString("url", uri.toString());
                     }
                 }
+                Log.i("XXX", "send ReactNativeMoFsLink event");
                 getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoFsLink", args);
-                // action=android.intent.action.SEND
-                // data=null
-                // dataString=null
-                // extras=[referrer.code, android.intent.extra.SUBJECT, referrer.string, android.intent.extra.STREAM, android.intent.extra.TITLE]
-                // uri=content://com.android.providers.downloads.documents/document/695
+//                09-07 17:20:55.501 26251 26302 I ReactNativeJS: 'XXX ReactNativeMoFsLink', { url: 'content://com.android.providers.downloads.documents/document/695',
+//                09-07 17:20:55.501 26251 26302 I ReactNativeJS:   type: 'application/pdf',
+//                09-07 17:20:55.501 26251 26302 I ReactNativeJS:   action: 'android.intent.action.SEND' }
             }
         });
     }
