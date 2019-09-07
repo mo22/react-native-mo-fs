@@ -437,12 +437,11 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setType(type);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-//        getReactApplicationContext().grantUriPermission("", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (args.hasKey("subject")) intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
         if (args.hasKey("text")) intent.putExtra(Intent.EXTRA_TEXT, args.getString("text"));
         ComponentName target = intent.resolveActivity(getReactApplicationContext().getPackageManager());
         if (target != null) {
-            Log.i("XXX", "target " + target);
+            getReactApplicationContext().grantUriPermission(target.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Activity activity = getReactApplicationContext().getCurrentActivity();
             if (activity == null) throw new RuntimeException("activity == null");
             String title = args.hasKey("title") ? args.getString("title") : "";
