@@ -1,6 +1,7 @@
 package de.mxs.reactnativemofs;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -433,12 +434,15 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         Uri uri = getUriForPath(path);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.setType(type);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setType(type);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
+//        getReactApplicationContext().grantUriPermission("", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (args.hasKey("subject")) intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
         if (args.hasKey("text")) intent.putExtra(Intent.EXTRA_TEXT, args.getString("text"));
-        if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
+        ComponentName target = intent.resolveActivity(getReactApplicationContext().getPackageManager());
+        if (target != null) {
+            Log.i("XXX", "target " + target);
             Activity activity = getReactApplicationContext().getCurrentActivity();
             if (activity == null) throw new RuntimeException("activity == null");
             String title = args.hasKey("title") ? args.getString("title") : "";
@@ -462,9 +466,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setAction(Intent.ACTION_VIEW);
-//        intent.setData(uri, );
-        intent.setDataAndType(uri, args.getString("type"));
-//        intent.setType();
+        intent.setData(uri);
+//        intent.setDataAndType(uri, args.getString("type"));
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
             Activity activity = getReactApplicationContext().getCurrentActivity();
             if (activity == null) throw new RuntimeException("activity == null");
