@@ -458,7 +458,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT); // Intent.ACTION_PICK
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        intent.setAction(Intent.ACTION_PICK);
         if (args.hasKey("type")) {
             intent.setType(args.getString("type"));
         } else {

@@ -45,7 +45,9 @@ export interface Module {
     }): Promise<void>;
     getContent(args: {
         type?: string;
-    }): Promise<void>;
+        multiple?: boolean;
+        title?: string;
+    }): Promise<undefined | string>;
 }
 export interface LinkEvent {
     url: string;

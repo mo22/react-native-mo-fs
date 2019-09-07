@@ -36,7 +36,7 @@ export interface Module {
   updateImage(blob: BlobData, args?: any): Promise<BlobData>;
   sendIntentChooser(args: { path: string; type?: string; title?: string; subject?: string; text?: string; }): Promise<void>;
   viewIntentChooser(args: { url: string; title?: string; }): Promise<void>;
-  getContent(args: { type?: string; }): Promise<void>;
+  getContent(args: { type?: string; multiple?: boolean; title?: string; }): Promise<undefined|string>;
 
 }
 
