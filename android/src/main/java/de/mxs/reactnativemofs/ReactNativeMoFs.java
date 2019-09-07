@@ -91,7 +91,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @Override
     public Map<String, Object> getConstants() {
         HashMap<String, Object> res = new HashMap<>();
-        res.put("authorities", getReactApplicationContext().getPackageName() + ".ReactNativeMoFs");
+        res.put("authorities", getProviderAuthority());
         HashMap<String, String> paths = new HashMap<>();
         if (getReactApplicationContext().getExternalCacheDir() != null) {
             paths.put("externalCache", getReactApplicationContext().getExternalCacheDir().getAbsolutePath());
@@ -108,6 +108,18 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     private String getMimeTypePath(String path) {
         String[] tmp = path.split("\\.");
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(tmp[tmp.length - 1]);
+    }
+
+    private String getProviderAuthority() {
+        return getReactApplicationContext().getPackageName() + ".ReactNativeMoFs";
+    }
+
+    private Uri getUriForPath(String path) {
+        return FileProvider.getUriForFile(
+            getReactApplicationContext(),
+            getProviderAuthority(),
+            new File(path)
+        );
     }
 
     @SuppressWarnings("unused")
@@ -412,7 +424,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         if (path == null) throw new RuntimeException("path == null");
         String type = args.hasKey("type") ? args.getString("type") : null;
         if (type == null) type = getMimeTypePath(path);
-        Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".provider", new File(path));
+        Uri uri = getUriForPath(path);
 
 //        09-07 14:16:07.725 13073 14711 W ChooserActivity: Could not load (content://com.example.provider/root/data/data/com.example/files/import_2019-09-07_14%3A03%3A01.jpg) thumbnail/name for preview. If desired, consider using Intent#createChooser to launch the ChooserActivity, and set your Intent's clipData and flags in accordance with that method's documentation
 //        09-07 14:16:07.723 14580 14615 E DatabaseUtils: java.lang.SecurityException: Permission Denial: reading com.imagepicker.FileProvider uri content://com.example.provider/root/data/data/com.example/files/import_2019-09-07_14%3A03%3A01.jpg from pid=13073, uid=1000 requires the provider be exported, or grantUriPermission()
@@ -424,8 +436,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         intent.setType(type);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-        getReactApplicationContext().grantUriPermission(getReactApplicationContext().getPackageName() + ".provider", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        getReactApplicationContext().grantUriPermission("com.imagepicker.FileProvider", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        getReactApplicationContext().grantUriPermission(getReactApplicationContext().getPackageName() + ".provider", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (args.hasKey("subject")) intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
         if (args.hasKey("text")) intent.putExtra(Intent.EXTRA_TEXT, args.getString("text"));
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
@@ -442,10 +453,15 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void viewIntentChooser(ReadableMap args, Promise promise) {
-//        String path = args.getString("path");
-        Uri uri = Uri.parse(args.getString("url"));
-//        Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".provider", new File(path));
+        Uri uri;
+        if (args.hasKey("path")) {
+            String path = args.getString("path");
+            uri = getUriForPath(path);
+        } else {
+            uri = Uri.parse(args.getString("url"));
+        }
         Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(uri);
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
@@ -486,7 +502,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             @Override
             public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                 if (requestCode == 13131) {
-                    Log.i("XXX", "got response!");
+                    Log.i("XXX", "response " + requestCode + " " + resultCode + " " + data);
                     if (data == null) {
                         promise.resolve(null);
                     } else {
