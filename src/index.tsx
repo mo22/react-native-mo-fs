@@ -406,10 +406,27 @@ export class Fs {
   public static async resizeImage(blob: Blob, args: ResizeImageArgs): Promise<Blob> {
     const info = await this.getBlobInfo(blob, { image: true });
     console.log('info', info);
+    console.log('args', args);
+
+    const scale = args.maxWidth / info.image!.width;
+
+    // matrix: [
+    //   0.2, 0, 0,
+    //   0, 0.2, 0,
+    //   0, 0, 1,
+    // ],
+
     // matrix: scale. and translate if fill?
     // width / height ?
     return await this.updateImage(blob, {
       ...args,
+      matrix: [
+        scale, 0, 0,
+        0, scale, 0,
+        0, 0, 1,
+      ],
+      width: args.maxWidth,
+      height: args.maxHeight,
     });
   }
 
