@@ -85,8 +85,6 @@ NSString* mimeTypeForPath(NSString* path) {
 @end
 @implementation ReactNativeMoFsPickerDelegate
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray <NSURL *>*)urls {
-    NSLog(@"didPickDocumentsAtURLs %@", urls);
-    // convert urls somehow?
     NSMutableArray* res = [NSMutableArray new];
     for (NSURL* url in urls) {
         [res addObject:[url absoluteString]];
@@ -95,7 +93,6 @@ NSString* mimeTypeForPath(NSString* path) {
     [self.refs removeObject:self];
 }
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
-    NSLog(@"documentPickerWasCancelled");
     self.resolve(nil);
     [self.refs removeObject:self];
 }
