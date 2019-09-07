@@ -61,3 +61,4 @@ ios:
   - The URL archive of type “public.url” contains invalid data.
 - showDocumentPickerView({ utis, UIDocumentPickerModeImport?,  })
   - mode
+  - actually read the file? directly return a blob?
