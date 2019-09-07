@@ -87,10 +87,6 @@ NSString* mimeTypeForPath(NSString* path) {
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray <NSURL *>*)urls {
     NSMutableArray* res = [NSMutableArray new];
     for (NSURL* url in urls) {
-        // create blob from uri?
-        NSLog(@"url %@", url);
-        NSData* data = [NSData dataWithContentsOfURL:url];
-        NSLog(@"data %@", data);
         [res addObject:[url absoluteString]];
     }
     self.resolve(res);
@@ -543,6 +539,16 @@ RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromise
         }
         [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
     });
+}
+
+RCT_EXPORT_METHOD(testFileCoordinator:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSFileCoordinator *coordinator = [[NSFileCoordinator alloc] init];
+    NSError* error = nil;
+    NSLog(@"start %@", url);
+    [coordinator coordinateReadingItemAtURL:url options:NSFileCoordinatorReadingForUploading error:&error byAccessor:^(NSURL *newURL) {
+        NSLog(@"newURL %@", newURL);
+    }];
+    NSLog(@"done %@", error);
 }
 
 @end
