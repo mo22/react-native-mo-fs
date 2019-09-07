@@ -44,7 +44,7 @@ export interface Module {
   getBlobInfo(blob: BlobData, args?: any): Promise<any>;
   updateImage(blob: BlobData, args?: any): Promise<BlobData>;
   showDocumentInteractionController(args: { path: string; uti?: string; annotation?: string; type: 'preview'|'openin'|'options' }): Promise<void>;
-  showDocumentPickerView(args: { utis?: string[]; multiple?: boolean; }): Promise<void>; // UIDocumentPickerModeImport?,  ?
+  showDocumentPickerView(args: { utis?: string[]; multiple?: boolean; }): Promise<undefined|string[]>; // UIDocumentPickerModeImport?,  ?
 }
 
 export interface LinkEvent {

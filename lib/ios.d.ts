@@ -50,7 +50,7 @@ export interface Module {
     showDocumentPickerView(args: {
         utis?: string[];
         multiple?: boolean;
-    }): Promise<void>;
+    }): Promise<undefined | string[]>;
 }
 export interface LinkEvent {
     url: string;

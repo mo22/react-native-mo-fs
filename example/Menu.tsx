@@ -44,8 +44,13 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
         <ListItem
           onPress={async () => {
             if (Fs.ios.Module) {
-              const res = await Fs.ios.Module.showDocumentPickerView({ utis: ['public.item'] });
+              const res = await Fs.ios.Module.showDocumentPickerView({ utis: ['public.jpeg'] });
+              // read the url?
               console.log('res', res);
+              if (res) {
+                const blob = await Fs.readURL(res[0]);
+                console.log('blob', blob);
+              }
             }
             if (Fs.android.Module) {
               await Fs.android.Module.getContent({});
