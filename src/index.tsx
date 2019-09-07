@@ -36,6 +36,8 @@ export interface BlobInfoArgs {
   sha256?: boolean;
   /** get image dimensions and info */
   image?: boolean;
+  /** get exit properties */
+  exit?: boolean;
 }
 
 export interface BlobInfo {

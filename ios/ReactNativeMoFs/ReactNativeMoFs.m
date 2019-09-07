@@ -385,36 +385,50 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     if (args[@"image"]) {
         CIImage* image = [CIImage imageWithData:data];
         if (image) {
-            NSLog(@"props %@", image.properties);
-//            ColorModel = RGB;
-//            Depth = 8;
-//            Orientation = 1;
-//            PixelHeight = 1334;
-//            PixelWidth = 750;
-//            ProfileName = "sRGB IEC61966-2.1";
-//            "{Exif}" =     {
-//                ColorSpace = 1;
-//                PixelXDimension = 750;
-//                PixelYDimension = 1334;
-//            };
-//            "{JFIF}" =     {
-//                DensityUnit = 0;
-//                JFIFVersion =         (
-//                    1,
-//                    0,
-//                    1
-//                );
-//                XDensity = 72;
-//                YDensity = 72;
-//            };
-//            "{TIFF}" =     {
-//                Orientation = 1;
-//            };
             res[@"image"] = @{
                 @"width": @(image.extent.size.width),
                 @"height": @(image.extent.size.height),
             };
         }
+    }
+    if (args[@"exif"]) {
+        CIImage* image = [CIImage imageWithData:data];
+        if (image) {
+            NSLog(@"props %@", image.properties);
+            res[@"exif2"] = image.properties;
+            res[@"exif"] = @{
+                @"Orientation": RCTNullIfNil(image.properties[@"Orientation"]),
+                @"ProfileName": RCTNullIfNil(image.properties[@"ProfileName"]),
+                @"PixelHeight": RCTNullIfNil(image.properties[@"PixelHeight"]),
+                @"PixelWidth": RCTNullIfNil(image.properties[@"PixelWidth"]),
+                @"XDensity": RCTNullIfNil(image.properties[@"{JFIF}"][@"XDensity"]),
+                @"YDensity": RCTNullIfNil(image.properties[@"{JFIF}"][@"YDensity"]),
+            };
+        }
+        //            ColorModel = RGB;
+        //            Depth = 8;
+        //            Orientation = 1;
+        //            PixelHeight = 1334;
+        //            PixelWidth = 750;
+        //            ProfileName = "sRGB IEC61966-2.1";
+        //            "{Exif}" =     {
+        //                ColorSpace = 1;
+        //                PixelXDimension = 750;
+        //                PixelYDimension = 1334;
+        //            };
+        //            "{JFIF}" =     {
+        //                DensityUnit = 0;
+        //                JFIFVersion =         (
+        //                    1,
+        //                    0,
+        //                    1
+        //                );
+        //                XDensity = 72;
+        //                YDensity = 72;
+        //            };
+        //            "{TIFF}" =     {
+        //                Orientation = 1;
+        //            };
     }
     resolve(res);
 }
