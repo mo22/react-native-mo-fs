@@ -37,7 +37,7 @@ export interface BlobInfoArgs {
   /** get image dimensions and info */
   image?: boolean;
   /** get exit properties */
-  exit?: boolean;
+  exif?: boolean;
 }
 
 export interface BlobInfo {
