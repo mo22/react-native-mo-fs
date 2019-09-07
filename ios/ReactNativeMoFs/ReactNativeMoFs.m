@@ -392,6 +392,11 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         }
     }
     if (args[@"exif"]) {
+        
+        CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)data, NULL);
+        NSDictionary* metadata = (NSDictionary *) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL));
+        NSLog(@"metadata %@", metadata);
+
         CIImage* image = [CIImage imageWithData:data];
         if (image) {
             NSLog(@"props %@", image.properties);
