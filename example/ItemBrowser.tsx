@@ -122,7 +122,6 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
             onPress={async () => {
               try {
                 if (Fs.ios.Module) {
-                  // await Fs.ios.Module.showDocumentOptions(path);
                   await Fs.ios.Module.showDocumentInteractionController({ path: path, type: 'openin' });
                 }
                 if (Fs.android.Module) {

@@ -46,11 +46,27 @@ NSString* mimeTypeForPath(NSString* path) {
 @property RCTPromiseRejectBlock reject;
 @end
 @implementation ReactNativeMoFsInteractionDelegate
-- (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
-    NSLog(@"documentInteractionControllerDidDismissOpenInMenu");
+- (void)dealloc {
+    NSLog(@"dealloc");
 }
+
+- (void)documentInteractionControllerWillPresentOpenInMenu:(UIDocumentInteractionController *)controller {
+    NSLog(@"documentInteractionControllerWillPresentOpenInMenu");
+    // called!
+}
+//- (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
+//    // not called?!
+//    NSLog(@"documentInteractionControllerDidDismissOpenInMenu");
+//}
+
 - (void)documentInteractionControllerDidDismissOptionsMenu:(UIDocumentInteractionController *)controller {
     NSLog(@"documentInteractionControllerDidDismissOptionsMenu");
+}
+- (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller {
+    NSLog(@"documentInteractionControllerDidEndPreview");
+}
+- (void)documentInteractionControllerWillBeginPreview:(UIDocumentInteractionController *)controller {
+    NSLog(@"documentInteractionControllerWillBeginPreview");
 }
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(nullable NSString *)application {
     NSLog(@"willBeginSendingToApplication");
@@ -486,6 +502,7 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
 
 RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"showDocumentInteractionController %@", args);
         UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
         NSString* path = args[@"path"];
         UIDocumentInteractionController* controller = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:path]];
