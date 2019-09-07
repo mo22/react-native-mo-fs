@@ -47,18 +47,5 @@
   -> event listener?
   -> initial event?
 
-
-android:
-sendIntentChooser({ path, type, title, subject, text })
-viewIntentChooser() ?
-getContent({ type })
-
-
-
-ios:
-- showDocumentInteractionController({ path, uti, annotation, type: 'preview'|'openin'|'options' })
-  - UIDocumentInteractionController
+- [ ] showDocumentInteractionController openin / options:
   - The URL archive of type “public.url” contains invalid data.
-- showDocumentPickerView({ utis, UIDocumentPickerModeImport?,  })
-  - mode
-  - actually read the file? directly return a blob?
