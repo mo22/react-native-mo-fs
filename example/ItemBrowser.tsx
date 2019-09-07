@@ -158,7 +158,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
               chevron={true}
               title="View"
               onPress={async () => {
-                await Fs.android.Module!.viewIntentChooser({ url: path, title: 'Choose' });
+                await Fs.android.Module!.viewIntentChooser({ url: 'file://' + encodeURIComponent(path), title: 'Choose' });
               }}
             />
           </React.Fragment>
