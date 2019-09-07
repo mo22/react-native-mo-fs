@@ -139,6 +139,7 @@ RCT_EXPORT_MODULE()
     NSLog(@"XXX application openURL %@ options %@", url, options);
     RCTBridge* bridge = ((RCTRootView*)RCTSharedApplication().delegate.window.rootViewController.view).bridge;
     NSLog(@"bridge %@", bridge);
+    // @TODO: need to remember this
     ReactNativeMoFs* realself = [bridge moduleForClass:[ReactNativeMoFs class]];
     [realself sendEventWithName:@"ReactNativeMoFsLink" body:@{
         @"url": [url absoluteString],
