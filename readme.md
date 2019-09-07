@@ -56,9 +56,8 @@ getContent({ type })
 
 
 ios:
-showDocumentInteractionController({ path, uti, annotation, type: 'preview'|'openin'|'options' })
-  -> broken in beta?
-showDocumentPickerView({ utis, UIDocumentPickerModeImport?,  })
-pass promise to delegate
-keep delegates in NSMutableSet
-finish delegates
+- showDocumentInteractionController({ path, uti, annotation, type: 'preview'|'openin'|'options' })
+  - UIDocumentInteractionController
+  - The URL archive of type “public.url” contains invalid data.
+- showDocumentPickerView({ utis, UIDocumentPickerModeImport?,  })
+  - mode
