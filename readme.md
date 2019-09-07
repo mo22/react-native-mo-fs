@@ -42,6 +42,7 @@
 
 - [ ] getBlobInfo: exif? which keys / format?
   -> convert to common format?!
+  -> split to single functions
 
 - [ ] handle open in - intent + linking stuff?
   -> send event
