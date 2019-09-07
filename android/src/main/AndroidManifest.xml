@@ -4,6 +4,7 @@
       android:name="de.mxs.reactnativemofs.ReactNativeMoFsProvider"
       android:authorities="${applicationId}.ReactNativeMoFs"
       android:exported="false"
+      android:grantUriPermissions="true"
     />
   </application>
 </manifest>

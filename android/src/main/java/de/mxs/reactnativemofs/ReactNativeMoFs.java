@@ -442,7 +442,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void viewIntentChooser(ReadableMap args, Promise promise) {
-        Uri uri = Uri.parse(args.getString("uri"));
+        Uri uri = Uri.parse(args.getString("url"));
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(uri);
