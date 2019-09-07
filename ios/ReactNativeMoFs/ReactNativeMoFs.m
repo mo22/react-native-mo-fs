@@ -48,24 +48,27 @@ NSString* mimeTypeForPath(NSString* path) {
 @end
 @implementation ReactNativeMoFsInteractionDelegate
 - (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
+    // not called?
     NSLog(@"documentInteractionControllerDidDismissOpenInMenu");
     self.resolve(nil);
     [self.refs removeObject:self];
 }
 - (void)documentInteractionControllerDidDismissOptionsMenu:(UIDocumentInteractionController *)controller {
+    // not called?
     NSLog(@"documentInteractionControllerDidDismissOptionsMenu");
     self.resolve(nil);
     [self.refs removeObject:self];
 }
 - (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller {
-    NSLog(@"documentInteractionControllerDidEndPreview");
     self.resolve(nil);
     [self.refs removeObject:self];
 }
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(nullable NSString *)application {
+    // not called?
     NSLog(@"willBeginSendingToApplication");
 }
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(nullable NSString *)application {
+    // not called?
     NSLog(@"didEndSendingToApplication");
 }
 - (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
