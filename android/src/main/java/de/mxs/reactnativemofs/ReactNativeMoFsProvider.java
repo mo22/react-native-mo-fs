@@ -5,9 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.facebook.react.ReactApplication;
@@ -70,10 +68,7 @@ public final class ReactNativeMoFsProvider extends ContentProvider {
     public String getType(@Nonnull Uri uri) {
         String path = uri.getPath();
         if (path == null) throw new RuntimeException("path == null");
-        Log.i("XXX" , "path "+ path);
         if (path.startsWith("/blob/")) {
-            // ...&type=image/jpeg
-            Log.i("XXX", "asd " + uri.getQueryParameter("type"));
             return uri.getQueryParameter("type");
         } else {
             String[] tmp = path.split("\\.");
@@ -83,7 +78,6 @@ public final class ReactNativeMoFsProvider extends ContentProvider {
 
     @Override
     public ParcelFileDescriptor openFile(@Nonnull Uri uri, String mode) throws FileNotFoundException {
-//        Log.i("XXX", "openFile uri=" + uri + " mode=" + mode);
         if (!mode.equals("r")) {
             throw new FileNotFoundException("Cannot open " + uri.toString() + " in mode '" + mode + "'");
         }
