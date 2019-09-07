@@ -420,15 +420,7 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     if (args[@"exif"]) {
         CIImage* image = [CIImage imageWithData:data];
         if (image) {
-            res[@"exif2"] = image.properties;
-            res[@"exif"] = @{
-                @"Orientation": RCTNullIfNil(image.properties[@"Orientation"]),
-                @"ProfileName": RCTNullIfNil(image.properties[@"ProfileName"]),
-                @"PixelHeight": RCTNullIfNil(image.properties[@"PixelHeight"]),
-                @"PixelWidth": RCTNullIfNil(image.properties[@"PixelWidth"]),
-                @"XDensity": RCTNullIfNil(image.properties[@"{JFIF}"][@"XDensity"]),
-                @"YDensity": RCTNullIfNil(image.properties[@"{JFIF}"][@"YDensity"]),
-            };
+            res[@"exif"] = image.properties;
         }
     }
     resolve(res);

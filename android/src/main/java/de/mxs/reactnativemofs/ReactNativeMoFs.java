@@ -366,19 +366,23 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             }
             if (args.hasKey("exif") && args.getBoolean("exif")) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    WritableMap result = Arguments.createMap();
                     ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
                     for (Field field : ExifInterface.class.getDeclaredFields()) {
                         if (!Modifier.isStatic(field.getModifiers())) continue;
                         if (!Modifier.isPublic(field.getModifiers())) continue;
                         if (!field.getName().startsWith("TAG_")) continue;
-                        Log.i("XXX", "field " + field.getName());
                         try {
                             String tag = (String)field.get(exif);
-                            Log.i("XXX", "value " + tag + " " + exif.getAttribute(tag));
+                            String value = exif.getAttribute(tag);
+                            if (value != null) {
+                                result.putString(field.getName(), value);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
+                    res.putMap("exif", result);
                 }
             }
             promise.resolve(res);
