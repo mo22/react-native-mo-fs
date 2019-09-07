@@ -44,30 +44,19 @@ NSString* mimeTypeForPath(NSString* path) {
 @interface ReactNativeMoFsInteractionDelegate : NSObject <UIDocumentInteractionControllerDelegate>
 @property RCTPromiseResolveBlock resolve;
 @property RCTPromiseRejectBlock reject;
+@property NSMutableSet* refs;
 @end
 @implementation ReactNativeMoFsInteractionDelegate
-- (void)dealloc {
-    NSLog(@"dealloc");
+- (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
+    NSLog(@"documentInteractionControllerDidDismissOpenInMenu");
 }
-
-- (void)documentInteractionControllerWillPresentOpenInMenu:(UIDocumentInteractionController *)controller {
-    NSLog(@"documentInteractionControllerWillPresentOpenInMenu");
-    // called!
-}
-//- (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
-//    // not called?!
-//    NSLog(@"documentInteractionControllerDidDismissOpenInMenu");
-//}
-
 - (void)documentInteractionControllerDidDismissOptionsMenu:(UIDocumentInteractionController *)controller {
     NSLog(@"documentInteractionControllerDidDismissOptionsMenu");
 }
 - (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller {
     NSLog(@"documentInteractionControllerDidEndPreview");
-}
-- (void)documentInteractionControllerWillBeginPreview:(UIDocumentInteractionController *)controller {
-    // called
-    NSLog(@"documentInteractionControllerWillBeginPreview");
+    self.resolve(nil);
+    [self.refs removeObject:self];
 }
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(nullable NSString *)application {
     NSLog(@"willBeginSendingToApplication");
@@ -87,6 +76,12 @@ NSString* mimeTypeForPath(NSString* path) {
 @property RCTPromiseRejectBlock reject;
 @end
 @implementation ReactNativeMoFsPickerDelegate
+- (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray <NSURL *>*)urls {
+    NSLog(@"didPickDocumentsAtURLs %@", urls);
+}
+- (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
+    NSLog(@"documentPickerWasCancelled");
+}
 @end
 
 
@@ -498,6 +493,7 @@ RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
         delegate.resolve = resolve;
         delegate.reject = reject;
+        delegate.refs = self.refs;
         [self.refs addObject:delegate];
         controller.delegate = delegate;
         if ([args[@"type"] isEqualToString:@"preview"]) {
@@ -514,7 +510,8 @@ RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:
 
 RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSArray* utis = [NSArray new];
+        NSMutableArray* utis = [NSMutableArray new];
+        [utis addObject:@"public.data"]; // everything? public.item public.content
 //        UIDocumentPickerModeImport,
 //        UIDocumentPickerModeOpen,
 //        UIDocumentPickerModeExportToService,

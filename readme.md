@@ -40,10 +40,7 @@
 
 ## TODO
 
-- [ ] getBlobInfo: exif?
-
-- [ ] createThumbnail?
-  width?: number, height?: number, cover?: boolean, type?
+- [ ] getBlobInfo: exif? which keys / format?
 
 - [ ] handle open in - intent + linking stuff?
   -> send event
@@ -60,6 +57,7 @@ getContent({ type })
 
 ios:
 showDocumentInteractionController({ path, uti, annotation, type: 'preview'|'openin'|'options' })
+  -> broken in beta?
 showDocumentPickerView({ utis, UIDocumentPickerModeImport?,  })
 pass promise to delegate
 keep delegates in NSMutableSet
