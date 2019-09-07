@@ -35,7 +35,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
       if (blob.type === 'image/jpeg' || blob.type === 'image/png') {
         // get image size?
         const thumbnail = await Fs.resizeImage(blob, {
-          maxWidth: 256,
+          maxWidth: 32, // 256,
           maxHeight: 256,
           encoding: 'jpeg',
           quality: 0.5,

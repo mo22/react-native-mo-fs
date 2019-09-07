@@ -408,14 +408,8 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         }
     }
     if (args[@"exif"]) {
-        
-        CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)data, NULL);
-        NSDictionary* metadata = (NSDictionary *) CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL));
-        NSLog(@"metadata %@", metadata);
-
         CIImage* image = [CIImage imageWithData:data];
         if (image) {
-            NSLog(@"props %@", image.properties);
             res[@"exif2"] = image.properties;
             res[@"exif"] = @{
                 @"Orientation": RCTNullIfNil(image.properties[@"Orientation"]),
@@ -426,30 +420,6 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
                 @"YDensity": RCTNullIfNil(image.properties[@"{JFIF}"][@"YDensity"]),
             };
         }
-        //            ColorModel = RGB;
-        //            Depth = 8;
-        //            Orientation = 1;
-        //            PixelHeight = 1334;
-        //            PixelWidth = 750;
-        //            ProfileName = "sRGB IEC61966-2.1";
-        //            "{Exif}" =     {
-        //                ColorSpace = 1;
-        //                PixelXDimension = 750;
-        //                PixelYDimension = 1334;
-        //            };
-        //            "{JFIF}" =     {
-        //                DensityUnit = 0;
-        //                JFIFVersion =         (
-        //                    1,
-        //                    0,
-        //                    1
-        //                );
-        //                XDensity = 72;
-        //                YDensity = 72;
-        //            };
-        //            "{TIFF}" =     {
-        //                Orientation = 1;
-        //            };
     }
     resolve(res);
 }
