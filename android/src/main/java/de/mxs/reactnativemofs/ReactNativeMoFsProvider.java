@@ -79,40 +79,35 @@ public final class ReactNativeMoFsProvider extends ContentProvider {
     @Override
     public ParcelFileDescriptor openFile(@Nonnull Uri uri, String mode) throws FileNotFoundException {
         Log.i("XXX", "openFile uri=" + uri + " mode=" + mode);
-
         if (!mode.equals("r")) {
-            Log.i("XXX", "fail mode");
             throw new FileNotFoundException("Cannot open " + uri.toString() + " in mode '" + mode + "'");
         }
-
-        Log.i("XXX", "path " + uri.getPath());
-        if (true) {
-            File file = new File(uri.getPath().substring(5));
-            Log.i("XXX", "file " + file);
-            Log.i("XXX", "exists " + file.exists());
+        String path = uri.getPath();
+        if (path == null) throw new RuntimeException("path == null");
+        if (path.startsWith("/files/")) {
+            File file = new File(getReactContext().getFilesDir(), path.substring("/files/".length()));
+            if (!file.exists()) throw new FileNotFoundException("file " + file.getAbsolutePath() + " not found");
             return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
-        }
-
-
-        // check if local url?
-
-        BlobModule blobModule = getReactContext().getNativeModule(BlobModule.class);
-        if (blobModule == null) {
-            Log.i("XXX", "fail blob");
-            throw new RuntimeException("No blob module associated with BlobProvider");
-        }
-
-        final byte[] data = blobModule.resolve(uri);
-        if (data == null) {
-            Log.i("XXX", "fail no data");
-            throw new FileNotFoundException("Cannot open " + uri.toString() + ", blob not found.");
-        }
-
-        Log.i("XXX", "data=" + data.length);
-
-        return this.openPipeHelper(uri, "image/jpeg", null, data, new PipeDataWriter<byte[]>() {
-            @Override
-            public void writeDataToPipe(@Nonnull ParcelFileDescriptor output, @Nonnull Uri uri, @Nonnull String mimeType, Bundle opts, byte[] args) {
+        } else if (path.startsWith("/cache/")) {
+            File file = new File(getReactContext().getCacheDir(), path.substring("/cache/".length()));
+            if (!file.exists()) throw new FileNotFoundException("file " + file.getAbsolutePath() + " not found");
+            return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+        } else if (path.startsWith("/root/")) {
+            File file = new File("/", path.substring("/root/".length()));
+            if (!file.exists()) throw new FileNotFoundException("file " + file.getAbsolutePath() + " not found");
+            return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+        } else if (path.startsWith("/blob/")) {
+            BlobModule blobModule = getReactContext().getNativeModule(BlobModule.class);
+            if (blobModule == null) {
+                throw new RuntimeException("No blob module associated with BlobProvider");
+            }
+            final byte[] data = blobModule.resolve(uri);
+            if (data == null) {
+                Log.i("XXX", "fail no data");
+                throw new FileNotFoundException("Cannot open " + uri.toString() + ", blob not found.");
+            }
+            Log.i("XXX", "data=" + data.length);
+            return this.openPipeHelper(uri, "image/jpeg", null, data, (output, uri1, mimeType, opts, args) -> {
                 try {
                     FileOutputStream fos = new FileOutputStream(output.getFileDescriptor());
                     fos.write(args);
@@ -120,48 +115,11 @@ public final class ReactNativeMoFsProvider extends ContentProvider {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-        });
+            });
 
-//        try {
-//            ParcelFileDescriptor[] pfds = ParcelFileDescriptor.createPipe();
-//            final OutputStream outputStream = new ParcelFileDescriptor.AutoCloseOutputStream(pfds[1]);
-//            AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.i("XXX", "before write");
-//                    try {
-//                        outputStream.write(data);
-//                        outputStream.close();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    Log.i("XXX", "after write");
-//                }
-//            });
-//            return pfds[0];
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-
-//        ParcelFileDescriptor[] pipe;
-//        try {
-//            pipe = ParcelFileDescriptor.createPipe();
-//        } catch (IOException exception) {
-//            return null;
-//        }
-//        ParcelFileDescriptor readSide = pipe[0];
-//        ParcelFileDescriptor writeSide = pipe[1];
-//
-//        OutputStream outputStream = new ParcelFileDescriptor.AutoCloseOutputStream(writeSide);
-//        try {
-//            outputStream.write(data);
-//            outputStream.close();
-//        } catch (IOException exception) {
-//            return null;
-//        }
-//
-//        return readSide;
+        } else {
+            throw new FileNotFoundException("path " + path + " not found");
+        }
     }
 
 }
