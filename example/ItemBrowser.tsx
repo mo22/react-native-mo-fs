@@ -161,7 +161,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
                 const uri = await Fs.android.Module!.getProviderUri(path);
                 console.log('ASD', path);
                 console.log('ASD', uri);
-                await Fs.android.Module!.viewIntentChooser({ path: path, title: 'Choose' });
+                await Fs.android.Module!.viewIntentChooser({ path: path, title: 'Choose', type: 'image/jpeg' });
               }}
             />
           </React.Fragment>
