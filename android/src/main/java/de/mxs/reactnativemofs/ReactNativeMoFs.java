@@ -35,6 +35,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -360,11 +362,22 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                     image.putDouble("width", bmp.getWidth());
                     image.putDouble("height", bmp.getHeight());
                     res.putMap("image", image);
-
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                        ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
-                        Log.i("XXX", "got exif " + exif);
-                        Log.i("XXX", "got orientation " + exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1));
+                }
+            }
+            if (args.hasKey("exif") && args.getBoolean("exif")) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
+                    for (Field field : ExifInterface.class.getDeclaredFields()) {
+                        if (!Modifier.isStatic(field.getModifiers())) continue;
+                        if (!Modifier.isPublic(field.getModifiers())) continue;
+                        if (!field.getName().startsWith("TAG_")) continue;
+                        Log.i("XXX", "field " + field.getName());
+                        try {
+                            String tag = (String)field.get(exif);
+                            Log.i("XXX", "value " + tag + " " + exif.getAttribute(tag));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
