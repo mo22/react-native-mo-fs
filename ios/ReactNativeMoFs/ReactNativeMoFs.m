@@ -87,7 +87,11 @@ NSString* mimeTypeForPath(NSString* path) {
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray <NSURL *>*)urls {
     NSLog(@"didPickDocumentsAtURLs %@", urls);
     // convert urls somehow?
-    self.resolve(urls);
+    NSMutableArray* res = [NSMutableArray new];
+    for (NSURL* url in urls) {
+        [res addObject:[url absoluteString]];
+    }
+    self.resolve(res);
     [self.refs removeObject:self];
 }
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {

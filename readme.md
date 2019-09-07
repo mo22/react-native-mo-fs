@@ -59,7 +59,6 @@ ios:
 showDocumentInteractionController({ path, uti, annotation, type: 'preview'|'openin'|'options' })
   -> broken in beta?
 showDocumentPickerView({ utis, UIDocumentPickerModeImport?,  })
-  -> ...
 pass promise to delegate
 keep delegates in NSMutableSet
 finish delegates
