@@ -37,6 +37,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
         const thumbnail = await Fs.resizeImage(blob, {
           maxWidth: 32, // 256,
           maxHeight: 256,
+          fill: true,
           encoding: 'jpeg',
           quality: 0.5,
         });
@@ -136,7 +137,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
 
         {this.state.thumbnail && (
           <Image
-            style={{ width: 100, height: 100 }}
+            style={{ width: 32, height: 256 }}
             source={{ uri: Fs.getBlobURL(this.state.thumbnail) }}
           />
         )}
