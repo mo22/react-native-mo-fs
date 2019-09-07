@@ -32,6 +32,7 @@ export interface Module {
     }>;
     getBlobInfo(blob: BlobData, args?: any): Promise<any>;
     updateImage(blob: BlobData, args?: any): Promise<BlobData>;
+    getProviderUri(path: string): Promise<string>;
     sendIntentChooser(args: {
         path: string;
         type?: string;

@@ -419,6 +419,12 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
+    public void getProviderUri(String path, Promise promise) {
+        promise.resolve(getUriForPath(path).toString());
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
     public void sendIntentChooser(ReadableMap args, Promise promise) {
         String path = args.getString("path");
         if (path == null) throw new RuntimeException("path == null");
