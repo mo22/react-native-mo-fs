@@ -521,12 +521,7 @@ RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromise
         } else {
             [utis addObject:@"public.item"]; // public.data public.item public.content
         }
-        // mode?
-//        UIDocumentPickerModeImport,
-//        UIDocumentPickerModeOpen,
-//        UIDocumentPickerModeExportToService,
-//        UIDocumentPickerModeMoveToService
-        UIDocumentPickerViewController* controller = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:utis inMode:UIDocumentPickerModeOpen];
+        UIDocumentPickerViewController* controller = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:utis inMode:UIDocumentPickerModeImport];
         ReactNativeMoFsPickerDelegate* delegate = [ReactNativeMoFsPickerDelegate new];
         delegate.resolve = resolve;
         delegate.reject = reject;
@@ -539,16 +534,6 @@ RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromise
         }
         [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
     });
-}
-
-RCT_EXPORT_METHOD(testFileCoordinator:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSFileCoordinator *coordinator = [[NSFileCoordinator alloc] init];
-    NSError* error = nil;
-    NSLog(@"start %@", url);
-    [coordinator coordinateReadingItemAtURL:[NSURL URLWithString:url] options:NSFileCoordinatorReadingForUploading error:&error byAccessor:^(NSURL *newURL) {
-        NSLog(@"newURL %@", newURL);
-    }];
-    NSLog(@"done %@", error);
 }
 
 @end

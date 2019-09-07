@@ -45,18 +45,10 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
           onPress={async () => {
             if (Fs.ios.Module) {
               const res = await Fs.ios.Module.showDocumentPickerView({ utis: ['public.jpeg'] });
-              // read the url?
-              console.log('res', res);
               if (res) {
                 const url = res[0];
                 console.log('url', url);
-
-                (Fs.ios.Module as any).testFileCoordinator(url);
-
-                const path = decodeURIComponent(url.slice(7));
-                console.log('path', path);
-                // const blob = await Fs.readURL(url);
-                const blob = await Fs.readFile(path);
+                const blob = await Fs.readURL(url);
                 console.log('blob', blob);
               }
             }
