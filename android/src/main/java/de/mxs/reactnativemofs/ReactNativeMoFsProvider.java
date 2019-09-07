@@ -68,17 +68,22 @@ public final class ReactNativeMoFsProvider extends ContentProvider {
 
     @Override
     public String getType(@Nonnull Uri uri) {
-//        String[] tmp = path.split("\\.");
-//        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(tmp[tmp.length - 1]);
-        Log.i("XXX", "getType uri=" + uri);
-        // vnd.android.cursor.item ?
-        return "image/jpeg";
-//        return null;
+        String path = uri.getPath();
+        if (path == null) throw new RuntimeException("path == null");
+        Log.i("XXX" , "path "+ path);
+        if (path.startsWith("/blob/")) {
+            // ...&type=image/jpeg
+            Log.i("XXX", "asd " + uri.getQueryParameter("type"));
+            return uri.getQueryParameter("type");
+        } else {
+            String[] tmp = path.split("\\.");
+            return MimeTypeMap.getSingleton().getMimeTypeFromExtension(tmp[tmp.length - 1]);
+        }
     }
 
     @Override
     public ParcelFileDescriptor openFile(@Nonnull Uri uri, String mode) throws FileNotFoundException {
-        Log.i("XXX", "openFile uri=" + uri + " mode=" + mode);
+//        Log.i("XXX", "openFile uri=" + uri + " mode=" + mode);
         if (!mode.equals("r")) {
             throw new FileNotFoundException("Cannot open " + uri.toString() + " in mode '" + mode + "'");
         }
@@ -103,10 +108,8 @@ public final class ReactNativeMoFsProvider extends ContentProvider {
             }
             final byte[] data = blobModule.resolve(uri);
             if (data == null) {
-                Log.i("XXX", "fail no data");
                 throw new FileNotFoundException("Cannot open " + uri.toString() + ", blob not found.");
             }
-            Log.i("XXX", "data=" + data.length);
             return this.openPipeHelper(uri, "image/jpeg", null, data, (output, uri1, mimeType, opts, args) -> {
                 try {
                     FileOutputStream fos = new FileOutputStream(output.getFileDescriptor());
