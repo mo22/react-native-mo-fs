@@ -47,7 +47,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
         this.setState({ text: text.slice(0, 8000) });
       }
       const buffer = await Fs.readBlob(blob.slice(0, 100), 'arraybuffer');
-      console.log('buffer', buffer);
+      console.log('arraybuffer', buffer.constructor.name, buffer.byteLength);
     }
   }
 
