@@ -57,6 +57,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 if (activity != null) {
                     Intent intent = activity.getIntent();
                     Log.i("XXX", "initial activity intent " + intent);
+                    // @TODO: this one is correct.
                 }
             }
             @Override

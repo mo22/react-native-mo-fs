@@ -140,6 +140,7 @@ RCT_EXPORT_MODULE()
     RCTBridge* bridge = ((RCTRootView*)RCTSharedApplication().delegate.window.rootViewController.view).bridge;
     NSLog(@"bridge %@", bridge);
     // @TODO: need to remember this - called very soon.
+    // if we don't have listeners registered keep it as initial
     ReactNativeMoFs* realself = [bridge moduleForClass:[ReactNativeMoFs class]];
     [realself sendEventWithName:@"ReactNativeMoFsLink" body:@{
         @"url": [url absoluteString],
