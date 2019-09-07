@@ -116,26 +116,52 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           />
         )}
 
-        {this.state.blob && (
-          <ListItem
-            chevron={true}
-            title="Open"
-            onPress={async () => {
-              try {
-                if (Fs.ios.Module) {
-                  const res = await Fs.ios.Module.showDocumentInteractionController({ path: path, type: 'openin' });
-                  // const res = await Fs.ios.Module.showDocumentInteractionController({ path: path, type: 'preview' });
-                  console.log('res', res);
-                  // await Fs.ios.Module.showDocumentInteractionController({ path: path, type: 'options' });
-                }
-                if (Fs.android.Module) {
-                  await Fs.android.Module.sendIntentChooser({ path: path });
-                }
-              } catch (e) {
-                console.log(e);
-              }
-            }}
-          />
+        {this.state.blob && Fs.ios.Module && (
+          <React.Fragment>
+            <ListItem
+              chevron={true}
+              title="Open In"
+              onPress={async () => {
+                const res = await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'openin' });
+                console.log('res', res);
+              }}
+            />
+            <ListItem
+              chevron={true}
+              title="Options"
+              onPress={async () => {
+                const res = await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'options' });
+                console.log('res', res);
+              }}
+            />
+            <ListItem
+              chevron={true}
+              title="Preview"
+              onPress={async () => {
+                const res = await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'preview' });
+                console.log('res', res);
+              }}
+            />
+          </React.Fragment>
+        )}
+
+        {this.state.blob && Fs.android.Module && (
+          <React.Fragment>
+            <ListItem
+              chevron={true}
+              title="Send To"
+              onPress={async () => {
+                await Fs.android.Module!.sendIntentChooser({ path: path, title: 'Choose', subject: 'subject', text: 'text' });
+              }}
+            />
+            <ListItem
+              chevron={true}
+              title="View"
+              onPress={async () => {
+                await Fs.android.Module!.viewIntentChooser({ url: path, title: 'Choose' });
+              }}
+            />
+          </React.Fragment>
         )}
 
         {this.state.thumbnail && (
