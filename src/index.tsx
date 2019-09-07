@@ -55,12 +55,25 @@ export interface BlobInfo {
 }
 
 export interface UpdateImageArgs {
-  /** new width */
+  /** crop to width */
   width?: number;
-  /** new height */
+  /** crop to height */
   height?: number;
   /** 3x3 matrix */
   matrix?: [number, number, number, number, number, number, number, number, number];
+  /** image output type */
+  encoding?: 'jpeg'|'png'|'webp';
+  /** image output quality */
+  quality?: number; // 0 to 1
+}
+
+export interface ResizeImageArgs {
+  /** new width */
+  maxWidth: number;
+  /** new height */
+  maxHeight: number;
+  /** crop image to fill area */
+  fill?: boolean;
   /** image output type */
   encoding?: 'jpeg'|'png'|'webp';
   /** image output quality */
@@ -367,6 +380,8 @@ export class Fs {
 
   /**
    * update / resize an image
+   * works by appylying args.matrix to the image and optionally cropping the
+   * result to width x height.
    */
   public static async updateImage(blob: Blob, args: UpdateImageArgs): Promise<Blob> {
     if (args.quality !== undefined && (args.quality < 0 || args.quality > 1)) throw new Error('quality must be 0..1');
@@ -381,6 +396,19 @@ export class Fs {
     } else {
       throw new Error('platform not supported');
     }
+  }
+
+  /**
+   * resize an image
+   */
+  public static async resizeImage(blob: Blob, args: ResizeImageArgs): Promise<Blob> {
+    const info = await this.getBlobInfo(blob, { image: true });
+    console.log('info', info);
+    // matrix: scale. and translate if fill?
+    // width / height ?
+    return await this.updateImage(blob, {
+      ...args,
+    });
   }
 
 }

@@ -43,12 +43,24 @@ export interface BlobInfo {
     };
 }
 export interface UpdateImageArgs {
-    /** new width */
+    /** crop to width */
     width?: number;
-    /** new height */
+    /** crop to height */
     height?: number;
     /** 3x3 matrix */
     matrix?: [number, number, number, number, number, number, number, number, number];
+    /** image output type */
+    encoding?: 'jpeg' | 'png' | 'webp';
+    /** image output quality */
+    quality?: number;
+}
+export interface ResizeImageArgs {
+    /** new width */
+    maxWidth: number;
+    /** new height */
+    maxHeight: number;
+    /** crop image to fill area */
+    fill?: boolean;
     /** image output type */
     encoding?: 'jpeg' | 'png' | 'webp';
     /** image output quality */
@@ -160,7 +172,13 @@ export declare class Fs {
     static getBlobInfo(blob: Blob, args?: BlobInfoArgs): Promise<BlobInfo>;
     /**
      * update / resize an image
+     * works by appylying args.matrix to the image and optionally cropping the
+     * result to width x height.
      */
     static updateImage(blob: Blob, args: UpdateImageArgs): Promise<Blob>;
+    /**
+     * resize an image
+     */
+    static resizeImage(blob: Blob, args: ResizeImageArgs): Promise<Blob>;
 }
 export {};

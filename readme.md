@@ -37,7 +37,6 @@
     </dict>
   </array>
   ```
-  Need to modify AppDelegate: https://facebook.github.io/react-native/docs/linking
 
 ## TODO
 
