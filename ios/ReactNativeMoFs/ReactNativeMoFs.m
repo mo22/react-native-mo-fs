@@ -87,6 +87,10 @@ NSString* mimeTypeForPath(NSString* path) {
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray <NSURL *>*)urls {
     NSMutableArray* res = [NSMutableArray new];
     for (NSURL* url in urls) {
+        // create blob from uri?
+        NSLog(@"url %@", url);
+        NSData* data = [NSData dataWithContentsOfURL:url];
+        NSLog(@"data %@", data);
         [res addObject:[url absoluteString]];
     }
     self.resolve(res);

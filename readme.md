@@ -39,8 +39,6 @@
   ```
 
 ## TODO
-- [ ] test getContent mime types etc.
-- [ ] test sendIntentChooser / viewIntentChooser permissions?
 
 - [ ] getBlobInfo: exif? which keys / format?
 
