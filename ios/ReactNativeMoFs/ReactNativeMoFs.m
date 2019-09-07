@@ -49,9 +49,13 @@ NSString* mimeTypeForPath(NSString* path) {
 @implementation ReactNativeMoFsInteractionDelegate
 - (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
     NSLog(@"documentInteractionControllerDidDismissOpenInMenu");
+    self.resolve(nil);
+    [self.refs removeObject:self];
 }
 - (void)documentInteractionControllerDidDismissOptionsMenu:(UIDocumentInteractionController *)controller {
     NSLog(@"documentInteractionControllerDidDismissOptionsMenu");
+    self.resolve(nil);
+    [self.refs removeObject:self];
 }
 - (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller {
     NSLog(@"documentInteractionControllerDidEndPreview");
@@ -468,28 +472,19 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
 
 RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"showDocumentInteractionController %@", args);
         UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
         NSString* path = args[@"path"];
         NSURL* url = [NSURL fileURLWithPath:path];
-        NSLog(@"url %@", url);
         UIDocumentInteractionController* controller = [UIDocumentInteractionController interactionControllerWithURL:url];
-        NSLog(@"initial %@ %@ %@", controller.UTI, controller.name, controller.annotation);
         if (args[@"uti"]) {
             controller.UTI = args[@"uti"];
-//        } else {
-//            NSLog(@"test %@ %@", path, utiForPath(path));
-//            controller.UTI = utiForPath(path);
         }
-//        if (args[@"annotation"]) {
-//            controller.annotation = args[@"annotation"];
-//        }
-//        if (args[@"name"]) {
-//            controller.name = args[@"name"];
-//        }
-        NSLog(@"UTI %@", controller.UTI);
-        NSLog(@"URL %@", controller.URL);
-        NSLog(@"annotation %@", controller.annotation);
+        if (args[@"annotation"]) {
+            controller.annotation = args[@"annotation"];
+        }
+        if (args[@"name"]) {
+            controller.name = args[@"name"];
+        }
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
         delegate.resolve = resolve;
         delegate.reject = reject;
