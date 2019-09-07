@@ -112,7 +112,7 @@ RCT_EXPORT_MODULE()
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[ ];
+    return @[ @"ReactNativeMoFsLink" ];
 }
 
 - (instancetype)init {
