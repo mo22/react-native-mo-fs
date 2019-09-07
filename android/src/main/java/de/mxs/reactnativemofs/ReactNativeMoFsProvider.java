@@ -8,12 +8,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.blob.BlobModule;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,6 +23,23 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 public final class ReactNativeMoFsProvider extends ContentProvider {
+
+    private ReactContext getReactContext() {
+        Context context = getContext();
+        if (context == null) {
+            throw new RuntimeException("getContext() null");
+        }
+        Context applicationContext = context.getApplicationContext();
+        if (!(applicationContext instanceof ReactApplication)) {
+            throw new RuntimeException("getApplicationContext() not ReactApplication");
+        }
+        ReactNativeHost host = ((ReactApplication) applicationContext).getReactNativeHost();
+        ReactContext reactContext = host.getReactInstanceManager().getCurrentReactContext();
+        if (reactContext == null) {
+            throw new RuntimeException("reactContext null");
+        }
+        return reactContext;
+    }
 
     @Override
     public boolean onCreate() {
@@ -49,27 +68,12 @@ public final class ReactNativeMoFsProvider extends ContentProvider {
 
     @Override
     public String getType(@Nonnull Uri uri) {
+//        String[] tmp = path.split("\\.");
+//        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(tmp[tmp.length - 1]);
         Log.i("XXX", "getType uri=" + uri);
         // vnd.android.cursor.item ?
-//        return "image/jpeg";
-        return null;
-    }
-
-    private ReactContext getReactContext() {
-        Context context = getContext();
-        if (context == null) {
-            throw new RuntimeException("getContext() null");
-        }
-        Context applicationContext = context.getApplicationContext();
-        if (!(applicationContext instanceof ReactApplication)) {
-            throw new RuntimeException("getApplicationContext() not ReactApplication");
-        }
-        ReactNativeHost host = ((ReactApplication) applicationContext).getReactNativeHost();
-        ReactContext reactContext = host.getReactInstanceManager().getCurrentReactContext();
-        if (reactContext == null) {
-            throw new RuntimeException("reactContext null");
-        }
-        return reactContext;
+        return "image/jpeg";
+//        return null;
     }
 
     @Override
@@ -77,16 +81,30 @@ public final class ReactNativeMoFsProvider extends ContentProvider {
         Log.i("XXX", "openFile uri=" + uri + " mode=" + mode);
 
         if (!mode.equals("r")) {
+            Log.i("XXX", "fail mode");
             throw new FileNotFoundException("Cannot open " + uri.toString() + " in mode '" + mode + "'");
         }
 
+        Log.i("XXX", "path " + uri.getPath());
+        if (true) {
+            File file = new File(uri.getPath().substring(5));
+            Log.i("XXX", "file " + file);
+            Log.i("XXX", "exists " + file.exists());
+            return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+        }
+
+
+        // check if local url?
+
         BlobModule blobModule = getReactContext().getNativeModule(BlobModule.class);
         if (blobModule == null) {
+            Log.i("XXX", "fail blob");
             throw new RuntimeException("No blob module associated with BlobProvider");
         }
 
         final byte[] data = blobModule.resolve(uri);
         if (data == null) {
+            Log.i("XXX", "fail no data");
             throw new FileNotFoundException("Cannot open " + uri.toString() + ", blob not found.");
         }
 
