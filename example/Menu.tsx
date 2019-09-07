@@ -6,12 +6,6 @@ import ImagePicker from 'react-native-image-picker';
 import { Fs } from 'react-native-mo-fs';
 import moment from 'moment';
 
-if (Fs.ios.Events) {
-  Fs.ios.Events.addListener('ReactNativeMoFsLink', (asd) => {
-    console.log('XXX ReactNativeMoFsLink', asd);
-  });
-}
-
 export default class Menu extends React.Component<NavigationInjectedProps> {
   public render() {
     return (

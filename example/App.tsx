@@ -2,6 +2,7 @@ import * as React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Linking } from 'react-native';
+import { Fs } from 'react-native-mo-fs';
 
 const AppNavigator = createStackNavigator({
   Menu: {
@@ -26,17 +27,26 @@ const AppNavigator = createStackNavigator({
 
 const AppContainer = createAppContainer(AppNavigator);
 
+
+if (Fs.ios.Events) {
+  Fs.ios.Events.addListener('ReactNativeMoFsLink', (asd) => {
+    console.log('XXX ReactNativeMoFsLink', asd);
+  });
+}
+if (Fs.android.Events) {
+  Fs.android.Events.addListener('ReactNativeMoFsLink', (asd) => {
+    console.log('XXX ReactNativeMoFsLink', asd);
+  });
+}
+Linking.addEventListener('url', ({url}) => {
+  console.log('XXX linking url event', url);
+});
+Linking.getInitialURL().then((url) => {
+  console.log('XXX linking url initial', url);
+  if (!url) return;
+});
+
 class App extends React.PureComponent<{}> {
-  public componentDidMount() {
-    Linking.addEventListener('url', ({url}) => {
-      console.log('linking url event', url);
-    });
-    Linking.getInitialURL().then((url) => {
-      console.log('linking url initial', url);
-      if (!url) return;
-    });
-    // 2019-09-02 20:32:06.976926+0200 example[862:485610] 'linking url', 'file:///private/var/mobile/Containers/Data/Application/14601C07-5EAB-4428-B111-B2B8AC716736/tmp/org.reactjs.native.example.example-Inbox/2018_07_24_12_51_03.pdf'
-  }
   public render() {
     return (
       <AppContainer />
