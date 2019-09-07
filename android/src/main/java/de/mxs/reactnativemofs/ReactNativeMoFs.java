@@ -409,6 +409,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void sendIntentChooser(ReadableMap args, Promise promise) {
         String path = args.getString("path");
+        if (path == null) throw new RuntimeException("path == null");
         String type = args.hasKey("type") ? args.getString("type") : null;
         if (type == null) type = getMimeTypePath(path);
         Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".provider", new File(path));
@@ -417,6 +418,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         intent.setType(type);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
+        getReactApplicationContext().grantUriPermission(getReactApplicationContext().getPackageName() + ".provider", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (args.hasKey("subject")) intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
         if (args.hasKey("text")) intent.putExtra(Intent.EXTRA_TEXT, args.getString("text"));
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
