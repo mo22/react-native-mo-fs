@@ -425,18 +425,11 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         String type = args.hasKey("type") ? args.getString("type") : null;
         if (type == null) type = getMimeTypePath(path);
         Uri uri = getUriForPath(path);
-
-//        09-07 14:16:07.725 13073 14711 W ChooserActivity: Could not load (content://com.example.provider/root/data/data/com.example/files/import_2019-09-07_14%3A03%3A01.jpg) thumbnail/name for preview. If desired, consider using Intent#createChooser to launch the ChooserActivity, and set your Intent's clipData and flags in accordance with that method's documentation
-//        09-07 14:16:07.723 14580 14615 E DatabaseUtils: java.lang.SecurityException: Permission Denial: reading com.imagepicker.FileProvider uri content://com.example.provider/root/data/data/com.example/files/import_2019-09-07_14%3A03%3A01.jpg from pid=13073, uid=1000 requires the provider be exported, or grantUriPermission()
-
-        // com.imagepicker.FileProvider ?!
-
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType(type);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-//        getReactApplicationContext().grantUriPermission(getReactApplicationContext().getPackageName() + ".provider", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (args.hasKey("subject")) intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
         if (args.hasKey("text")) intent.putExtra(Intent.EXTRA_TEXT, args.getString("text"));
         if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {

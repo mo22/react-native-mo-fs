@@ -4,13 +4,11 @@
       android:name="de.mxs.reactnativemofs.ReactNativeMoFsProvider"
       android:authorities="${applicationId}.ReactNativeMoFs"
       android:exported="false"
-      android:grantUriPermissions="true"
+        android:grantUriPermissions="true"
     >
-      <!--
       <meta-data
           android:name="android.support.FILE_PROVIDER_PATHS"
-          android:resource="@xml/provider_paths"/>
-    -->
+          android:resource="@xml/reactnativemofs_provider_paths"/>
     </provider>
   </application>
 </manifest>
