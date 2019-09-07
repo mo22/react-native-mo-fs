@@ -153,7 +153,7 @@ export class Fs {
    */
   public static getBlobURL(blob: Blob): string {
     if (android.Module) {
-      return `content://${android.Module.authorities}/${blob.data.blobId}?offset=${blob.data.offset}&size=${blob.data.size}&type=${blob.data.type}`;
+      return `content://${android.Module.authorities}/blob/${blob.data.blobId}?offset=${blob.data.offset}&size=${blob.data.size}&type=${blob.data.type}`;
     } else {
       return URL.createObjectURL(blob);
     }
