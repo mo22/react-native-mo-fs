@@ -48,20 +48,19 @@ NSString* mimeTypeForPath(NSString* path) {
 @end
 @implementation ReactNativeMoFsInteractionDelegate
 - (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
-    // not called?
-    NSLog(@"documentInteractionControllerDidDismissOpenInMenu");
     self.resolve(nil);
     [self.refs removeObject:self];
+    [self.refs removeObject:controller];
 }
 - (void)documentInteractionControllerDidDismissOptionsMenu:(UIDocumentInteractionController *)controller {
-    // not called?
-    NSLog(@"documentInteractionControllerDidDismissOptionsMenu");
     self.resolve(nil);
     [self.refs removeObject:self];
+    [self.refs removeObject:controller];
 }
 - (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller {
     self.resolve(nil);
     [self.refs removeObject:self];
+    [self.refs removeObject:controller];
 }
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(nullable NSString *)application {
     // not called?
@@ -493,6 +492,7 @@ RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:
         delegate.reject = reject;
         delegate.refs = self.refs;
         [self.refs addObject:delegate];
+        [self.refs addObject:controller];
         controller.delegate = delegate;
         if ([args[@"type"] isEqualToString:@"preview"]) {
             [controller presentPreviewAnimated:YES];
