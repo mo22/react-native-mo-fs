@@ -58,7 +58,8 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
               }
             }
             if (Fs.android.Module) {
-              await Fs.android.Module.getContent({});
+              const res = await Fs.android.Module.getContent({});
+              console.log('res', res);
             }
           }}
           title="FilePicker"

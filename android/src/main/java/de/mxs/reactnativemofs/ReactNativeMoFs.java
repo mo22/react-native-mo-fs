@@ -453,29 +453,37 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void getContent(ReadableMap args, Promise promise) {
+    public void getContent(ReadableMap args, final Promise promise) {
         //    getContent(args: { type?: string; }): Promise<void>;
-
-
         Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT); // Intent.ACTION_PICK
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 //        intent.setAction(Intent.ACTION_PICK);
-        intent.setType("*/*"); // ?
+        if (args.hasKey("type")) {
+            intent.setType(args.getString("type"));
+        } else {
+            intent.setType("*/*");
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (args.hasKey("multiple") && args.getBoolean("multiple")) {
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            }
+        }
 //        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple);
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-//            intent = Intent.createChooser(intent, null);
-//        }
-
-
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            String title = args.hasKey("title") ? args.getString("title") : "";
+            intent = Intent.createChooser(intent, title);
+        }
         ActivityEventListener listener = new ActivityEventListener() {
             @Override
             public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                 if (requestCode == 13131) {
                     Log.i("XXX", "got response!");
-//                    09-03 21:05:37.192 32540 32540 I XXX     : onActivityResult 13131 -1 Intent { dat=content://com.android.providers.downloads.documents/document/14 flg=0x1 }
-//                        09-03 21:05:37.192 32540 32540 I XXX     : got response!
+                    if (data == null) {
+                        promise.resolve(null);
+                    } else {
+                        promise.resolve(data.getData().toString());
+                    }
                 }
             }
             @Override
@@ -483,22 +491,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             }
         };
         getReactApplicationContext().addActivityEventListener(listener);
-
         Activity activity = getReactApplicationContext().getCurrentActivity();
         if (activity == null) throw new RuntimeException("activity == null");
         activity.startActivityForResult(intent, 13131);
-
-
-        //        public boolean startActivityForResult(Intent intent, int code, Bundle bundle) {
-
-//        if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
-//            Activity activity = getReactApplicationContext().getCurrentActivity();
-//            if (activity == null) throw new RuntimeException("activity == null");
-//            String title = args.hasKey("title") ? args.getString("title") : "";
-//            activity.startActivity(Intent.createChooser(intent, title));
-//            promise.resolve(null);
-//        } else {
-//            promise.reject(new Exception("cannot handle file type"));
-//        }
     }
 }
