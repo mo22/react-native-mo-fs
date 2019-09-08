@@ -48,3 +48,9 @@
   -> send event
   -> event listener?
   -> initial event?
+
+- [ ] common function for picker
+
+- [ ] common function for share
+
+- [ ] common function for sharing event
