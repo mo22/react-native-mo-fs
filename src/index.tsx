@@ -34,10 +34,6 @@ export interface BlobInfoArgs {
   sha1?: boolean;
   /** calculate hex sha256 of blob */
   sha256?: boolean;
-  /** get image dimensions and info */
-  image?: boolean;
-  /** get exit properties */
-  exif?: boolean;
 }
 
 export interface BlobInfo {
@@ -49,11 +45,6 @@ export interface BlobInfo {
   sha1?: string;
   /** hex sha256 */
   sha256?: string;
-  /** image info */
-  image?: {
-    width: number;
-    height: number;
-  };
 }
 
 export interface UpdateImageArgs {
@@ -368,13 +359,39 @@ export class Fs {
   }
 
   /**
-   * get info about a blob. can calculate md5 / sha1 / sha256. get image size.
+   * get info about a blob. can calculate md5 / sha1 / sha256.
    */
   public static async getBlobInfo(blob: Blob, args: BlobInfoArgs = {}): Promise<BlobInfo> {
     if (ios.Module) {
       return await ios.Module.getBlobInfo(blob.data, args);
     } else if (android.Module) {
       return await android.Module.getBlobInfo(blob.data, args);
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
+   * get size of an image.
+   */
+  public static async getImageSize(blob: Blob): Promise<{ width: number; height: number; }> {
+    if (ios.Module) {
+      return await ios.Module.getImageSize(blob.data);
+    } else if (android.Module) {
+      return await android.Module.getImageSize(blob.data);
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
+   * get exif data
+   */
+  public static async getExif(blob: Blob): Promise<any> {
+    if (ios.Module) {
+      return await ios.Module.getExif(blob.data);
+    } else if (android.Module) {
+      return await android.Module.getExif(blob.data);
     } else {
       throw new Error('platform not supported');
     }
@@ -404,10 +421,10 @@ export class Fs {
    * resize an image
    */
   public static async resizeImage(blob: Blob, args: ResizeImageArgs): Promise<Blob> {
-    const info = await this.getBlobInfo(blob, { image: true });
+    const size = await this.getImageSize(blob);
     let scale = 1;
-    let width = info.image!.width;
-    let height = info.image!.height;
+    let width = size.width;
+    let height = size.height;
     let tx = 0;
     let ty = 0;
     if (args.fill) {

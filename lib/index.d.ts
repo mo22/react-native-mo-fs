@@ -24,10 +24,6 @@ export interface BlobInfoArgs {
     sha1?: boolean;
     /** calculate hex sha256 of blob */
     sha256?: boolean;
-    /** get image dimensions and info */
-    image?: boolean;
-    /** get exit properties */
-    exif?: boolean;
 }
 export interface BlobInfo {
     /** size of blob */
@@ -38,11 +34,6 @@ export interface BlobInfo {
     sha1?: string;
     /** hex sha256 */
     sha256?: string;
-    /** image info */
-    image?: {
-        width: number;
-        height: number;
-    };
 }
 export interface UpdateImageArgs {
     /** crop to width */
@@ -169,9 +160,20 @@ export declare class Fs {
      */
     static stat(path: string): Promise<Stat>;
     /**
-     * get info about a blob. can calculate md5 / sha1 / sha256. get image size.
+     * get info about a blob. can calculate md5 / sha1 / sha256.
      */
     static getBlobInfo(blob: Blob, args?: BlobInfoArgs): Promise<BlobInfo>;
+    /**
+     * get size of an image.
+     */
+    static getImageSize(blob: Blob): Promise<{
+        width: number;
+        height: number;
+    }>;
+    /**
+     * get exif data
+     */
+    static getExif(blob: Blob): Promise<any>;
     /**
      * update / resize an image
      * works by appylying args.matrix to the image and optionally cropping the
