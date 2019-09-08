@@ -559,7 +559,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 types.add(tmp.getString(i));
             }
         }
-        Log.i("XXX", "types " + types);
         if (types.size() == 0) {
             intent.setType("*/*");
         } else if (types.size() == 1) {
@@ -583,6 +582,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             @Override
             public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                 if (requestCode == 13131) {
+                    // validate?
                     Log.i("XXX", "response " + requestCode + " " + resultCode + " " + data);
                     if (data == null) {
                         promise.resolve(null);
