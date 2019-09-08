@@ -85,7 +85,12 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={async () => {
-            await Fs.pickFile({ multiple: true });
+            const urls = await Fs.pickFile({ multiple: true });
+            for (const url of urls) {
+              const blob = await Fs.readURL(url);
+              console.log('blob', url, blob);
+              blob.close();
+            }
           }}
           title="pickFile any multiple"
         />

@@ -496,7 +496,6 @@ export class Fs {
         ['public.item']
       );
       const res = await Fs.ios.Module!.showDocumentPickerView({ utis: utis, multiple: args.multiple });
-      console.log('res', res);
       return res || [];
     } else if (Fs.android.Module) {
       const res = await Fs.android.Module.getContent({ types: args.types, multiple: args.multiple });
