@@ -31,6 +31,11 @@ export interface Module {
         lastModified?: number;
     }>;
     getBlobInfo(blob: BlobData, args?: any): Promise<any>;
+    getImageSize(blob: BlobData): Promise<{
+        width: number;
+        height: number;
+    }>;
+    getExif(blob: BlobData): Promise<any>;
     updateImage(blob: BlobData, args?: any): Promise<BlobData>;
     getProviderUri(path: string): Promise<string>;
     sendIntentChooser(args: {
