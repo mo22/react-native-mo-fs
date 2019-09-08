@@ -61,7 +61,7 @@ export interface ResizeImageArgs {
 }
 export interface PickFileArgs {
     /** mime types */
-    type?: string[];
+    types?: string[];
     /** allow multiple selection */
     multiple?: boolean;
 }

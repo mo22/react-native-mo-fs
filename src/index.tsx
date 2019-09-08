@@ -75,7 +75,7 @@ export interface ResizeImageArgs {
 
 export interface PickFileArgs {
   /** mime types */
-  type?: string[];
+  types?: string[];
   /** allow multiple selection */
   multiple?: boolean;
 }
@@ -489,11 +489,17 @@ export class Fs {
    * show a preview of the file
    */
   public static async pickFile(args: PickFileArgs) {
-    console.log(args);
     if (Fs.ios.Module) {
-      await Fs.ios.Module!.showDocumentPickerView({ multiple: args.multiple });
+      const utis = args.types ? (
+        await Promise.all(args.types.map((i) => Fs.ios.Module!.getUtiFromMimeType(i) as Promise<string>))
+      ) : (
+        ['public.item']
+      );
+      const res = await Fs.ios.Module!.showDocumentPickerView({ utis: utis, multiple: args.multiple });
+      console.log('res', res);
     } else if (Fs.android.Module) {
-      await Fs.android.Module.getContent({ multiple: args.multiple });
+      const res = await Fs.android.Module.getContent({ types: args.types, multiple: args.multiple });
+      console.log('res', res);
     }
   }
 
