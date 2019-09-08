@@ -166,6 +166,25 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           </React.Fragment>
         )}
 
+        {this.state.blob && (
+          <React.Fragment>
+            <ListItem
+              chevron={true}
+              title="viewFile"
+              onPress={async () => {
+                await Fs.viewFile(path);
+              }}
+            />
+            <ListItem
+              chevron={true}
+              title="openFile"
+              onPress={async () => {
+                await Fs.openFile(path);
+              }}
+            />
+          </React.Fragment>
+        )}
+
         {this.state.thumbnail && (
           <Image
             style={{ width: 32, height: 256 }}

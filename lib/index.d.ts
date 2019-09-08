@@ -59,6 +59,12 @@ export interface ResizeImageArgs {
     /** image output quality */
     quality?: number;
 }
+export interface PickFileArgs {
+    /** mime types */
+    type?: string[];
+    /** allow multiple selection */
+    multiple?: boolean;
+}
 export interface Paths {
     cache: string;
     docs: string;
@@ -192,5 +198,9 @@ export declare class Fs {
      * show a preview of the file
      */
     static viewFile(path: string): Promise<void>;
+    /**
+     * show a preview of the file
+     */
+    static pickFile(args: PickFileArgs): Promise<void>;
 }
 export {};

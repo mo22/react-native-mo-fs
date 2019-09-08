@@ -73,6 +73,13 @@ export interface ResizeImageArgs {
   quality?: number; // 0 to 1
 }
 
+export interface PickFileArgs {
+  /** mime types */
+  type?: string[];
+  /** allow multiple selection */
+  multiple?: boolean;
+}
+
 export interface Paths {
   cache: string;
   docs: string;
@@ -459,7 +466,7 @@ export class Fs {
   /**
    * open file in other app
    */
-  public static async openFile(path: string) {
+  public static async openFile(path: string): Promise<void> {
     if (Fs.ios.Module) {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'openin' });
     } else if (Fs.android.Module) {
@@ -470,12 +477,24 @@ export class Fs {
   /**
    * show a preview of the file
    */
-  public static async viewFile(path: string) {
+  public static async viewFile(path: string): Promise<void> {
     if (Fs.ios.Module) {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'preview' });
     } else if (Fs.android.Module) {
       await Fs.android.Module.viewIntentChooser({ path: path });
     }
+  }
+
+  /**
+   * show a preview of the file
+   */
+  public static async pickFile(args: PickFileArgs) {
+    console.log(args);
+    // if (Fs.ios.Module) {
+    //   await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'preview' });
+    // } else if (Fs.android.Module) {
+    //   await Fs.android.Module.viewIntentChooser({ path: path });
+    // }
   }
 
 }
