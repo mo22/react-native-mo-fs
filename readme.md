@@ -39,8 +39,4 @@
   ```
 
 ## TODO
-
-- [ ] handle open in - intent + linking stuff?
-  -> send event
-  -> event listener?
-  -> initial event?
+- [ ] open in: common handler stuff. compat with Linking in ios?
