@@ -56,7 +56,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         reactContext.addActivityEventListener(new ActivityEventListener() {
             @Override
             public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-                Log.i("XXX", "onActivityResult");
             }
             @Override
             public void onNewIntent(Intent intent) {
