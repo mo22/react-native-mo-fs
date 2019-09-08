@@ -13,6 +13,7 @@ export interface Module {
         document: string;
         caches: string;
     };
+    getLastOpenURL(): Promise<OpenURLEvent | undefined>;
     getMimeType(extension: string): Promise<string | undefined>;
     getUtiFromMimeType(mimeType: string): Promise<string | undefined>;
     getUti(extension: string): Promise<string | undefined>;
@@ -57,11 +58,12 @@ export interface Module {
         multiple?: boolean;
     }): Promise<undefined | string[]>;
 }
-export interface LinkEvent {
+export interface OpenURLEvent {
     url: string;
+    options: any;
 }
 export declare const Module: Module | undefined;
 export declare const Events: {
-    addListener(eventType: "ReactNativeMoFsLink", listener: (event: LinkEvent) => void): EmitterSubscription;
+    addListener(eventType: "ReactNativeMoFsOpenURL", listener: (event: OpenURLEvent) => void): EmitterSubscription;
 } | undefined;
 export {};

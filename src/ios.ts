@@ -15,6 +15,7 @@ export interface Module {
     document: string;
     caches: string;
   };
+  getLastOpenURL(): Promise<OpenURLEvent|undefined>;
   getMimeType(extension: string): Promise<string|undefined>;
   getUtiFromMimeType(mimeType: string): Promise<string|undefined>;
   getUti(extension: string): Promise<string|undefined>;
@@ -49,12 +50,13 @@ export interface Module {
   showDocumentPickerView(args: { utis?: string[]; multiple?: boolean; }): Promise<undefined|string[]>; // UIDocumentPickerModeImport?,  ?
 }
 
-export interface LinkEvent {
+export interface OpenURLEvent {
   url: string;
+  options: any;
 }
 
 export const Module = (Platform.OS === 'ios') ? NativeModules.ReactNativeMoFs as Module : undefined;
 
 export const Events = Module ? new NativeEventEmitter(NativeModules.ReactNativeMoFs) as {
-  addListener(eventType: 'ReactNativeMoFsLink', listener: (event: LinkEvent) => void): EmitterSubscription;
+  addListener(eventType: 'ReactNativeMoFsOpenURL', listener: (event: OpenURLEvent) => void): EmitterSubscription;
 } : undefined;
