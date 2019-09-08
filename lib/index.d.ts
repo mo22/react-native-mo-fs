@@ -88,6 +88,7 @@ export interface Stat {
     modified?: number;
 }
 export interface OpenFileEvent {
+    /** the url to be opened */
     url: string;
 }
 export declare class Fs {
@@ -104,7 +105,7 @@ export declare class Fs {
      */
     static readonly paths: Paths;
     /**
-     * open in
+     * called if another app sends a file to this app
      */
     static openFile: Event<OpenFileEvent>;
     /**

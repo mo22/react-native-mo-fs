@@ -105,6 +105,7 @@ export interface Stat {
 }
 
 export interface OpenFileEvent {
+  /** the url to be opened */
   url: string;
 }
 
@@ -138,7 +139,7 @@ export class Fs {
   };
 
   /**
-   * open in
+   * called if another app sends a file to this app
    */
   public static openFile = new Event<OpenFileEvent>((emit) => {
     if (ios.Events) {
