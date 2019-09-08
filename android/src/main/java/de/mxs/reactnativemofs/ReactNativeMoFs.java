@@ -382,7 +382,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void getImageSize(ReadableMap blob, ReadableMap args, Promise promise) {
+    public void getImageSize(ReadableMap blob, Promise promise) {
         try {
             BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
             byte[] data = blobModule.resolve(blob);
@@ -406,7 +406,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void getExif(ReadableMap blob, ReadableMap args, Promise promise) {
+    public void getExif(ReadableMap blob, Promise promise) {
         try {
             BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
             byte[] data = blobModule.resolve(blob);

@@ -413,7 +413,7 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     resolve(res);
 }
 
-RCT_EXPORT_METHOD(getImageSize:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(getImageSize:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data = [blobManager resolve:blob];
     if (!data) {
@@ -431,7 +431,7 @@ RCT_EXPORT_METHOD(getImageSize:(NSDictionary<NSString*,id>*)blob args:(NSDiction
     });
 }
 
-RCT_EXPORT_METHOD(getExif:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(getExif:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data = [blobManager resolve:blob];
     if (!data) {
