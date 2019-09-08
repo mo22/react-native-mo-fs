@@ -34,7 +34,7 @@ if (Fs.ios.Events) {
   });
 }
 if (Fs.android.Events) {
-  Fs.android.Events.addListener('ReactNativeMoFsLink', (asd) => {
+  Fs.android.Events.addListener('ReactNativeMoFsNewIntent', (asd) => {
     console.log('XXX ReactNativeMoFsLink', asd);
   });
   Fs.android.Module!.getInitialIntent().then((asd) => {
