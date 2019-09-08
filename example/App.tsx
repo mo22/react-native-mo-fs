@@ -26,7 +26,6 @@ const AppNavigator = createStackNavigator({
 
 const AppContainer = createAppContainer(AppNavigator);
 
-
 if (Fs.ios.Events) {
   Fs.ios.Events.addListener('ReactNativeMoFsOpenURL', async (asd) => {
     console.log('XXX ReactNativeMoFsOpenURL', asd);

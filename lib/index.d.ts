@@ -1,5 +1,6 @@
 import * as ios from './ios';
 import * as android from './android';
+import { Event } from 'mo-core';
 interface BlobData {
     blobId: string;
     offset: number;
@@ -86,6 +87,9 @@ export interface Stat {
     /** date modified as timestamp if available */
     modified?: number;
 }
+export interface OpenFileEvent {
+    url: string;
+}
 export declare class Fs {
     /**
      * native ios functions. use with caution
@@ -99,6 +103,10 @@ export declare class Fs {
      * basic paths - document folder, cache folder, etc.
      */
     static readonly paths: Paths;
+    /**
+     * open in
+     */
+    static openFile: Event<OpenFileEvent>;
     /**
      * get mime type by file extension
      */
@@ -191,9 +199,9 @@ export declare class Fs {
      */
     static resizeImage(blob: Blob, args: ResizeImageArgs): Promise<Blob>;
     /**
-     * open file in other app
+     * share file to another app
      */
-    static openFile(path: string): Promise<void>;
+    static shareFile(path: string): Promise<void>;
     /**
      * show a preview of the file
      */

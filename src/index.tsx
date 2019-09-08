@@ -1,6 +1,7 @@
 import * as ios from './ios';
 import * as android from './android';
 import * as base64 from 'base64-arraybuffer';
+import { Event } from 'mo-core';
 
 
 
@@ -103,6 +104,10 @@ export interface Stat {
   modified?: number;
 }
 
+export interface OpenFileEvent {
+  url: string;
+}
+
 
 
 export class Fs {
@@ -131,6 +136,43 @@ export class Fs {
     cache: '',
     docs: '',
   };
+
+  /**
+   * open in
+   */
+  public static openFile = new Event<OpenFileEvent>((emit) => {
+    if (ios.Events) {
+      // @TODO: all urls?
+      ios.Module!.getLastOpenURL().then((event) => {
+        if (!event) return;
+        emit({ url: event.url });
+      });
+      const sub = ios.Events.addListener('ReactNativeMoFsOpenURL', async (event) => {
+        emit({ url: event.url });
+      });
+      return () => {
+        sub.remove();
+      };
+    } else if (android.Events) {
+      // @TODO action.VIEW ?
+      // @TODO subject etc.?
+      android.Module!.getInitialIntent().then((event) => {
+        if (event.action === 'android.intent.action.SEND' && event.extras && event.extras['android.intent.extra.STREAM']) {
+          emit({ url: event.extras['android.intent.extra.STREAM'] });
+        }
+      });
+      const sub = android.Events.addListener('ReactNativeMoFsNewIntent', async (event) => {
+        if (event.action === 'android.intent.action.SEND' && event.extras && event.extras['android.intent.extra.STREAM']) {
+          emit({ url: event.extras['android.intent.extra.STREAM'] });
+        }
+      });
+      return () => {
+        sub.remove();
+      };
+    } else {
+      return () => {};
+    }
+  });
 
   /**
    * get mime type by file extension
@@ -464,9 +506,9 @@ export class Fs {
   }
 
   /**
-   * open file in other app
+   * share file to another app
    */
-  public static async openFile(path: string): Promise<void> {
+  public static async shareFile(path: string): Promise<void> {
     if (Fs.ios.Module) {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'openin' });
     } else if (Fs.android.Module) {
