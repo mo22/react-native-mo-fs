@@ -12,6 +12,7 @@ import androidx.exifinterface.media.ExifInterface;
 
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -51,24 +52,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     ReactNativeMoFs(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
-
-        reactContext.addLifecycleEventListener(new LifecycleEventListener() {
-            @Override
-            public void onHostResume() {
-                Activity activity = getReactApplicationContext().getCurrentActivity();
-                if (activity != null) {
-                    Intent intent = activity.getIntent();
-                    Log.i("XXX", "initial activity intent " + intent);
-                    // @TODO: this one is correct.
-                }
-            }
-            @Override
-            public void onHostPause() {
-            }
-            @Override
-            public void onHostDestroy() {
-            }
-        });
 
         reactContext.addActivityEventListener(new ActivityEventListener() {
             @Override
@@ -129,6 +112,31 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         return res;
     }
 
+    private WritableMap getMapFromIntent(Intent intent) {
+        WritableMap res = Arguments.createMap();
+        res.putString("action", intent.getAction());
+        res.putString("type", intent.getType());
+        if (intent.getData() != null) res.putString("data", intent.getData().toString());
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            WritableMap resExtras = Arguments.createMap();
+            for (String key : extras.keySet()) {
+                Object val = extras.get(key);
+                if (val instanceof String) {
+                    resExtras.putString(key, (String)val);
+                } else if (val instanceof Number) {
+                    resExtras.putDouble(key, ((Number) val).doubleValue());
+                } else if (val instanceof Boolean) {
+                    resExtras.putBoolean(key, (Boolean)val);
+                } else if (val == null) {
+                    resExtras.putNull(key);
+                }
+            }
+            res.putMap("extras", resExtras);
+        }
+        return res;
+    }
+
     private String getMimeTypePath(String path) {
         String[] tmp = path.split("\\.");
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(tmp[tmp.length - 1]);
@@ -144,6 +152,36 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             getProviderAuthority(),
             new File(path)
         );
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void getInitialIntent(final Promise promise) {
+        final LifecycleEventListener lifecycleEventListener = new LifecycleEventListener() {
+            @Override
+            public void onHostResume() {
+                getReactApplicationContext().removeLifecycleEventListener(this);
+                Activity activity = getReactApplicationContext().getCurrentActivity();
+                if (activity != null) {
+                    Intent intent = activity.getIntent();
+                    promise.resolve(getMapFromIntent(intent));
+                } else {
+                    promise.resolve(null);
+                }
+            }
+            @Override
+            public void onHostPause() {
+            }
+            @Override
+            public void onHostDestroy() {
+            }
+        };
+        Activity activity = getReactApplicationContext().getCurrentActivity();
+        if (activity != null) {
+            lifecycleEventListener.onHostResume();
+        } else {
+            getReactApplicationContext().addLifecycleEventListener(lifecycleEventListener);
+        }
     }
 
     @SuppressWarnings("unused")
