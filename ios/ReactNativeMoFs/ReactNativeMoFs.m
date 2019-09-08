@@ -64,11 +64,11 @@ NSString* mimeTypeForPath(NSString* path) {
 }
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(nullable NSString *)application {
     // not called?
-    NSLog(@"willBeginSendingToApplication");
+    NSLog(@"XXX willBeginSendingToApplication");
 }
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(nullable NSString *)application {
     // not called?
-    NSLog(@"didEndSendingToApplication");
+    NSLog(@"XXX didEndSendingToApplication");
 }
 - (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
     return RCTSharedApplication().delegate.window.rootViewController;
@@ -121,7 +121,6 @@ RCT_EXPORT_MODULE()
         self.refs = [NSMutableSet new];
         static id<UIApplicationDelegate> appDelegate;
         if (appDelegate == nil) {
-            NSLog(@"XXX swizzle openURL");
             appDelegate = RCTSharedApplication().delegate;
             methodSwizzle(
                 [appDelegate class], @selector(application:openURL:options:),
@@ -136,11 +135,8 @@ RCT_EXPORT_MODULE()
 
 - (BOOL)swizzled_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-    NSLog(@"XXX application openURL %@ options %@", url, options);
     RCTBridge* bridge = ((RCTRootView*)RCTSharedApplication().delegate.window.rootViewController.view).bridge;
-    NSLog(@"bridge %@", bridge);
     // @TODO: need to remember this - called very soon.
-    // if we don't have listeners registered keep it as initial
     ReactNativeMoFs* realself = [bridge moduleForClass:[ReactNativeMoFs class]];
     [realself sendEventWithName:@"ReactNativeMoFsLink" body:@{
         @"url": [url absoluteString],

@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -42,7 +41,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,7 +101,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 if (val instanceof String) {
                     resExtras.putString(key, (String)val);
                 } else if (val instanceof Uri) {
-                    resExtras.putString(key, ((Uri)val).toString());
+                    resExtras.putString(key, val.toString());
                 } else if (val instanceof Number) {
                     resExtras.putDouble(key, ((Number)val).doubleValue());
                 } else if (val instanceof Boolean) {
