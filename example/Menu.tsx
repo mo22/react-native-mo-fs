@@ -71,9 +71,23 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={async () => {
-            await Fs.pickFile({ types: ['image/jpeg', 'image/png'], multiple: true });
+            await Fs.pickFile({ types: ['image/jpeg', 'image/png'] });
           }}
-          title="pickFile"
+          title="pickFile image"
+        />
+
+        <ListItem
+          onPress={async () => {
+            await Fs.pickFile({ types: ['application/pdf'] });
+          }}
+          title="pickFile pdf"
+        />
+
+        <ListItem
+          onPress={async () => {
+            await Fs.pickFile({ multiple: true });
+          }}
+          title="pickFile any multiple"
         />
 
         <ListItem
