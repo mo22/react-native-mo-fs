@@ -490,11 +490,11 @@ export class Fs {
    */
   public static async pickFile(args: PickFileArgs) {
     console.log(args);
-    // if (Fs.ios.Module) {
-    //   await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'preview' });
-    // } else if (Fs.android.Module) {
-    //   await Fs.android.Module.viewIntentChooser({ path: path });
-    // }
+    if (Fs.ios.Module) {
+      await Fs.ios.Module!.showDocumentPickerView({ multiple: args.multiple });
+    } else if (Fs.android.Module) {
+      await Fs.android.Module.getContent({ multiple: args.multiple });
+    }
   }
 
 }
