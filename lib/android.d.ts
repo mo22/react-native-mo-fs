@@ -45,8 +45,11 @@ export interface Module {
         subject?: string;
         text?: string;
     }): Promise<void>;
-    viewIntentChooser(args: {
+    viewIntentChooser(args: ({
         url: string;
+    } | {
+        path: string;
+    }) & {
         title?: string;
     }): Promise<void>;
     getContent(args: {

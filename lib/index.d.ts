@@ -184,5 +184,7 @@ export declare class Fs {
      * resize an image
      */
     static resizeImage(blob: Blob, args: ResizeImageArgs): Promise<Blob>;
+    static shareFile(path: string): Promise<void>;
+    static previewFile(path: string): Promise<void>;
 }
 export {};
