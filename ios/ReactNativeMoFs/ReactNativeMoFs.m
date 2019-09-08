@@ -114,7 +114,7 @@ RCT_EXPORT_MODULE()
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[ @"ReactNativeMoFsLink" ];
+    return @[ @"ReactNativeMoFsOpenURL" ];
 }
 
 - (instancetype)init {
