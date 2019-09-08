@@ -60,7 +60,9 @@ export interface Module {
 }
 export interface OpenURLEvent {
     url: string;
-    options: any;
+    options: {
+        [k: string]: any;
+    };
 }
 export declare const Module: Module | undefined;
 export declare const Events: {

@@ -31,7 +31,7 @@ const AppContainer = createAppContainer(AppNavigator);
 if (Fs.ios.Events) {
   Fs.ios.Events.addListener('ReactNativeMoFsOpenURL', (asd) => {
     console.log('XXX ReactNativeMoFsOpenURL', asd);
-    // 'XXX ReactNativeMoFsLink', { url: 'file:///private/var/mobile/Containers/Data/Application/8250D055-04FF-483C-9861-F5E3BF611DE3/tmp/org.reactjs.native.example.example-Inbox/2018_07_24_12_51_03.pdf',
+    // 'XXX ReactNativeMoFsOpenURL', { url: 'file:///private/var/mobile/Containers/Data/Application/8250D055-04FF-483C-9861-F5E3BF611DE3/tmp/org.reactjs.native.example.example-Inbox/2018_07_24_12_51_03.pdf',
     //   options: { UIApplicationOpenURLOptionsOpenInPlaceKey: false } }
   });
   Fs.ios.Module!.getLastOpenURL().then((asd) => {

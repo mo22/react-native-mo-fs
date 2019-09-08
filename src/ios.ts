@@ -52,7 +52,7 @@ export interface Module {
 
 export interface OpenURLEvent {
   url: string;
-  options: any;
+  options: { [k: string]: any };
 }
 
 export const Module = (Platform.OS === 'ios') ? NativeModules.ReactNativeMoFs as Module : undefined;
