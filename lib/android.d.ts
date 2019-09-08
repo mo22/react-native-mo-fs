@@ -65,7 +65,7 @@ export interface Module {
         types?: string[];
         multiple?: boolean;
         title?: string;
-    }): Promise<undefined | string>;
+    }): Promise<undefined | string[]>;
 }
 export interface LinkEvent {
     url: string;

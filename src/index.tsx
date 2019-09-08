@@ -488,7 +488,7 @@ export class Fs {
   /**
    * show a preview of the file
    */
-  public static async pickFile(args: PickFileArgs) {
+  public static async pickFile(args: PickFileArgs): Promise<string[]> {
     if (Fs.ios.Module) {
       const utis = args.types ? (
         await Promise.all(args.types.map((i) => Fs.ios.Module!.getUtiFromMimeType(i) as Promise<string>))
@@ -497,9 +497,11 @@ export class Fs {
       );
       const res = await Fs.ios.Module!.showDocumentPickerView({ utis: utis, multiple: args.multiple });
       console.log('res', res);
+      return res || [];
     } else if (Fs.android.Module) {
       const res = await Fs.android.Module.getContent({ types: args.types, multiple: args.multiple });
       console.log('res', res);
+      return res || [];
     }
   }
 

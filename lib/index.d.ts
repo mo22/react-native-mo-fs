@@ -201,6 +201,6 @@ export declare class Fs {
     /**
      * show a preview of the file
      */
-    static pickFile(args: PickFileArgs): Promise<void>;
+    static pickFile(args: PickFileArgs): Promise<string[]>;
 }
 export {};
