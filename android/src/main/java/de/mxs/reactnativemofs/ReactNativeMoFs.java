@@ -60,31 +60,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             }
             @Override
             public void onNewIntent(Intent intent) {
-                Log.i("XXX", "onNewIntent " + intent);
-                Log.i("XXX", "action=" + intent.getAction());
-                Log.i("XXX", "data=" + intent.getData());
-                Log.i("XXX", "type=" + intent.getType());
-                Log.i("XXX", "dataString=" + intent.getDataString());
-                Log.i("XXX", "extras=" + Arrays.asList(intent.getExtras().keySet().toArray()));
-//                Uri uri = (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
-//                Log.i("XXX", "uri=" + uri);
-                WritableMap args = Arguments.createMap();
-                args.putString("action", intent.getAction());
-                args.putString("type", intent.getType());
-                if (intent.getData() != null) {
-                    args.putString("url", intent.getData().toString());
-                }
-                if (intent.getExtras().containsKey(Intent.EXTRA_STREAM)) {
-                    Uri uri = (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
-                    if (uri != null) {
-                        args.putString("url", uri.toString());
-                    }
-                }
                 Log.i("XXX", "send ReactNativeMoFsLink event");
-                getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoFsLink", args);
-//                09-07 17:20:55.501 26251 26302 I ReactNativeJS: 'XXX ReactNativeMoFsLink', { url: 'content://com.android.providers.downloads.documents/document/695',
-//                09-07 17:20:55.501 26251 26302 I ReactNativeJS:   type: 'application/pdf',
-//                09-07 17:20:55.501 26251 26302 I ReactNativeJS:   action: 'android.intent.action.SEND' }
+                getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoFsLink", getMapFromIntent(intent));
             }
         });
     }
@@ -124,8 +101,10 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 Object val = extras.get(key);
                 if (val instanceof String) {
                     resExtras.putString(key, (String)val);
+                } else if (val instanceof Uri) {
+                    resExtras.putString(key, ((Uri)val).toString());
                 } else if (val instanceof Number) {
-                    resExtras.putDouble(key, ((Number) val).doubleValue());
+                    resExtras.putDouble(key, ((Number)val).doubleValue());
                 } else if (val instanceof Boolean) {
                     resExtras.putBoolean(key, (Boolean)val);
                 } else if (val == null) {
@@ -625,7 +604,21 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                     if (data == null) {
                         promise.resolve(null);
                     } else {
-                        promise.resolve(data.getData().toString());
+                        WritableArray res = Arguments.createArray();
+                        if (data.getClipData() != null) {
+                            for (int i=0; i<data.getClipData().getItemCount(); i++) {
+                                Uri uri = data.getClipData().getItemAt(i).getUri();
+                                if (uri != null) {
+                                    res.pushString(uri.toString());
+                                }
+                            }
+                        } else {
+                            Uri uri = data.getData();
+                            if (uri != null) {
+                                res.pushString(uri.toString());
+                            }
+                        }
+                        promise.resolve(res);
                     }
                 }
             }
