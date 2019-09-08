@@ -56,7 +56,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
               const res = await Fs.android.Module.getContent({});
               console.log('res', res);
               if (res) {
-                const url = res;
+                const url = res[0];
                 console.log('url', url);
                 // const path = decodeURIComponent(url.slice(7));
                 // console.log('path', path);

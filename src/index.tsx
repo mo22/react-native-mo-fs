@@ -471,6 +471,8 @@ export class Fs {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'openin' });
     } else if (Fs.android.Module) {
       await Fs.android.Module.sendIntentChooser({ path: path });
+    } else {
+      throw new Error('platform not supported');
     }
   }
 
@@ -482,6 +484,8 @@ export class Fs {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'preview' });
     } else if (Fs.android.Module) {
       await Fs.android.Module.viewIntentChooser({ path: path });
+    } else {
+      throw new Error('platform not supported');
     }
   }
 
@@ -501,6 +505,8 @@ export class Fs {
       const res = await Fs.android.Module.getContent({ types: args.types, multiple: args.multiple });
       console.log('res', res);
       return res || [];
+    } else {
+      throw new Error('platform not supported');
     }
   }
 
