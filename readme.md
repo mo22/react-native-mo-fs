@@ -40,10 +40,6 @@
 
 ## TODO
 
-- [ ] common function for picker
-  - test types
-  - fetch/import result
-
 - [ ] handle open in - intent + linking stuff?
   -> send event
   -> event listener?

@@ -37,6 +37,9 @@ if (Fs.android.Events) {
   Fs.android.Events.addListener('ReactNativeMoFsLink', (asd) => {
     console.log('XXX ReactNativeMoFsLink', asd);
   });
+  Fs.android.Module!.getInitialIntent().then((asd) => {
+    console.log('XXX getInitialIntent', asd);
+  });
 }
 Linking.addEventListener('url', ({url}) => {
   console.log('XXX linking url event', url);
