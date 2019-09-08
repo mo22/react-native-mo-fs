@@ -410,23 +410,42 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         for (int i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) [output appendFormat:@"%02x", digest[i]];
         res[@"sha256"] = output;
     }
-    if (args[@"image"]) {
-        CIImage* image = [CIImage imageWithData:data];
-        if (image) {
-            res[@"image"] = @{
-                @"width": @(image.extent.size.width),
-                @"height": @(image.extent.size.height),
-            };
-        }
-    }
-    if (args[@"exif"]) {
-        CIImage* image = [CIImage imageWithData:data];
-        if (image) {
-            res[@"exif"] = image.properties;
-        }
-    }
     resolve(res);
 }
+
+RCT_EXPORT_METHOD(getImageSize:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
+    NSData* data = [blobManager resolve:blob];
+    if (!data) {
+        reject(@"", @"blob not found", nil);
+        return;
+    }
+    CIImage* image = [CIImage imageWithData:data];
+    if (!image) {
+        reject(@"", @"blob not an image", nil);
+        return;
+    }
+    resolve(@{
+        @"width": @(image.extent.size.width),
+        @"height": @(image.extent.size.height),
+    });
+}
+
+RCT_EXPORT_METHOD(getExif:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
+    NSData* data = [blobManager resolve:blob];
+    if (!data) {
+        reject(@"", @"blob not found", nil);
+        return;
+    }
+    CIImage* image = [CIImage imageWithData:data];
+    if (!image) {
+        reject(@"", @"blob not an image", nil);
+        return;
+    }
+    resolve(image.properties);
+}
+
 
 RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];

@@ -374,34 +374,62 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
                 res.putString("sha256", sb.toString());
             }
-            if (args.hasKey("image") && args.getBoolean("image")) {
-                Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                if (bmp != null) {
-                    WritableMap image = Arguments.createMap();
-                    image.putDouble("width", bmp.getWidth());
-                    image.putDouble("height", bmp.getHeight());
-                    res.putMap("image", image);
-                }
+            promise.resolve(res);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void getImageSize(ReadableMap blob, ReadableMap args, Promise promise) {
+        try {
+            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            byte[] data = blobModule.resolve(blob);
+            if (data == null) {
+                promise.reject(new Error("blob not found"));
+                return;
             }
-            if (args.hasKey("exif") && args.getBoolean("exif")) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    WritableMap result = Arguments.createMap();
-                    ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
-                    for (Field field : ExifInterface.class.getDeclaredFields()) {
-                        if (!Modifier.isStatic(field.getModifiers())) continue;
-                        if (!Modifier.isPublic(field.getModifiers())) continue;
-                        if (!field.getName().startsWith("TAG_")) continue;
-                        try {
-                            String tag = (String)field.get(exif);
-                            String value = exif.getAttribute(tag);
-                            if (value != null) {
-                                result.putString(field.getName(), value);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+            if (bmp == null) {
+                promise.reject(new Error("blob not an image"));
+                return;
+            }
+            WritableMap res = Arguments.createMap();
+            res.putDouble("width", bmp.getWidth());
+            res.putDouble("height", bmp.getHeight());
+            promise.resolve(res);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void getExif(ReadableMap blob, ReadableMap args, Promise promise) {
+        try {
+            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            byte[] data = blobModule.resolve(blob);
+            if (data == null) {
+                promise.reject(new Error("blob not found"));
+                return;
+            }
+            WritableMap res = Arguments.createMap();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
+                for (Field field : ExifInterface.class.getDeclaredFields()) {
+                    if (!Modifier.isStatic(field.getModifiers())) continue;
+                    if (!Modifier.isPublic(field.getModifiers())) continue;
+                    if (!field.getName().startsWith("TAG_")) continue;
+                    try {
+                        String tag = (String)field.get(exif);
+                        String value = exif.getAttribute(tag);
+                        if (value != null) {
+                            res.putString(field.getName(), value);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    res.putMap("exif", result);
                 }
             }
             promise.resolve(res);
