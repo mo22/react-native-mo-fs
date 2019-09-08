@@ -67,10 +67,8 @@ export interface Module {
         title?: string;
     }): Promise<undefined | string[]>;
 }
-export interface NewIntentEvent {
-}
 export declare const Module: Module | undefined;
 export declare const Events: {
-    addListener(eventType: "ReactNativeMoFsNewIntent", listener: (event: NewIntentEvent) => void): EmitterSubscription;
+    addListener(eventType: "ReactNativeMoFsNewIntent", listener: (event: Intent) => void): EmitterSubscription;
 } | undefined;
 export {};

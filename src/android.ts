@@ -50,12 +50,8 @@ export interface Module {
   getContent(args: { types?: string[]; multiple?: boolean; title?: string; }): Promise<undefined|string[]>;
 }
 
-export interface NewIntentEvent {
-  // url: string;
-}
-
 export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoFs as Module : undefined;
 
 export const Events = Module ? new NativeEventEmitter(NativeModules.ReactNativeMoFs) as {
-  addListener(eventType: 'ReactNativeMoFsNewIntent', listener: (event: NewIntentEvent) => void): EmitterSubscription;
+  addListener(eventType: 'ReactNativeMoFsNewIntent', listener: (event: Intent) => void): EmitterSubscription;
 } : undefined;
