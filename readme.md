@@ -47,6 +47,4 @@
 
 - [ ] common function for picker
 
-- [ ] common function for share
-
 - [ ] common function for sharing event

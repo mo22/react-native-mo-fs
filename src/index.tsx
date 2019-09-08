@@ -456,16 +456,21 @@ export class Fs {
     });
   }
 
-  public static async shareFile(path: string) {
+  /**
+   * open file in other app
+   */
+  public static async openFile(path: string) {
     if (Fs.ios.Module) {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'openin' });
     } else if (Fs.android.Module) {
       await Fs.android.Module.sendIntentChooser({ path: path });
-      // subject: 'subject', text: 'text'
     }
   }
 
-  public static async previewFile(path: string) {
+  /**
+   * show a preview of the file
+   */
+  public static async viewFile(path: string) {
     if (Fs.ios.Module) {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'preview' });
     } else if (Fs.android.Module) {
