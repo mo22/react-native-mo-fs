@@ -7,6 +7,14 @@ interface BlobData {
     type?: string;
     lastModified?: number;
 }
+interface Intent {
+    action: string;
+    type: string;
+    data?: string;
+    extras?: {
+        [k: string]: any;
+    };
+}
 export interface Module {
     authorities: string;
     paths: {
@@ -15,6 +23,7 @@ export interface Module {
         packageResource: string;
         data?: string;
     };
+    getInitialIntent(): Promise<Intent>;
     getMimeType(extension: string): Promise<string | undefined>;
     readBlob(blob: BlobData, mode: 'base64' | 'utf8'): Promise<string>;
     createBlob(str: string, mode: 'base64' | 'utf8'): Promise<BlobData>;
