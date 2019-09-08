@@ -101,6 +101,8 @@ NSString* mimeTypeForPath(NSString* path) {
 
 @interface ReactNativeMoFs : RCTEventEmitter
 @property NSMutableSet* refs;
+@property BOOL observing;
+@property NSDictionary* lastOpenURL;
 @end
 
 @implementation ReactNativeMoFs
@@ -136,12 +138,15 @@ RCT_EXPORT_MODULE()
 - (BOOL)swizzled_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
     RCTBridge* bridge = ((RCTRootView*)RCTSharedApplication().delegate.window.rootViewController.view).bridge;
-    // @TODO: need to remember this - called very soon.
-    ReactNativeMoFs* realself = [bridge moduleForClass:[ReactNativeMoFs class]];
-    [realself sendEventWithName:@"ReactNativeMoFsLink" body:@{
+    NSDictionary* args = @{
         @"url": [url absoluteString],
         @"options": options,
-    }];
+    };
+    ReactNativeMoFs* realself = [bridge moduleForClass:[ReactNativeMoFs class]];
+    realself.lastOpenURL = args;
+    if (realself.observing) {
+        [realself sendEventWithName:@"ReactNativeMoFsOpenURL" body:args];
+    }
     if ([self respondsToSelector:@selector(swizzled_application:openURL:options:)]) {
         return [self swizzled_application:application openURL:url options:options];
     } else {
@@ -157,6 +162,18 @@ RCT_EXPORT_MODULE()
         @"caches": [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject],
     };
     return constants;
+}
+
+- (void)startObserving {
+    self.observing = YES;
+}
+
+- (void)stopObserving {
+    self.observing = NO;
+}
+
+RCT_EXPORT_METHOD(getLastOpenURL:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    resolve(self.lastOpenURL);
 }
 
 RCT_EXPORT_METHOD(getMimeType:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
