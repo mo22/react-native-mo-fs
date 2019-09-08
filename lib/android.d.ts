@@ -53,7 +53,7 @@ export interface Module {
         title?: string;
     }): Promise<void>;
     getContent(args: {
-        type?: string;
+        types?: string[];
         multiple?: boolean;
         title?: string;
     }): Promise<undefined | string>;

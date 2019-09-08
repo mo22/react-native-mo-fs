@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -546,21 +547,36 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void getContent(ReadableMap args, final Promise promise) {
-        //    getContent(args: { type?: string; }): Promise<void>;
+        //   getContent(args: { types?: string[]; multiple?: boolean; title?: string; }): Promise<undefined|string>;
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT); // Intent.ACTION_PICK
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        if (args.hasKey("type")) {
-            intent.setType(args.getString("type"));
+
+        ArrayList<String> types = new ArrayList<>();
+        if (args.hasKey("types")) {
+            ReadableArray tmp = args.getArray("types");
+            if (tmp == null) throw new RuntimeException("types == null");
+            for (int i=0; i<tmp.size(); i++) {
+                types.add(tmp.getString(i));
+            }
+        }
+        Log.i("XXX", "types " + types);
+        if (types.size() == 0) {
+            intent.setType("*/*");
+        } else if (types.size() == 1) {
+            intent.setType(types.get(0));
         } else {
             intent.setType("*/*");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, types.toArray());
+            }
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             if (args.hasKey("multiple") && args.getBoolean("multiple")) {
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             }
         }
-//        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             String title = args.hasKey("title") ? args.getString("title") : "";
             intent = Intent.createChooser(intent, title);
