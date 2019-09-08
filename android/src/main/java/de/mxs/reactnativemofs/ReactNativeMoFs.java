@@ -12,6 +12,7 @@ import androidx.exifinterface.media.ExifInterface;
 
 import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -547,11 +548,9 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void getContent(ReadableMap args, final Promise promise) {
-        //   getContent(args: { types?: string[]; multiple?: boolean; title?: string; }): Promise<undefined|string>;
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT); // Intent.ACTION_PICK
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-
         ArrayList<String> types = new ArrayList<>();
         if (args.hasKey("types")) {
             ReadableArray tmp = args.getArray("types");
@@ -566,12 +565,11 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         } else if (types.size() == 1) {
             intent.setType(types.get(0));
         } else {
-            intent.setType("*/*");
+            intent.setType(TextUtils.join("|", types));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, types.toArray());
             }
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             if (args.hasKey("multiple") && args.getBoolean("multiple")) {
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
