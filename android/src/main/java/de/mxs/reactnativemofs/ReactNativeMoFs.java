@@ -599,26 +599,25 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             @Override
             public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                 if (requestCode == 13131) {
-                    // validate?
-                    Log.i("XXX", "response " + requestCode + " " + resultCode + " " + data);
                     if (data == null) {
                         promise.resolve(null);
                     } else {
-                        WritableArray res = Arguments.createArray();
                         if (data.getClipData() != null) {
+                            WritableArray res = Arguments.createArray();
                             for (int i=0; i<data.getClipData().getItemCount(); i++) {
                                 Uri uri = data.getClipData().getItemAt(i).getUri();
                                 if (uri != null) {
                                     res.pushString(uri.toString());
                                 }
                             }
+                            promise.resolve(res);
+                        } else if (data.getData() != null) {
+                            WritableArray res = Arguments.createArray();
+                            res.pushString(data.getData().toString());
+                            promise.resolve(res);
                         } else {
-                            Uri uri = data.getData();
-                            if (uri != null) {
-                                res.pushString(uri.toString());
-                            }
+                            promise.resolve(null);
                         }
-                        promise.resolve(res);
                     }
                 }
             }
