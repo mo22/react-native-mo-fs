@@ -29,8 +29,10 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
     }
     if (stat.exists && !stat.dir) {
       const blob = await Fs.readFile(path);
-      const info = await Fs.getBlobInfo(blob, { sha1: true, image: true, exif: true });
+      const info = await Fs.getBlobInfo(blob, { sha1: true });
       console.log('info', info);
+      const exif = await Fs.getExif(blob);
+      console.log('exif', exif);
       this.setState({ blob: blob, sha1: info.sha1 });
       if (blob.type === 'image/jpeg' || blob.type === 'image/png') {
         // get image size?
