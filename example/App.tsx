@@ -35,10 +35,26 @@ if (Fs.ios.Events) {
 }
 if (Fs.android.Events) {
   Fs.android.Events.addListener('ReactNativeMoFsNewIntent', (asd) => {
-    console.log('XXX ReactNativeMoFsLink', asd);
+    console.log('XXX ReactNativeMoFsNewIntent', asd);
+    // 'XXX ReactNativeMoFsLink', { extras:
+    //    { 'android.intent.extra.TITLE': 'sample.pdf',
+    //      'android.intent.extra.STREAM': 'content://com.android.providers.downloads.documents/document/695',
+    //      'referrer.string': '/pdfviewer',
+    //      'android.intent.extra.SUBJECT': 'sample.pdf',
+    //      'referrer.code': 97 },
+    //   type: 'application/pdf',
+    //   action: 'android.intent.action.SEND' }
   });
   Fs.android.Module!.getInitialIntent().then((asd) => {
     console.log('XXX getInitialIntent', asd);
+    // 'XXX getInitialIntent', { extras:
+    //        { 'android.intent.extra.TITLE': 'sample.pdf',
+    //          'android.intent.extra.STREAM': 'content://com.android.providers.downloads.documents/document/695',
+    //          'referrer.string': '/pdfviewer',
+    //          'android.intent.extra.SUBJECT': 'sample.pdf',
+    //          'referrer.code': 97 },
+    //       type: 'application/pdf',
+    //       action: 'android.intent.action.SEND' }
   });
 }
 Linking.addEventListener('url', ({url}) => {
