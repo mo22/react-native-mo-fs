@@ -157,7 +157,7 @@ export declare class Fs {
     /**
      * delete file
      */
-    static deleteFile(path: string): Promise<void>;
+    static deleteFile(path: string, recursive?: boolean): Promise<void>;
     /**
      * rename file
      */

@@ -334,11 +334,11 @@ export class Fs {
   /**
    * delete file
    */
-  public static async deleteFile(path: string): Promise<void> {
+  public static async deleteFile(path: string, recursive = false): Promise<void> {
     if (ios.Module) {
-      await ios.Module.deleteFile(path);
+      await ios.Module.deleteFile(path, recursive);
     } else if (android.Module) {
-      await android.Module.deleteFile(path);
+      await android.Module.deleteFile(path, recursive);
     } else {
       throw new Error('platform not supported');
     }

@@ -24,7 +24,7 @@ export interface Module {
   readFile(path: string): Promise<BlobData>;
   writeFile(path: string, data: BlobData): Promise<void>;
   appendFile(path: string, data: BlobData): Promise<void>;
-  deleteFile(path: string): Promise<void>;
+  deleteFile(path: string, recursive: boolean): Promise<void>;
   renameFile(fromPath: string, toPath: string): Promise<void>;
   listDir(path: string): Promise<string[]>;
   createDir(path: string): Promise<void>;
