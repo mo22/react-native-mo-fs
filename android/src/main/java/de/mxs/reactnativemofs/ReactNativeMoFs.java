@@ -88,6 +88,18 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         return res;
     }
 
+    private boolean deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            boolean res = true;
+            for (File child : fileOrDirectory.listFiles()) {
+                res = res && deleteRecursive(child);
+            }
+            return res;
+        } else {
+            return fileOrDirectory.delete();
+        }
+    }
+
     private WritableMap getMapFromIntent(Intent intent) {
         WritableMap res = Arguments.createMap();
         res.putString("action", intent.getAction());
@@ -277,11 +289,17 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void deleteFile(String path, Promise promise) {
+    public void deleteFile(String path, boolean recursive, Promise promise) {
         try {
             File file = new File(path);
-            if (!file.delete()) {
-                throw new IOException("cannot delete");
+            if (recursive) {
+                if (!deleteRecursive(file)) {
+                    throw new IOException("cannot delete");
+                }
+            } else {
+                if (!file.delete()) {
+                    throw new IOException("cannot delete");
+                }
             }
             promise.resolve(null);
         } catch (IOException e) {
