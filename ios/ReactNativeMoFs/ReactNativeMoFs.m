@@ -121,16 +121,13 @@ RCT_EXPORT_MODULE()
     self = [super init];
     if (self) {
         self.refs = [NSMutableSet new];
-        static id<UIApplicationDelegate> appDelegate;
-        if (appDelegate == nil) {
-            appDelegate = RCTSharedApplication().delegate;
-            methodSwizzle(
-                [appDelegate class], @selector(application:openURL:options:),
-                [self class],@selector(swizzled_application:openURL:options:)
-            );
-            [UIApplication sharedApplication].delegate = nil;
-            RCTSharedApplication().delegate = appDelegate;
-        }
+        id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
+        methodSwizzle(
+            [appDelegate class], @selector(application:openURL:options:),
+            [self class],@selector(swizzled_application:openURL:options:)
+        );
+        [UIApplication sharedApplication].delegate = nil;
+        RCTSharedApplication().delegate = appDelegate;
     }
     return self;
 }
