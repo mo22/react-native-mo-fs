@@ -177,9 +177,9 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
             />
             <ListItem
               chevron={true}
-              title="openFile"
+              title="shareFile"
               onPress={async () => {
-                await Fs.openFile(path);
+                await Fs.shareFile(path);
               }}
             />
           </React.Fragment>
