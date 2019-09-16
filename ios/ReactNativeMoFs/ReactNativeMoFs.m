@@ -278,6 +278,7 @@ RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)b
         return;
     }
     if (@available(iOS 13.0, *)) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000 // __IPHONE_13_0
         [fp seekToEndReturningOffset:nil error:&error];
         if (error) {
             reject(@"", [error localizedDescription], error);
@@ -293,6 +294,7 @@ RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)b
             reject(@"", [error localizedDescription], error);
             return;
         }
+#endif
     } else {
         [fp seekToEndOfFile];
         [fp writeData:data];
