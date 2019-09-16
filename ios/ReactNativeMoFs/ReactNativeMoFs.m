@@ -126,7 +126,7 @@ RCT_EXPORT_MODULE()
             [appDelegate class], @selector(application:openURL:options:),
             [self class],@selector(swizzled_application:openURL:options:)
         );
-        [UIApplication sharedApplication].delegate = nil;
+//        RCTSharedApplication().delegate = nil; // hm?
         RCTSharedApplication().delegate = appDelegate;
     }
     return self;
