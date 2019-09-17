@@ -554,7 +554,6 @@ export class Fs {
       return res || [];
     } else if (Fs.android.Module) {
       const res = await Fs.android.Module.getContent({ types: args.types, multiple: args.multiple });
-      console.log('res', res);
       return res || [];
     } else {
       throw new Error('platform not supported');
