@@ -18,6 +18,9 @@ declare global {
         readonly type: string;
     }
 }
+export declare type URL = string;
+export declare type Path = string;
+export declare type MimeType = string;
 export interface BlobInfoArgs {
     /** calculate hex md5 of blob */
     md5?: boolean;
@@ -62,20 +65,20 @@ export interface ResizeImageArgs {
 }
 export interface PickFileArgs {
     /** mime types */
-    types?: string[];
+    types?: MimeType[];
     /** allow multiple selection */
     multiple?: boolean;
 }
 export interface Paths {
-    cache: string;
-    docs: string;
-    bundle?: string;
-    document?: string;
-    caches?: string;
-    externalCache?: string;
-    files?: string;
-    packageResource?: string;
-    data?: string;
+    cache: Path;
+    docs: Path;
+    bundle?: Path;
+    document?: Path;
+    caches?: Path;
+    externalCache?: Path;
+    files?: Path;
+    packageResource?: Path;
+    data?: Path;
 }
 export interface Stat {
     /** true if the file or directory exists */
@@ -89,7 +92,7 @@ export interface Stat {
 }
 export interface OpenFileEvent {
     /** the url to be opened */
-    url: string;
+    url: URL;
 }
 export declare class Fs {
     /**
@@ -111,11 +114,11 @@ export declare class Fs {
     /**
      * get mime type by file extension
      */
-    static getMimeType(extension: string): Promise<string | undefined>;
+    static getMimeType(extension: string): Promise<MimeType | undefined>;
     /**
      * get url for sharing a blob
      */
-    static getBlobURL(blob: Blob): string;
+    static getBlobURL(blob: Blob): URL;
     /**
      * read blob to utf8 or base64 string
      */
@@ -129,51 +132,51 @@ export declare class Fs {
     /**
      * read file to blob
      */
-    static readFile(path: string): Promise<Blob>;
+    static readFile(path: Path): Promise<Blob>;
     /**
      * read file to text
      */
-    static readTextFile(path: string): Promise<string>;
+    static readTextFile(path: Path): Promise<string>;
     /**
      * read URL to blob (using fetch)
      */
-    static readURL(url: string): Promise<Blob>;
+    static readURL(url: URL): Promise<Blob>;
     /**
      * write blob to file
      */
-    static writeFile(path: string, blob: Blob): Promise<void>;
+    static writeFile(path: Path, blob: Blob): Promise<void>;
     /**
      * write text to file
      */
-    static writeTextFile(path: string, text: string): Promise<void>;
+    static writeTextFile(path: Path, text: string): Promise<void>;
     /**
      * append blob to file
      */
-    static appendFile(path: string, blob: Blob): Promise<void>;
+    static appendFile(path: Path, blob: Blob): Promise<void>;
     /**
      * append text to file
      */
-    static appendTextFile(path: string, text: string): Promise<void>;
+    static appendTextFile(path: Path, text: string): Promise<void>;
     /**
      * delete file
      */
-    static deleteFile(path: string, recursive?: boolean): Promise<void>;
+    static deleteFile(path: Path, recursive?: boolean): Promise<void>;
     /**
      * rename file
      */
-    static renameFile(fromPath: string, toPath: string): Promise<void>;
+    static renameFile(fromPath: Path, toPath: Path): Promise<void>;
     /**
      * list files in directory
      */
-    static listDir(path: string): Promise<string[]>;
+    static listDir(path: Path): Promise<string[]>;
     /**
      * create directory
      */
-    static createDir(path: string): Promise<void>;
+    static createDir(path: Path): Promise<void>;
     /**
      * stat file. checks if file exists, is a dir, file size etc.
      */
-    static stat(path: string): Promise<Stat>;
+    static stat(path: Path): Promise<Stat>;
     /**
      * get info about a blob. can calculate md5 / sha1 / sha256.
      */
@@ -202,14 +205,14 @@ export declare class Fs {
     /**
      * share file to another app
      */
-    static shareFile(path: string): Promise<void>;
+    static shareFile(path: Path): Promise<void>;
     /**
      * show a preview of the file
      */
-    static viewFile(path: string): Promise<void>;
+    static viewFile(path: Path): Promise<void>;
     /**
      * show a preview of the file
      */
-    static pickFile(args: PickFileArgs): Promise<string[]>;
+    static pickFile(args: PickFileArgs): Promise<URL[]>;
 }
 export {};

@@ -28,6 +28,14 @@ declare global {
   }
 }
 
+
+
+export type URL = string;
+export type Path = string;
+export type MimeType = string;
+
+
+
 export interface BlobInfoArgs {
   /** calculate hex md5 of blob */
   md5?: boolean;
@@ -76,21 +84,21 @@ export interface ResizeImageArgs {
 
 export interface PickFileArgs {
   /** mime types */
-  types?: string[];
+  types?: MimeType[];
   /** allow multiple selection */
   multiple?: boolean;
 }
 
 export interface Paths {
-  cache: string;
-  docs: string;
-  bundle?: string;
-  document?: string;
-  caches?: string;
-  externalCache?: string;
-  files?: string;
-  packageResource?: string;
-  data?: string;
+  cache: Path;
+  docs: Path;
+  bundle?: Path;
+  document?: Path;
+  caches?: Path;
+  externalCache?: Path;
+  files?: Path;
+  packageResource?: Path;
+  data?: Path;
 }
 
 export interface Stat {
@@ -106,7 +114,7 @@ export interface Stat {
 
 export interface OpenFileEvent {
   /** the url to be opened */
-  url: string;
+  url: URL;
 }
 
 
@@ -178,7 +186,7 @@ export class Fs {
   /**
    * get mime type by file extension
    */
-  public static async getMimeType(extension: string): Promise<string|undefined> {
+  public static async getMimeType(extension: string): Promise<MimeType|undefined> {
     extension = extension.split('.').slice(-1).pop()!;
     if (ios.Module) {
       return await ios.Module.getMimeType(extension);
@@ -192,7 +200,7 @@ export class Fs {
   /**
    * get url for sharing a blob
    */
-  public static getBlobURL(blob: Blob): string {
+  public static getBlobURL(blob: Blob): URL {
     if (android.Module) {
       return `content://${android.Module.authorities}/blob/${blob.data.blobId}?offset=${blob.data.offset}&size=${blob.data.size}&type=${blob.data.type}`;
     } else {
@@ -245,7 +253,7 @@ export class Fs {
   /**
    * read file to blob
    */
-  public static async readFile(path: string): Promise<Blob> {
+  public static async readFile(path: Path): Promise<Blob> {
     if (ios.Module) {
       const blob = new Blob();
       blob.data = await ios.Module.readFile(path);
@@ -264,7 +272,7 @@ export class Fs {
   /**
    * read file to text
    */
-  public static async readTextFile(path: string): Promise<string> {
+  public static async readTextFile(path: Path): Promise<string> {
     const blob = await this.readFile(path);
     try {
       return await this.readBlob(blob, 'utf8');
@@ -276,7 +284,7 @@ export class Fs {
   /**
    * read URL to blob (using fetch)
    */
-  public static async readURL(url: string): Promise<Blob> {
+  public static async readURL(url: URL): Promise<Blob> {
     const tmp = await fetch(url);
     return await tmp.blob();
   }
@@ -284,7 +292,7 @@ export class Fs {
   /**
    * write blob to file
    */
-  public static async writeFile(path: string, blob: Blob): Promise<void> {
+  public static async writeFile(path: Path, blob: Blob): Promise<void> {
     if (ios.Module) {
       return await ios.Module.writeFile(path, blob.data);
     } else if (android.Module) {
@@ -297,7 +305,7 @@ export class Fs {
   /**
    * write text to file
    */
-  public static async writeTextFile(path: string, text: string): Promise<void> {
+  public static async writeTextFile(path: Path, text: string): Promise<void> {
     const blob = await this.createBlob(text, 'utf8');
     try {
       await this.writeFile(path, blob);
@@ -309,7 +317,7 @@ export class Fs {
   /**
    * append blob to file
    */
-  public static async appendFile(path: string, blob: Blob): Promise<void> {
+  public static async appendFile(path: Path, blob: Blob): Promise<void> {
     if (ios.Module) {
       return await ios.Module.appendFile(path, blob.data);
     } else if (android.Module) {
@@ -322,7 +330,7 @@ export class Fs {
   /**
    * append text to file
    */
-  public static async appendTextFile(path: string, text: string): Promise<void> {
+  public static async appendTextFile(path: Path, text: string): Promise<void> {
     const blob = await this.createBlob(text, 'utf8');
     try {
       await this.appendFile(path, blob);
@@ -334,7 +342,7 @@ export class Fs {
   /**
    * delete file
    */
-  public static async deleteFile(path: string, recursive = false): Promise<void> {
+  public static async deleteFile(path: Path, recursive = false): Promise<void> {
     if (ios.Module) {
       await ios.Module.deleteFile(path, recursive);
     } else if (android.Module) {
@@ -347,7 +355,7 @@ export class Fs {
   /**
    * rename file
    */
-  public static async renameFile(fromPath: string, toPath: string): Promise<void> {
+  public static async renameFile(fromPath: Path, toPath: Path): Promise<void> {
     if (ios.Module) {
       await ios.Module.renameFile(fromPath, toPath);
     } else if (android.Module) {
@@ -360,7 +368,7 @@ export class Fs {
   /**
    * list files in directory
    */
-  public static async listDir(path: string): Promise<string[]> {
+  public static async listDir(path: Path): Promise<string[]> {
     if (ios.Module) {
       return await ios.Module.listDir(path);
     } else if (android.Module) {
@@ -373,7 +381,7 @@ export class Fs {
   /**
    * create directory
    */
-  public static async createDir(path: string): Promise<void> {
+  public static async createDir(path: Path): Promise<void> {
     if (ios.Module) {
       await ios.Module.createDir(path);
     } else if (android.Module) {
@@ -386,7 +394,7 @@ export class Fs {
   /**
    * stat file. checks if file exists, is a dir, file size etc.
    */
-  public static async stat(path: string): Promise<Stat> {
+  public static async stat(path: Path): Promise<Stat> {
     if (ios.Module) {
       const tmp = await ios.Module.stat(path);
       return {
@@ -509,7 +517,7 @@ export class Fs {
   /**
    * share file to another app
    */
-  public static async shareFile(path: string): Promise<void> {
+  public static async shareFile(path: Path): Promise<void> {
     if (Fs.ios.Module) {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'openin' });
     } else if (Fs.android.Module) {
@@ -522,7 +530,7 @@ export class Fs {
   /**
    * show a preview of the file
    */
-  public static async viewFile(path: string): Promise<void> {
+  public static async viewFile(path: Path): Promise<void> {
     if (Fs.ios.Module) {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'preview' });
     } else if (Fs.android.Module) {
@@ -535,7 +543,7 @@ export class Fs {
   /**
    * show a preview of the file
    */
-  public static async pickFile(args: PickFileArgs): Promise<string[]> {
+  public static async pickFile(args: PickFileArgs): Promise<URL[]> {
     if (Fs.ios.Module) {
       const utis = args.types ? (
         await Promise.all(args.types.map((i) => Fs.ios.Module!.getUtiFromMimeType(i) as Promise<string>))
