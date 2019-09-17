@@ -209,7 +209,6 @@ export declare class Fs {
     static viewFile(path: string): Promise<void>;
     /**
      * show a preview of the file
-     * returns URLs?
      */
     static pickFile(args: PickFileArgs): Promise<string[]>;
 }
