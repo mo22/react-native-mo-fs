@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -190,7 +191,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             return;
         }
         if (mode.equals("base64")) {
-            promise.resolve(Base64.encodeToString(data, 0));
+            promise.resolve(Base64.encodeToString(data, Base64.NO_WRAP));
         } else if (mode.equals("utf8")) {
             promise.resolve(new String(data));
         } else {
