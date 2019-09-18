@@ -121,17 +121,23 @@ RCT_EXPORT_MODULE()
     self = [super init];
     if (self) {
         self.refs = [NSMutableSet new];
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
-            methodSwizzle(
-                [appDelegate class], @selector(application:openURL:options:),
-                [self class],@selector(swizzled_application:openURL:options:)
-            );
-            RCTSharedApplication().delegate = appDelegate;
-        });
+        [[self class] swizzleOpenURL];
     }
     return self;
+}
+
++ (void)swizzleOpenURL {
+    assert([NSThread isMainThread]);
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
+        methodSwizzle(
+            [appDelegate class], @selector(application:openURL:options:),
+            [self class],@selector(swizzled_application:openURL:options:)
+        );
+        //        RCTSharedApplication().delegate = nil; // @TODO: is this needed?
+        RCTSharedApplication().delegate = appDelegate;
+    });
 }
 
 - (BOOL)swizzled_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
