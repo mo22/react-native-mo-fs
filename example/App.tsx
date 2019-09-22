@@ -4,6 +4,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { Fs } from 'react-native-mo-fs';
 import { Alert } from 'react-native';
 
+Fs.setVerbose(true);
+
 const AppNavigator = createStackNavigator({
   Menu: {
     screen: require('./Menu').default,
