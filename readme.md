@@ -1,5 +1,8 @@
 # react-native-mo-fs
 
+## TODO
+- mark initial intent as read even after unsubscribe...
+
 ## Installation
 Install just like your ordinary react-native module.
 

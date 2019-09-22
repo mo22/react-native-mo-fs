@@ -164,32 +164,39 @@ export class Fs {
    * called if another app sends a file to this app
    */
   public static openFile = new Event<OpenFileEvent>((emit) => {
+    if (Fs.verbose) console.log('ReactNativeMoFs.openFile subscribe');
     if (ios.Events) {
       // @TODO: all urls?
       ios.Module!.getLastOpenURL().then((event) => {
         if (!event) return;
+        if (Fs.verbose) console.log('ReactNativeMoFs.openFile initial url', event.url);
         emit({ url: event.url });
       });
       const sub = ios.Events.addListener('ReactNativeMoFsOpenURL', async (event) => {
+        if (Fs.verbose) console.log('ReactNativeMoFs.openFile event url', event.url);
         emit({ url: event.url });
       });
       return () => {
+        if (Fs.verbose) console.log('ReactNativeMoFs.openFile unsubscribe');
         sub.remove();
       };
     } else if (android.Events) {
       // @TODO action.VIEW ?
       // @TODO subject etc.?
       android.Module!.getInitialIntent().then((event) => {
+        if (Fs.verbose) console.log('ReactNativeMoFs.openFile initial intent', event);
         if (event.action === 'android.intent.action.SEND' && event.extras && event.extras['android.intent.extra.STREAM']) {
           emit({ url: event.extras['android.intent.extra.STREAM'] });
         }
       });
       const sub = android.Events.addListener('ReactNativeMoFsNewIntent', async (event) => {
+        if (Fs.verbose) console.log('ReactNativeMoFs.openFile event intent', event);
         if (event.action === 'android.intent.action.SEND' && event.extras && event.extras['android.intent.extra.STREAM']) {
           emit({ url: event.extras['android.intent.extra.STREAM'] });
         }
       });
       return () => {
+        if (Fs.verbose) console.log('ReactNativeMoFs.openFile unsubscribe');
         sub.remove();
       };
     } else {
