@@ -16,6 +16,8 @@
 
 #import <React/RCTLinkingManager.h>
 
+#import <ReactNativeMoFs.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -24,6 +26,9 @@
     os_log_error(OS_LOG_DEFAULT, "%{public}s", message.UTF8String);
   });
   
+  ReactNativeMoFs.verbose = YES;
+  [ReactNativeMoFs disableAutoSwizzle];
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"example"
