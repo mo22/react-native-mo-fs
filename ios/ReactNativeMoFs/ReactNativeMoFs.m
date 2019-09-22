@@ -179,7 +179,7 @@ RCT_EXPORT_MODULE()
     self.observing = NO;
 }
 
-+ (bool)verbose {
++ (BOOL)verbose {
     return g_verbose;
 }
 
