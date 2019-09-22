@@ -31,10 +31,6 @@
 
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 
-  NSLog(@"XXX didFinishLaunchingWithOptions %@", launchOptions);
-
-  
-
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
@@ -56,7 +52,7 @@
    openURL:(NSURL *)url
    options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-  NSLog(@"XXX application openURL %@ options %@", url, options);
+  NSLog(@"application openURL %@ options %@", url, options);
   return [RCTLinkingManager application:application openURL:url options:options];
 }
 
