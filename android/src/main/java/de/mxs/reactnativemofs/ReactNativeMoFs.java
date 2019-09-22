@@ -60,6 +60,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             }
             @Override
             public void onNewIntent(Intent intent) {
+                if (verbose) Log.i("ReactNativeMoFs", "onNewIntent " + intent);
                 getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(
                     "ReactNativeMoFsNewIntent",
                     getMapFromIntent(intent)

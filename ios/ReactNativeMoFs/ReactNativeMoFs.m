@@ -91,9 +91,9 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 
-@interface ReactNativeMoFs : RCTEventEmitter {
-    BOOL _verbose;
-}
+static BOOL g_verbose = NO;
+
+@interface ReactNativeMoFs : RCTEventEmitter
 @property NSMutableSet* refs;
 @property BOOL observing;
 @property NSDictionary* lastOpenURL;
@@ -113,14 +113,11 @@ RCT_EXPORT_MODULE()
 
 - (instancetype)init {
     self = [super init];
-//    if (self) {
-//        [[self class] swizzleOpenURL];
-//    }
     return self;
 }
 
 + (void)swizzleOpenURL {
-    NSLog(@"ReactNativeMoFs.swizzleOpenURL");
+    if (g_verbose) NSLog(@"ReactNativeMoFs.swizzleOpenURL");
     assert([NSThread isMainThread]);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -134,7 +131,7 @@ RCT_EXPORT_MODULE()
 }
 
 - (BOOL)swizzled_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-    NSLog(@"ReactNativeMoFs.openURL %@", url);
+    if (g_verbose) NSLog(@"ReactNativeMoFs.openURL %@", url);
     RCTBridge* bridge = ((RCTRootView*)RCTSharedApplication().delegate.window.rootViewController.view).bridge;
     NSDictionary* args = @{
         @"url": [url absoluteString],
@@ -174,7 +171,7 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
-    _verbose = verbose;
+    g_verbose = verbose;
 }
 
 RCT_EXPORT_METHOD(getLastOpenURL:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
