@@ -104,6 +104,9 @@ static BOOL g_verbose = NO;
 RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup {
+    // this is called during didFinishLaunching and is the last place where we can
+    // hook openURL before we would get the initial openURL notification
+    [self swizzleOpenURL];
     return YES;
 }
 
@@ -111,17 +114,13 @@ RCT_EXPORT_MODULE()
     return @[ @"ReactNativeMoFsOpenURL" ];
 }
 
-- (instancetype)init {
-    self = [super init];
-    return self;
-}
-
 + (void)swizzleOpenURL {
-    if (g_verbose) NSLog(@"ReactNativeMoFs.swizzleOpenURL");
-    assert([NSThread isMainThread]);
+    NSLog(@"XXX ReactNativeMoFs.swizzleOpenURL");
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        NSLog(@"ReactNativeMoFs.swizzleOpenURL perform");
         id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
+        NSLog(@"appDelegate %@", appDelegate);
         methodSwizzle(
             [appDelegate class], @selector(application:openURL:options:),
             [self class],@selector(swizzled_application:openURL:options:)
@@ -131,6 +130,7 @@ RCT_EXPORT_MODULE()
 }
 
 - (BOOL)swizzled_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    NSLog(@"XXX ReactNativeMoFs.openURL %@", url);
     if (g_verbose) NSLog(@"ReactNativeMoFs.openURL %@", url);
     RCTBridge* bridge = ((RCTRootView*)RCTSharedApplication().delegate.window.rootViewController.view).bridge;
     NSDictionary* args = @{
@@ -161,9 +161,6 @@ RCT_EXPORT_MODULE()
 
 - (void)startObserving {
     self.observing = YES;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[self class] swizzleOpenURL];
-    });
 }
 
 - (void)stopObserving {
