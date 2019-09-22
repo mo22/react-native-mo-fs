@@ -62,14 +62,6 @@ NSString* mimeTypeForPath(NSString* path) {
     [self.refs removeObject:self];
     [self.refs removeObject:controller];
 }
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(nullable NSString *)application {
-    // not called?
-    NSLog(@"XXX willBeginSendingToApplication");
-}
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(nullable NSString *)application {
-    // not called?
-    NSLog(@"XXX didEndSendingToApplication");
-}
 - (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
     return RCTSharedApplication().delegate.window.rootViewController;
 }
@@ -117,14 +109,13 @@ RCT_EXPORT_MODULE()
     return @[ @"ReactNativeMoFsOpenURL" ];
 }
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        self.refs = [NSMutableSet new];
-        [[self class] swizzleOpenURL];
-    }
-    return self;
-}
+//- (instancetype)init {
+//    self = [super init];
+//    if (self) {
+//        [[self class] swizzleOpenURL]; // not yet here..?!
+//    }
+//    return self;
+//}
 
 + (void)swizzleOpenURL {
     assert([NSThread isMainThread]);
@@ -135,7 +126,6 @@ RCT_EXPORT_MODULE()
             [appDelegate class], @selector(application:openURL:options:),
             [self class],@selector(swizzled_application:openURL:options:)
         );
-        //        RCTSharedApplication().delegate = nil; // @TODO: is this needed?
         RCTSharedApplication().delegate = appDelegate;
     });
 }
@@ -171,6 +161,7 @@ RCT_EXPORT_MODULE()
 
 - (void)startObserving {
     self.observing = YES;
+    [[self class] swizzleOpenURL];
 }
 
 - (void)stopObserving {
@@ -528,6 +519,7 @@ RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:
         if (args[@"name"]) {
             controller.name = args[@"name"];
         }
+        if (!self.refs) self.refs = [NSMutableSet new];
         ReactNativeMoFsInteractionDelegate* delegate = [ReactNativeMoFsInteractionDelegate new];
         delegate.resolve = resolve;
         delegate.reject = reject;
@@ -556,6 +548,7 @@ RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromise
             [utis addObject:@"public.item"]; // public.data public.item public.content
         }
         UIDocumentPickerViewController* controller = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:utis inMode:UIDocumentPickerModeImport];
+        if (!self.refs) self.refs = [NSMutableSet new];
         ReactNativeMoFsPickerDelegate* delegate = [ReactNativeMoFsPickerDelegate new];
         delegate.resolve = resolve;
         delegate.reject = reject;
