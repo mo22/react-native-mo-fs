@@ -5371,10 +5371,10 @@ react-native-image-picker@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-1.1.0.tgz#c2a0523886edb4cf2cdc008ad0a71433142a4d53"
   integrity sha512-/KjHf4NNAjl6XM7FQuqvGDz1wB9sRdLf86+2yksLW/QTRR7CitX4TLCM8ZF9CX6Y0MsCTndkZia3zWE+nt/GiA==
 
-react-native-mo-fs@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/react-native-mo-fs/-/react-native-mo-fs-0.1.9.tgz#d129d599668f9a1aaf567e8084cba157d2fae1eb"
-  integrity sha512-+VPMqBxc4KKxL57sD0X5xOfar/jwC9OASRQ4ipLV3RTzwkcHnlcQ8rZlpLChi6wEwTGToDHShb0UYoIaH43/3w==
+react-native-mo-fs@^0.1.10:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/react-native-mo-fs/-/react-native-mo-fs-0.1.10.tgz#e2d8cd6217464fd937008c44da69952616be6bf3"
+  integrity sha512-ywu9vQ7vEakxpF7I5lzmt9PQH3ZzQz2tr55Ys8Ud+UTW3WyTTLiVInJz8UIJsV0FpzyeGFUstLmSCp0A2jy6ew==
   dependencies:
     base64-arraybuffer "^0.2.0"
     mo-core "^0.1.3"
