@@ -104,6 +104,10 @@ export declare class Fs {
      */
     static readonly android: typeof android;
     /**
+     * be verbose
+     */
+    static setVerbose(verbose: boolean): void;
+    /**
      * basic paths - document folder, cache folder, etc.
      */
     static readonly paths: Paths;

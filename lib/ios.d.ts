@@ -13,6 +13,7 @@ export interface Module {
         document: string;
         caches: string;
     };
+    setVerbose(verbose: boolean): void;
     getLastOpenURL(): Promise<OpenURLEvent | undefined>;
     getMimeType(extension: string): Promise<string | undefined>;
     getUtiFromMimeType(mimeType: string): Promise<string | undefined>;

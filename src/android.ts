@@ -24,6 +24,7 @@ export interface Module {
     packageResource: string;
     data?: string;
   };
+  setVerbose(verbose: boolean): void;
   getInitialIntent(): Promise<Intent>;
   getMimeType(extension: string): Promise<string|undefined>;
   readBlob(blob: BlobData, mode: 'base64'|'utf8'): Promise<string>;

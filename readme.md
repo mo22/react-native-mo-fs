@@ -1,6 +1,11 @@
 # react-native-mo-fs
 
+## Installation
+Install just like your ordinary react-native module.
+
 ## Usage
+
+Please check the [example/](example/) code.
 
 ```ts
 import { Fs } from 'react-native-mo-fs';
@@ -189,5 +194,4 @@ Add this to your Info.plist:
 And write stuff to `Fs.paths.docs`
 
 ## Notes
-- Install just like your ordinary react-native module.
-- iOS application:openURL: is swizzeled on first use.
+- iOS application:openURL: is swizzeled on startup.

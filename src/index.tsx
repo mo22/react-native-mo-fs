@@ -131,6 +131,18 @@ export class Fs {
   public static readonly android = android;
 
   /**
+   * be verbose
+   */
+  public static setVerbose(verbose: boolean) {
+    this.verbose = verbose;
+    if (ios.Module) {
+      ios.Module.setVerbose(verbose);
+    } else if (android.Module) {
+      android.Module.setVerbose(verbose);
+    }
+  }
+
+  /**
    * basic paths - document folder, cache folder, etc.
    */
   public static readonly paths: Paths = ios.Module ? {
