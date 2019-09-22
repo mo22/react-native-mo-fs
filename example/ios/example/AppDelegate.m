@@ -27,7 +27,7 @@
   });
   
   ReactNativeMoFs.verbose = YES;
-  [ReactNativeMoFs disableAutoSwizzle];
+//  [ReactNativeMoFs disableAutoSwizzle];
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
@@ -58,6 +58,7 @@
    options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
   NSLog(@"application openURL %@ options %@", url, options);
+//  [ReactNativeMoFs application:application openURL:url options:options];
   return [RCTLinkingManager application:application openURL:url options:options];
 }
 
