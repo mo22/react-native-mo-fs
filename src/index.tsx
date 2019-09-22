@@ -142,6 +142,8 @@ export class Fs {
     }
   }
 
+  private static verbose = false;
+
   /**
    * basic paths - document folder, cache folder, etc.
    */

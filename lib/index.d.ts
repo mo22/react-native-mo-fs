@@ -107,6 +107,7 @@ export declare class Fs {
      * be verbose
      */
     static setVerbose(verbose: boolean): void;
+    private static verbose;
     /**
      * basic paths - document folder, cache folder, etc.
      */
