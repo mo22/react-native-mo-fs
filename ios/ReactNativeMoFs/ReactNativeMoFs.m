@@ -91,7 +91,9 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 
-@interface ReactNativeMoFs : RCTEventEmitter
+@interface ReactNativeMoFs : RCTEventEmitter {
+    BOOL _verbose;
+}
 @property NSMutableSet* refs;
 @property BOOL observing;
 @property NSDictionary* lastOpenURL;
@@ -169,6 +171,10 @@ RCT_EXPORT_MODULE()
 
 - (void)stopObserving {
     self.observing = NO;
+}
+
+RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
+    _verbose = verbose;
 }
 
 RCT_EXPORT_METHOD(getLastOpenURL:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {

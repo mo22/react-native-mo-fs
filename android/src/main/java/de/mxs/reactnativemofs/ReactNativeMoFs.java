@@ -49,6 +49,8 @@ import javax.annotation.Nonnull;
 
 public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
+    private boolean verbose = false;
+
     ReactNativeMoFs(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
 
@@ -87,6 +89,12 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         }
         res.put("paths", paths);
         return res;
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 
     private boolean deleteRecursive(File fileOrDirectory) {
