@@ -4,6 +4,7 @@
 #import <React/RCTNetworking.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CoreServices/CoreServices.h>
+#import "ReactNativeMoFs.h"
 #import <objc/runtime.h>
 
 #if __has_include(<RCTBlob/RCTBlobManager.h>)
@@ -92,8 +93,9 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 static BOOL g_verbose = NO;
+static BOOL g_disableAutoSwizzle = NO;
 
-@interface ReactNativeMoFs : RCTEventEmitter
+@interface ReactNativeMoFs ()
 @property NSMutableSet* refs;
 @property BOOL observing;
 @property NSDictionary* lastOpenURL;
@@ -103,10 +105,16 @@ static BOOL g_verbose = NO;
 
 RCT_EXPORT_MODULE()
 
++ (void)disableAutoSwizzle {
+    g_disableAutoSwizzle = YES;
+}
+
 + (BOOL)requiresMainQueueSetup {
     // this is called during didFinishLaunching and is the last place where we can
     // hook openURL before we would get the initial openURL notification
-    [self swizzleOpenURL];
+    if (!g_disableAutoSwizzle) {
+        [self swizzleOpenURL];
+    }
     return YES;
 }
 
@@ -115,7 +123,7 @@ RCT_EXPORT_MODULE()
 }
 
 + (void)swizzleOpenURL {
-    if (g_verbose) NSLog(@"ReactNativeMoFs.swizzleOpenURL");
+    if (self.verbose) NSLog(@"ReactNativeMoFs.swizzleOpenURL");
     assert([NSThread isMainThread]);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -130,7 +138,16 @@ RCT_EXPORT_MODULE()
 }
 
 - (BOOL)swizzled_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-    if (g_verbose) NSLog(@"ReactNativeMoFs.openURL %@", url);
+    [ReactNativeMoFs application:application openURL:url options:options];
+    if ([self respondsToSelector:@selector(swizzled_application:openURL:options:)]) {
+        return [self swizzled_application:application openURL:url options:options];
+    } else {
+        return NO;
+    }
+}
+
++ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    if (self.verbose) NSLog(@"ReactNativeMoFs.openURL %@", url);
     RCTBridge* bridge = ((RCTRootView*)RCTSharedApplication().delegate.window.rootViewController.view).bridge;
     NSDictionary* args = @{
         @"url": [url absoluteString],
@@ -141,11 +158,7 @@ RCT_EXPORT_MODULE()
     if (realself.observing) {
         [realself sendEventWithName:@"ReactNativeMoFsOpenURL" body:args];
     }
-    if ([self respondsToSelector:@selector(swizzled_application:openURL:options:)]) {
-        return [self swizzled_application:application openURL:url options:options];
-    } else {
-        return NO;
-    }
+    return YES;
 }
 
 - (NSDictionary *)constantsToExport {
@@ -166,8 +179,20 @@ RCT_EXPORT_MODULE()
     self.observing = NO;
 }
 
-RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
++ (bool)verbose {
+    return g_verbose;
+}
+
++ (void)setVerbose:(BOOL)verbose {
     g_verbose = verbose;
+}
+
+RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
+    [[self class] setVerbose:verbose];
+}
+
+- (BOOL)verbose {
+    return [[self class] verbose];
 }
 
 RCT_EXPORT_METHOD(getLastOpenURL:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
