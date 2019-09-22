@@ -111,11 +111,14 @@ RCT_EXPORT_MODULE()
 
 - (instancetype)init {
     self = [super init];
-    [ReactNativeMoFs swizzleOpenURL];
+//    if (self) {
+//        [[self class] swizzleOpenURL];
+//    }
     return self;
 }
 
 + (void)swizzleOpenURL {
+    NSLog(@"ReactNativeMoFs.swizzleOpenURL");
     assert([NSThread isMainThread]);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -129,6 +132,7 @@ RCT_EXPORT_MODULE()
 }
 
 - (BOOL)swizzled_application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    NSLog(@"ReactNativeMoFs.openURL %@", url);
     RCTBridge* bridge = ((RCTRootView*)RCTSharedApplication().delegate.window.rootViewController.view).bridge;
     NSDictionary* args = @{
         @"url": [url absoluteString],
@@ -158,6 +162,9 @@ RCT_EXPORT_MODULE()
 
 - (void)startObserving {
     self.observing = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[self class] swizzleOpenURL];
+    });
 }
 
 - (void)stopObserving {
