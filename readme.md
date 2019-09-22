@@ -9,6 +9,9 @@ Please check the [example/](example/) code.
 
 ```ts
 import { Fs } from 'react-native-mo-fs';
+
+// for debugging:
+Fs.setVerbose(true);
 ```
 
 ### System Paths
