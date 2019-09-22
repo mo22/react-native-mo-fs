@@ -161,7 +161,9 @@ RCT_EXPORT_MODULE()
 
 - (void)startObserving {
     self.observing = YES;
-    [[self class] swizzleOpenURL];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[self class] swizzleOpenURL];
+    });
 }
 
 - (void)stopObserving {
