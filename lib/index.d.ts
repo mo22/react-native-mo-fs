@@ -116,6 +116,7 @@ export declare class Fs {
      * called if another app sends a file to this app
      */
     static openFile: Event<OpenFileEvent>;
+    private static initialOpenFileDone;
     /**
      * get mime type by file extension
      */
