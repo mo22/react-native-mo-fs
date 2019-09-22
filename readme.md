@@ -1,5 +1,7 @@
 # react-native-mo-fs
 
+Provide file system access and integration
+
 ## Installation
 
 Install just like your ordinary react-native module.
