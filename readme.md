@@ -200,4 +200,4 @@ Add this to your Info.plist:
 And write stuff to `Fs.paths.docs`
 
 ## Notes
-- iOS application:openURL: is swizzeled on startup.
+- iOS application:openURL: is swizzled on startup.
