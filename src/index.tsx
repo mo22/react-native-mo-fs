@@ -92,13 +92,15 @@ export interface PickFileArgs {
 export interface Paths {
   cache: Path;
   docs: Path;
+  data: Path;
+
   bundle?: Path;
   document?: Path;
   caches?: Path;
   externalCache?: Path;
   files?: Path;
   packageResource?: Path;
-  data?: Path;
+  library?: Path;
 }
 
 export interface Stat {
@@ -151,13 +153,16 @@ export class Fs {
     ...ios.Module.paths,
     cache: ios.Module.paths.caches,
     docs: ios.Module.paths.document,
+    data: ios.Module.paths.library,
   } : android.Module ? {
     ...android.Module.paths,
     cache: android.Module.paths.externalCache || android.Module.paths.data || android.Module.paths.files,
     docs: android.Module.paths.files,
+    data: android.Module.paths.data,
   } : {
     cache: '',
     docs: '',
+    data: '',
   };
 
   /**

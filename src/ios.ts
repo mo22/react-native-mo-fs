@@ -14,6 +14,7 @@ export interface Module {
     bundle: string;
     document: string;
     caches: string;
+    library: string;
   };
   setVerbose(verbose: boolean): void;
   getLastOpenURL(): Promise<OpenURLEvent|undefined>;

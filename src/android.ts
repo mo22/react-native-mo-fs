@@ -22,7 +22,7 @@ export interface Module {
     externalCache?: string;
     files: string;
     packageResource: string;
-    data?: string;
+    data: string;
   };
   setVerbose(verbose: boolean): void;
   getInitialIntent(): Promise<Intent>;

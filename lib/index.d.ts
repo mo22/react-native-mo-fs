@@ -72,13 +72,14 @@ export interface PickFileArgs {
 export interface Paths {
     cache: Path;
     docs: Path;
+    data: Path;
     bundle?: Path;
     document?: Path;
     caches?: Path;
     externalCache?: Path;
     files?: Path;
     packageResource?: Path;
-    data?: Path;
+    library?: Path;
 }
 export interface Stat {
     /** true if the file or directory exists */
