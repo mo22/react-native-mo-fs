@@ -158,7 +158,7 @@ export class Fs {
     ...android.Module.paths,
     cache: android.Module.paths.externalCache || android.Module.paths.data || android.Module.paths.files,
     docs: android.Module.paths.files,
-    data: android.Module.paths.data,
+    data: android.Module.paths.data || android.Module.paths.files,
   } : {
     cache: '',
     docs: '',
