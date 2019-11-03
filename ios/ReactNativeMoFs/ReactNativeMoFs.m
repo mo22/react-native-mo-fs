@@ -167,6 +167,7 @@ RCT_EXPORT_MODULE()
         @"bundle": [[NSBundle mainBundle] bundlePath],
         @"document": [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],
         @"caches": [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject],
+        @"library": [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject],
     };
     return constants;
 }
