@@ -26,8 +26,8 @@
   "devDependencies": {
     "@types/react-native": "^0.60.22",
     "react": "^16.11.0",
-    "react-native": "^0.61.3",
-    "typescript": "^3.6.4"
+    "react-native": "^0.61.4",
+    "typescript": "^3.7.2"
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
