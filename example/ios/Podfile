@@ -39,7 +39,7 @@ target 'example' do
     # Pods for testing
   end
 
-  use_frameworks!
+  # use_frameworks!
   use_native_modules!
 end
 

@@ -1,6 +1,6 @@
 {
   "name": "react-native-mo-fs",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "react native file system and image tools",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
