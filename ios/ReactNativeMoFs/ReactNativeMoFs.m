@@ -7,6 +7,10 @@
 #import "ReactNativeMoFs.h"
 #import <objc/runtime.h>
 
+#if __has_feature(modules)
+@import MobileCoreServices;
+#endif
+
 #if __has_include(<RCTBlob/RCTBlobManager.h>)
 #import <RCTBlob/RCTBlobManager.h>
 #else
