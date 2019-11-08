@@ -9,7 +9,6 @@
 
 #if __has_feature(modules)
 @import MobileCoreServices;
-@import RCTBlob;
 #endif
 
 #if __has_include(<RCTBlob/RCTBlobManager.h>)
@@ -201,6 +200,14 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     return [[self class] verbose];
 }
 
+- (RCTBlobManager*)blobManager {
+#if __has_feature(modules)
+    return [self.bridge moduleForClass:NSClassFromString(@"RCTBlobManager")];
+#else
+    return [self.bridge moduleForClass:[RCTBlobManager class]];
+#endif
+}
+
 RCT_EXPORT_METHOD(getLastOpenURL:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     resolve(self.lastOpenURL);
 }
@@ -218,8 +225,7 @@ RCT_EXPORT_METHOD(getUti:(NSString*)extension resolve:(RCTPromiseResolveBlock)re
 }
 
 RCT_EXPORT_METHOD(readBlob:(NSDictionary<NSString*,id>*)blob mode:(NSString*)mode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
-    NSData* data = [blobManager resolve:blob];
+    NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
         return;
@@ -237,7 +243,6 @@ RCT_EXPORT_METHOD(readBlob:(NSDictionary<NSString*,id>*)blob mode:(NSString*)mod
 }
 
 RCT_EXPORT_METHOD(createBlob:(NSString*)str mode:(NSString*)mode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSData* data;
     if ([mode isEqualToString:@"base64"]) {
         data = [[NSData alloc] initWithBase64EncodedString:str options:0];
@@ -251,7 +256,7 @@ RCT_EXPORT_METHOD(createBlob:(NSString*)str mode:(NSString*)mode resolve:(RCTPro
         reject(@"", @"invalid mode", nil);
         return;
     }
-    NSString* blobId = [blobManager store:data];
+    NSString* blobId = [self.blobManager store:data];
     resolve(@{
         @"size": @([data length]),
         @"offset": @(0),
@@ -260,14 +265,13 @@ RCT_EXPORT_METHOD(createBlob:(NSString*)str mode:(NSString*)mode resolve:(RCTPro
 }
 
 RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
     NSError* error = nil;
     NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
     if (!data) {
         reject(@"", [error localizedDescription], error);
         return;
     }
-    NSString* blobId = [blobManager store:data];
+    NSString* blobId = [self.blobManager store:data];
     resolve(@{
         @"size": @([data length]),
         @"offset": @(0),
@@ -278,8 +282,7 @@ RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resol
 }
 
 RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
-    NSData* data = [blobManager resolve:blob];
+    NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
         return;
@@ -294,8 +297,7 @@ RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)bl
 }
 
 RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
-    NSData* data = [blobManager resolve:blob];
+    NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
         return;
@@ -425,8 +427,7 @@ RCT_EXPORT_METHOD(stat:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve r
 }
 
 RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
-    NSData* data = [blobManager resolve:blob];
+    NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
         return;
@@ -458,8 +459,7 @@ RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
 }
 
 RCT_EXPORT_METHOD(getImageSize:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
-    NSData* data = [blobManager resolve:blob];
+    NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
         return;
@@ -476,8 +476,7 @@ RCT_EXPORT_METHOD(getImageSize:(NSDictionary<NSString*,id>*)blob resolve:(RCTPro
 }
 
 RCT_EXPORT_METHOD(getExif:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
-    NSData* data = [blobManager resolve:blob];
+    NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
         return;
@@ -492,8 +491,7 @@ RCT_EXPORT_METHOD(getExif:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseR
 
 
 RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    RCTBlobManager* blobManager = [self.bridge moduleForClass:[RCTBlobManager class]];
-    NSData* data = [blobManager resolve:blob];
+    NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
         return;
@@ -527,7 +525,7 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     } else {
         output = UIImageJPEGRepresentation(uiImage, [args[@"quality"] floatValue]);
     }
-    NSString* blobId = [blobManager store:output];
+    NSString* blobId = [self.blobManager store:output];
     resolve(@{
         @"size": @([output length]),
         @"offset": @(0),
