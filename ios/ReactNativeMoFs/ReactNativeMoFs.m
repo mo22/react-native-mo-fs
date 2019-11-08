@@ -9,6 +9,7 @@
 
 #if __has_feature(modules)
 @import MobileCoreServices;
+@import RCTBlob;
 #endif
 
 #if __has_include(<RCTBlob/RCTBlobManager.h>)
