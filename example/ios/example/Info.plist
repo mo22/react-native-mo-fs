@@ -73,24 +73,24 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>example</string>
-  <key>NSCameraUsageDescription</key>
-  <string>example</string>
-  <key>UIFileSharingEnabled</key>
-  <true/>
-  <key>CFBundleDocumentTypes</key>
-  <array>
-    <dict>
-      <key>CFBundleTypeName</key>
-      <string>PDF</string>
-      <key>LSHandlerRank</key>
-      <string>Alternate</string>
-      <key>LSItemContentTypes</key>
-      <array>
-          <string>com.adobe.pdf</string>
-      </array>
-    </dict>
-  </array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>example</string>
+	<key>NSCameraUsageDescription</key>
+	<string>example</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>PDF</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
