@@ -304,12 +304,24 @@ export class Fs {
   }
 
   /**
-   * read file to text
+   * read file as text
    */
   public static async readTextFile(path: Path): Promise<string> {
     const blob = await this.readFile(path);
     try {
       return await this.readBlob(blob, 'utf8');
+    } finally {
+      blob.close();
+    }
+  }
+
+  /**
+   * read file as arraybuffer
+   */
+  public static async readBinaryFile(path: Path): Promise<ArrayBuffer> {
+    const blob = await this.readFile(path);
+    try {
+      return await this.readBlob(blob, 'arraybuffer');
     } finally {
       blob.close();
     }
@@ -349,6 +361,18 @@ export class Fs {
   }
 
   /**
+   * write arraybuffer to file
+   */
+  public static async writeBinaryFile(path: Path, arrayBuffer: ArrayBufferLike): Promise<void> {
+    const blob = await this.createBlob(arrayBuffer, 'arraybuffer');
+    try {
+      await this.writeFile(path, blob);
+    } finally {
+      blob.close();
+    }
+  }
+
+  /**
    * append blob to file
    */
   public static async appendFile(path: Path, blob: Blob): Promise<void> {
@@ -366,6 +390,18 @@ export class Fs {
    */
   public static async appendTextFile(path: Path, text: string): Promise<void> {
     const blob = await this.createBlob(text, 'utf8');
+    try {
+      await this.appendFile(path, blob);
+    } finally {
+      blob.close();
+    }
+  }
+
+  /**
+   * append arraybuffer to file
+   */
+  public static async appendBinaryFile(path: Path, arrayBuffer: ArrayBuffer): Promise<void> {
+    const blob = await this.createBlob(arrayBuffer, 'arraybuffer');
     try {
       await this.appendFile(path, blob);
     } finally {

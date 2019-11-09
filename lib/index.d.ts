@@ -141,9 +141,13 @@ export declare class Fs {
      */
     static readFile(path: Path): Promise<Blob>;
     /**
-     * read file to text
+     * read file as text
      */
     static readTextFile(path: Path): Promise<string>;
+    /**
+     * read file as arraybuffer
+     */
+    static readBinaryFile(path: Path): Promise<ArrayBuffer>;
     /**
      * read URL to blob (using fetch)
      */
@@ -157,6 +161,10 @@ export declare class Fs {
      */
     static writeTextFile(path: Path, text: string): Promise<void>;
     /**
+     * write arraybuffer to file
+     */
+    static writeBinaryFile(path: Path, arrayBuffer: ArrayBufferLike): Promise<void>;
+    /**
      * append blob to file
      */
     static appendFile(path: Path, blob: Blob): Promise<void>;
@@ -164,6 +172,10 @@ export declare class Fs {
      * append text to file
      */
     static appendTextFile(path: Path, text: string): Promise<void>;
+    /**
+     * append arraybuffer to file
+     */
+    static appendBinaryFile(path: Path, arrayBuffer: ArrayBuffer): Promise<void>;
     /**
      * delete file
      */
