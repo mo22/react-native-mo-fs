@@ -44,6 +44,7 @@ export interface Module {
     NSFilePosixPermissions?: null|number;
     NSFileModificationDate?: null|number;
   }>;
+  setAttributes(path: string, attributes: { [k: string]: any }): Promise<void>;
   getBlobInfo(blob: BlobData, args?: any): Promise<any>;
   getImageSize(blob: BlobData): Promise<{ width: number; height: number; }>;
   getExif(blob: BlobData): Promise<any>;

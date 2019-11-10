@@ -487,6 +487,22 @@ export class Fs {
   }
 
   /**
+   * set posix mode
+   */
+  public static async chmod(path: Path, mode: number): Promise<void> {
+    if (ios.Module) {
+      await ios.Module.setAttributes(path, {
+        'NSFilePosixPermissions': mode,
+      });
+    } else if (android.Module) {
+      // @TODO
+      throw new Error('platform not supported');
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
    * get info about a blob. can calculate md5 / sha1 / sha256.
    */
   public static async getBlobInfo(blob: Blob, args: BlobInfoArgs = {}): Promise<BlobInfo> {

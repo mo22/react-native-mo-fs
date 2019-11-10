@@ -197,6 +197,10 @@ export declare class Fs {
      */
     static stat(path: Path): Promise<Stat>;
     /**
+     * set posix mode
+     */
+    static chmod(path: Path, mode: number): Promise<void>;
+    /**
      * get info about a blob. can calculate md5 / sha1 / sha256.
      */
     static getBlobInfo(blob: Blob, args?: BlobInfoArgs): Promise<BlobInfo>;
