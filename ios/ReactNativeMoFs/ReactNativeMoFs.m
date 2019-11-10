@@ -235,7 +235,11 @@ RCT_EXPORT_METHOD(readBlob:(NSDictionary<NSString*,id>*)blob mode:(NSString*)mod
         resolve(res);
     } else if ([mode isEqualToString:@"utf8"]) {
         NSString* res = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        resolve(res);
+        if (res == nil) {
+            reject(@"", @"invalid utf8 data", nil);
+        } else {
+            resolve(res);
+        }
     } else {
         reject(@"", @"invalid mode", nil);
         return;
@@ -424,6 +428,16 @@ RCT_EXPORT_METHOD(stat:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve r
     } else {
         resolve(nil);
     }
+}
+
+RCT_EXPORT_METHOD(setAttributes:(NSString*)path attributes:(NSDictionary*)attributes resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSError* error = nil;
+    [[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:path error:&error];
+    if (error) {
+        reject(@"", [error localizedDescription], error);
+        return;
+    }
+    resolve(nil);
 }
 
 RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
