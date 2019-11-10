@@ -386,6 +386,27 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
+    public void chmod(String path, int mode, Promise promise) {
+        try {
+            File file = new File(path);
+            // executable: 1 = execute, 2 = write, 4 = read
+            boolean executable = (mode & 73) > 0;
+            boolean writable = (mode & 146) > 0;
+            boolean readable = (mode & 292) > 0;
+            boolean otherExecutable = (mode & 1) > 0;
+            boolean otherWritable = (mode & 2) > 0;
+            boolean otherReadable = (mode & 4) > 0;
+            if (!file.setExecutable(executable, !otherExecutable)) throw new IOException("chmod failed");
+            if (!file.setReadable(readable, !otherReadable)) throw new IOException("chmod failed");
+            if (!file.setWritable(writable, !otherReadable)) throw new IOException("chmod failed");
+            promise.resolve(null);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
     public void getBlobInfo(ReadableMap blob, ReadableMap args, Promise promise) {
         try {
             BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
