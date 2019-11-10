@@ -608,8 +608,10 @@ export class Fs {
     if (Fs.ios.Module) {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'openin' });
     } else if (Fs.android.Module) {
-      await Fs.android.Module.sendIntentChooser({ path: path, type: type });
-
+      await Fs.android.Module.sendIntentChooser({
+        path: path,
+        type: type || (await this.getMimeType(path)) || 'application/octet-stream'
+      });
     } else {
       throw new Error('platform not supported');
     }
