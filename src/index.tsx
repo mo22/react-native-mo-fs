@@ -495,8 +495,7 @@ export class Fs {
         'NSFilePosixPermissions': mode,
       });
     } else if (android.Module) {
-      // @TODO
-      throw new Error('platform not supported');
+      await android.Module.chmod(path, mode);
     } else {
       throw new Error('platform not supported');
     }

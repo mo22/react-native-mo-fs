@@ -41,6 +41,7 @@ export interface Module {
     length?: number;
     lastModified?: number;
   }>;
+  chmod(path: string, mode: number): Promise<void>;
   getBlobInfo(blob: BlobData, args?: any): Promise<any>;
   getImageSize(blob: BlobData): Promise<{ width: number; height: number; }>;
   getExif(blob: BlobData): Promise<any>;
