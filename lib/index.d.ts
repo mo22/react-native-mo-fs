@@ -189,7 +189,7 @@ export declare class Fs {
      */
     static listDir(path: Path): Promise<string[]>;
     /**
-     * create directory
+     * create directory. succeeds if directory exists.
      */
     static createDir(path: Path): Promise<void>;
     /**
@@ -228,13 +228,13 @@ export declare class Fs {
     /**
      * share file to another app
      */
-    static shareFile(path: Path): Promise<void>;
+    static shareFile(path: Path, type?: string): Promise<void>;
     /**
      * show a preview of the file
      */
     static viewFile(path: Path): Promise<void>;
     /**
-     * show a preview of the file
+     * show a file open dialog
      */
     static pickFile(args: PickFileArgs): Promise<URL[]>;
 }

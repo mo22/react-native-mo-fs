@@ -449,12 +449,14 @@ export class Fs {
   }
 
   /**
-   * create directory
+   * create directory. succeeds if directory exists.
    */
   public static async createDir(path: Path): Promise<void> {
     if (ios.Module) {
       await ios.Module.createDir(path);
     } else if (android.Module) {
+      const stat = await this.stat(path);
+      if (stat.exists && stat.dir) return;
       await android.Module.createDir(path);
     } else {
       throw new Error('platform not supported');
@@ -602,11 +604,12 @@ export class Fs {
   /**
    * share file to another app
    */
-  public static async shareFile(path: Path): Promise<void> {
+  public static async shareFile(path: Path, type?: string): Promise<void> {
     if (Fs.ios.Module) {
       await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'openin' });
     } else if (Fs.android.Module) {
-      await Fs.android.Module.sendIntentChooser({ path: path });
+      await Fs.android.Module.sendIntentChooser({ path: path, type: type });
+
     } else {
       throw new Error('platform not supported');
     }
@@ -626,7 +629,7 @@ export class Fs {
   }
 
   /**
-   * show a preview of the file
+   * show a file open dialog
    */
   public static async pickFile(args: PickFileArgs): Promise<URL[]> {
     if (Fs.ios.Module) {
