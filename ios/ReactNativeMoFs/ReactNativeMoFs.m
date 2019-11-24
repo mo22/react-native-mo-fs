@@ -105,13 +105,16 @@ NSString* mimeTypeForPath(NSString* path) {
 @end
 @implementation ReactNativeMoFsImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
-    NSLog(@"didFinishPickingMediaWithInfo %@", info);
+//    UIImagePickerControllerImageURL = "file:///Users/mmoeller/Library/Developer/CoreSimulator/Devices/335A7C40-B170-4755-844F-2F3901814B1E/data/Containers/Data/Application/65CA4AED-5C67-4DAF-853A-5D7A9311F1C9/tmp/30487846-86D9-4CB2-943C-B0B4E9161F3B.jpeg";
+//    UIImagePickerControllerMediaType = "public.image";
+//    UIImagePickerControllerOriginalImage = "<UIImage:0x600002ad25b0 anonymous {3000, 2002}>";
+//    UIImagePickerControllerReferenceURL = "assets-library://asset/asset.JPG?id=9F983DBA-EC35-42B8-8773-B597CF782EDD&ext=JPG";
+    self.resolve(info);
     [picker dismissViewControllerAnimated:YES completion:nil];
     [self.refs removeObject:self];
     [self.refs removeObject:picker];
 }
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    NSLog(@"imagePickerControllerDidCancel");
     [picker dismissViewControllerAnimated:YES completion:nil];
     self.resolve(nil);
     [self.refs removeObject:self];
