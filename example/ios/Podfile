@@ -42,7 +42,7 @@ target 'example' do
   end
 
   use_native_modules!
-  use_frameworks!
+  # use_frameworks!
 end
 
 target 'example-tvOS' do
