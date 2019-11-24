@@ -107,13 +107,13 @@ NSString* mimeTypeForPath(NSString* path) {
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
     NSLog(@"didFinishPickingMediaWithInfo %@", info);
     [self.refs removeObject:self];
-    [self.refs removeObject:controller];
+    [self.refs removeObject:picker];
 }
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     NSLog(@"imagePickerControllerDidCancel");
     self.resolve(nil);
     [self.refs removeObject:self];
-    [self.refs removeObject:controller];
+    [self.refs removeObject:picker];
 }
 @end
 
