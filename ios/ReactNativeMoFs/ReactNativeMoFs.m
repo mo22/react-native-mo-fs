@@ -87,16 +87,18 @@ NSString* mimeTypeForPath(NSString* path) {
     }
     self.resolve(res);
     [self.refs removeObject:self];
+    [self.refs removeObject:controller];
 }
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
     self.resolve(nil);
     [self.refs removeObject:self];
+    [self.refs removeObject:controller];
 }
 @end
 
 
 
-@interface ReactNativeMoFsImagePickerControllerDelegate : NSObject <UIImagePickerControllerDelegate>
+@interface ReactNativeMoFsImagePickerControllerDelegate : NSObject <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property RCTPromiseResolveBlock resolve;
 @property RCTPromiseRejectBlock reject;
 @property NSMutableSet* refs;
@@ -104,11 +106,14 @@ NSString* mimeTypeForPath(NSString* path) {
 @implementation ReactNativeMoFsImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
     NSLog(@"didFinishPickingMediaWithInfo %@", info);
+    [self.refs removeObject:self];
+    [self.refs removeObject:controller];
 }
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     NSLog(@"imagePickerControllerDidCancel");
     self.resolve(nil);
     [self.refs removeObject:self];
+    [self.refs removeObject:controller];
 }
 @end
 
@@ -617,6 +622,7 @@ RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromise
         delegate.reject = reject;
         delegate.refs = self.refs;
         [self.refs addObject:delegate];
+        [self.refs addObject:controller];
         controller.delegate = delegate;
         controller.modalPresentationStyle = UIModalPresentationFormSheet;
         if (@available(iOS 11.0, *)) {
@@ -641,8 +647,11 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
             controller.showsCameraControls = [args[@"showsCameraControls"] boolValue];
         }
         ReactNativeMoFsImagePickerControllerDelegate* delegate = [ReactNativeMoFsImagePickerControllerDelegate new];
+        delegate.resolve = resolve;
+        delegate.reject = reject;
         delegate.refs = self.refs;
         [self.refs addObject:delegate];
+        [self.refs addObject:controller];
         controller.delegate = delegate;
         [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
 
