@@ -105,6 +105,7 @@ NSString* mimeTypeForPath(NSString* path) {
 @end
 @implementation ReactNativeMoFsImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
+//    picker.dismiss(animated: true)
     NSLog(@"didFinishPickingMediaWithInfo %@", info);
     [self.refs removeObject:self];
     [self.refs removeObject:picker];
@@ -646,6 +647,7 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
         if (args[@"showsCameraControls"]) {
             controller.showsCameraControls = [args[@"showsCameraControls"] boolValue];
         }
+        if (!self.refs) self.refs = [NSMutableSet new];
         ReactNativeMoFsImagePickerControllerDelegate* delegate = [ReactNativeMoFsImagePickerControllerDelegate new];
         delegate.resolve = resolve;
         delegate.reject = reject;
