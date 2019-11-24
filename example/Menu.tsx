@@ -23,6 +23,12 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
             if (Fs.ios.Module) {
               const res = await Fs.ios.Module.showImagePickerController({});
               console.log('res', res);
+              if (res) {
+                const blob1 = await Fs.readURL(res.UIImagePickerControllerImageURL);
+                console.log('blob1', blob1);
+                const blob2 = await Fs.readURL(res.UIImagePickerControllerReferenceURL);
+                console.log('blob2', blob2);
+              }
             }
           }}
           onLongPress={() => {

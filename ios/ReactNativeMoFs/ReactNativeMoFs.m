@@ -109,7 +109,19 @@ NSString* mimeTypeForPath(NSString* path) {
 //    UIImagePickerControllerMediaType = "public.image";
 //    UIImagePickerControllerOriginalImage = "<UIImage:0x600002ad25b0 anonymous {3000, 2002}>";
 //    UIImagePickerControllerReferenceURL = "assets-library://asset/asset.JPG?id=9F983DBA-EC35-42B8-8773-B597CF782EDD&ext=JPG";
-    self.resolve(info);
+    NSMutableDictionary* res = [NSMutableDictionary new];
+    for (NSString* key in info.allKeys) {
+        id value = info[key];
+        NSLog(@"XXX [%@] [%@] [%@]", key, value, [value class]);
+        if ([value isKindOfClass:[UIImage class]]) {
+            continue;
+        }
+        if ([value isKindOfClass:[NSURL class]]) {
+            value = [value absoluteString];
+        }
+        res[key] = value;
+    }
+    self.resolve(res);
     [picker dismissViewControllerAnimated:YES completion:nil];
     [self.refs removeObject:self];
     [self.refs removeObject:picker];
