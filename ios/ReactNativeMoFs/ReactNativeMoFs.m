@@ -96,6 +96,15 @@ NSString* mimeTypeForPath(NSString* path) {
 
 
 
+@interface ReactNativeMoFsImagePickerControllerDelegate : NSObject <UIImagePickerControllerDelegate>
+@property RCTPromiseResolveBlock resolve;
+@property RCTPromiseRejectBlock reject;
+@end
+@implementation ReactNativeMoFsImagePickerControllerDelegate
+@end
+
+
+
 static BOOL g_verbose = NO;
 static BOOL g_disableAutoSwizzle = NO;
 
@@ -605,6 +614,39 @@ RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromise
             controller.allowsMultipleSelection = [args[@"multiple"] boolValue];
         }
         [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
+    });
+}
+
+RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIImagePickerController* controller = [UIImagePickerController new];
+        controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        controller.allowsEditing = YES;
+        controller.showsCameraControls = YES;
+        controller.delegate = nil;
+        ReactNativeMoFsImagePickerControllerDelegate* delegate = [ReactNativeMoFsImagePickerControllerDelegate new];
+        [self.refs addObject:delegate];
+        [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
+
+//        NSMutableArray* utis = [NSMutableArray new];
+//        if (args[@"utis"]) {
+//            [utis addObjectsFromArray:args[@"utis"]];
+//        } else {
+//            [utis addObject:@"public.item"]; // public.data public.item public.content
+//        }
+//        UIDocumentPickerViewController* controller = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:utis inMode:UIDocumentPickerModeImport];
+//        if (!self.refs) self.refs = [NSMutableSet new];
+//        ReactNativeMoFsPickerDelegate* delegate = [ReactNativeMoFsPickerDelegate new];
+//        delegate.resolve = resolve;
+//        delegate.reject = reject;
+//        delegate.refs = self.refs;
+//        [self.refs addObject:delegate];
+//        controller.delegate = delegate;
+//        controller.modalPresentationStyle = UIModalPresentationFormSheet;
+//        if (@available(iOS 11.0, *)) {
+//            controller.allowsMultipleSelection = [args[@"multiple"] boolValue];
+//        }
+//        [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
     });
 }
 

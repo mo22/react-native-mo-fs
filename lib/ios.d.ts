@@ -62,6 +62,7 @@ export interface Module {
         utis?: string[];
         multiple?: boolean;
     }): Promise<undefined | string[]>;
+    showImagePickerController(args: {}): Promise<unknown>;
 }
 export interface OpenURLEvent {
     url: string;
