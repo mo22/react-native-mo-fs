@@ -105,13 +105,14 @@ NSString* mimeTypeForPath(NSString* path) {
 @end
 @implementation ReactNativeMoFsImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
-//    picker.dismiss(animated: true)
     NSLog(@"didFinishPickingMediaWithInfo %@", info);
+    [picker dismissViewControllerAnimated:YES completion:nil];
     [self.refs removeObject:self];
     [self.refs removeObject:picker];
 }
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     NSLog(@"imagePickerControllerDidCancel");
+    [picker dismissViewControllerAnimated:YES completion:nil];
     self.resolve(nil);
     [self.refs removeObject:self];
     [self.refs removeObject:picker];
