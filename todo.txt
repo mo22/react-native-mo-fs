@@ -1,0 +1,8 @@
+UIImagePickerController matches pickFile... 
+
+cleanup documentation order
+
+split getInfo() into single hash functions
+
+method queue?
+
