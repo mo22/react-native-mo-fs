@@ -99,8 +99,17 @@ NSString* mimeTypeForPath(NSString* path) {
 @interface ReactNativeMoFsImagePickerControllerDelegate : NSObject <UIImagePickerControllerDelegate>
 @property RCTPromiseResolveBlock resolve;
 @property RCTPromiseRejectBlock reject;
+@property NSMutableSet* refs;
 @end
 @implementation ReactNativeMoFsImagePickerControllerDelegate
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
+    NSLog(@"didFinishPickingMediaWithInfo %@", info);
+}
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    NSLog(@"imagePickerControllerDidCancel");
+    self.resolve(nil);
+    [self.refs removeObject:self];
+}
 @end
 
 
@@ -620,14 +629,60 @@ RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromise
 RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIImagePickerController* controller = [UIImagePickerController new];
-        controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        controller.allowsEditing = YES;
-        controller.showsCameraControls = YES;
-        controller.delegate = nil;
+        if (args[@"sourceType"]) {
+            controller.sourceType = [args[@"sourceType"] intValue];
+        } else {
+            controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        }
+        if (args[@"allowsEditing"]) {
+            controller.allowsEditing = [args[@"allowsEditing"] boolValue];
+        }
+        if (args[@"showsCameraControls"]) {
+            controller.showsCameraControls = [args[@"showsCameraControls"] boolValue];
+        }
         ReactNativeMoFsImagePickerControllerDelegate* delegate = [ReactNativeMoFsImagePickerControllerDelegate new];
+        delegate.refs = self.refs;
         [self.refs addObject:delegate];
+        controller.delegate = delegate;
         [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
 
+//        typedef NS_ENUM(NSInteger, UIImagePickerControllerSourceType) {
+//            UIImagePickerControllerSourceTypePhotoLibrary,
+//            UIImagePickerControllerSourceTypeCamera,
+//            UIImagePickerControllerSourceTypeSavedPhotosAlbum
+//        } API_UNAVAILABLE(tvos);
+//
+//        typedef NS_ENUM(NSInteger, UIImagePickerControllerQualityType) {
+//            UIImagePickerControllerQualityTypeHigh = 0,       // highest quality
+//            UIImagePickerControllerQualityTypeMedium = 1,     // medium quality, suitable for transmission via Wi-Fi
+//            UIImagePickerControllerQualityTypeLow = 2,         // lowest quality, suitable for tranmission via cellular network
+//            UIImagePickerControllerQualityType640x480 API_AVAILABLE(ios(4.0)) = 3,    // VGA quality
+//            UIImagePickerControllerQualityTypeIFrame1280x720 API_AVAILABLE(ios(5.0)) = 4,
+//            UIImagePickerControllerQualityTypeIFrame960x540 API_AVAILABLE(ios(5.0)) = 5,
+//        } API_UNAVAILABLE(tvos);
+//
+//        typedef NS_ENUM(NSInteger, UIImagePickerControllerCameraCaptureMode) {
+//            UIImagePickerControllerCameraCaptureModePhoto,
+//            UIImagePickerControllerCameraCaptureModeVideo
+//        } API_UNAVAILABLE(tvos);
+//
+//        typedef NS_ENUM(NSInteger, UIImagePickerControllerCameraDevice) {
+//            UIImagePickerControllerCameraDeviceRear,
+//            UIImagePickerControllerCameraDeviceFront
+//        } API_UNAVAILABLE(tvos);
+//
+//        typedef NS_ENUM(NSInteger, UIImagePickerControllerCameraFlashMode) {
+//            UIImagePickerControllerCameraFlashModeOff  = -1,
+//            UIImagePickerControllerCameraFlashModeAuto = 0,
+//            UIImagePickerControllerCameraFlashModeOn   = 1
+//        } API_UNAVAILABLE(tvos);
+//
+//        typedef NS_ENUM(NSInteger, UIImagePickerControllerImageURLExportPreset) {
+//            UIImagePickerControllerImageURLExportPresetCompatible = 0,
+//            UIImagePickerControllerImageURLExportPresetCurrent
+//        } API_AVAILABLE(ios(11.0)) API_UNAVAILABLE(tvos);
+
+        
 //        NSMutableArray* utis = [NSMutableArray new];
 //        if (args[@"utis"]) {
 //            [utis addObjectsFromArray:args[@"utis"]];

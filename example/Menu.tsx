@@ -19,7 +19,13 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
         />
 
         <ListItem
-          onPress={() => {
+          onPress={async () => {
+            if (Fs.ios.Module) {
+              const res = await Fs.ios.Module.showImagePickerController({});
+              console.log('res', res);
+            }
+          }}
+          onLongPress={() => {
             ImagePicker.showImagePicker({
               noData: true,
               storageOptions: {
