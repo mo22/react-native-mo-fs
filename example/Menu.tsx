@@ -5,6 +5,10 @@ import { ListItem } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import { Fs } from 'react-native-mo-fs';
 import moment from 'moment';
+import * as forge from 'node-forge';
+import { Buffer } from 'buffer';
+
+
 
 export default class Menu extends React.Component<NavigationInjectedProps> {
   public render() {
@@ -26,8 +30,13 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
               if (res) {
                 const blob1 = await Fs.readURL(res.UIImagePickerControllerImageURL);
                 console.log('blob1', blob1);
+                blob1.close();
+                // assets-library://asset/asset.JPG?id=106E99A1-4F6A-45A2-B320-B0AD4A8E8473&ext=JPG ?
+                // this needs react-native-cameraroll enabled for assets-library:// url handling
                 const blob2 = await Fs.readURL(res.UIImagePickerControllerReferenceURL);
                 console.log('blob2', blob2);
+                blob2.close();
+
               }
             }
           }}
@@ -173,6 +182,19 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
           title="write non existent"
         />
 
+        <ListItem
+          onPress={async () => {
+            const data = forge.random.getBytesSync(1024 * 1024);
+            const blob = await Fs.createBlob(Buffer.from(data, 'binary'), 'arraybuffer');
+            console.log('blob', await Fs.getBlobInfo(blob, { sha1: true, sha256: true }));
+            blob.close();
+            const md = forge.md.sha1.create();
+            md.update(data);
+            console.log(Buffer.from(md.digest().data, 'binary').toString('hex'));
+
+          }}
+          title="test hash and crypto"
+        />
 
       </ScrollView>
     );
