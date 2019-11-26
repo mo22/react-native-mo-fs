@@ -3,4 +3,3 @@ UIImagePickerController matches pickFile...
 [ ] cleanup documentation order
 [ ] hashes?
 [ ] crypto?
-[ ] method queue?

@@ -32,7 +32,102 @@ console.log(Fs.paths);
 // data?: Path;
 ```
 
-### Handling "Open In"
+### Working with files
+
+#### Reading files
+
+```ts
+const myBlob = await Fs.readFile(Fs.paths.docs + '/hello.jpg');
+const myText = await Fs.readTextFile(Fs.paths.docs + '/hello.txt');
+```
+
+#### Writing files
+
+```ts
+await Fs.writeFile(Fs.paths.docs + '/hello.jpg', myBlob);
+await Fs.writeTextFile(Fs.paths.docs + '/dump.json', JSON.stringify(data));
+await Fs.appendFile(Fs.paths.docs + '/hello.jpg', myBlob);
+await Fs.appendTextFile(Fs.paths.docs + '/log.txt', 'my log line\n');
+```
+
+#### File handling
+
+```ts
+await Fs.deleteFile(someFilePath);
+await Fs.deleteFile(someFolderPath, true); // delete recursive
+await Fs.renameFile(oldPath, newPath);
+await Fs.listDir(folderPath); // returns array of file names
+await Fs.createDir(Fs.paths.docs + '/logs'); // does not create parents
+const stat = await Fs.stat(Fs.path.docs + '/somefile.txt');
+if (!stat.exists) {
+  console.log('not found');
+} else if (stat.dir) {
+  console.log('is a dir');
+} else {
+  console.log('is a file with size', stat.size, 'modified', new Date(stat.modified));
+}
+```
+
+### Working with Blobs
+
+#### Get URL for Blob
+
+```ts
+const url = Fs.getBlobURL(myBlob);
+return (<Image source={{ uri: url }} />);
+```
+
+#### Get contents of Blob
+
+```ts
+const base64_data = await Fs.readBlob(myBlob, 'base64');
+const string = await Fs.readBlob(myBlob, 'utf8');
+const arrayBuffer = await Fs.readBlob(myBlob, 'arraybuffer');
+```
+
+#### Create Blob from data
+
+```ts
+const myBlob = await Fs.createBlob('aGVsbG8gd29ybGQ=', 'base64');
+const myBlob = await Fs.createBlob('hello world', 'utf8');
+const myBlob = await Fs.createBlob(new Uint8Array([104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]), 'arraybuffer');
+```
+
+### Sharing / picking files
+
+#### Share / View file
+```ts
+// Share a file (open-in in ios, share intent in android)
+await Fs.shareFile(Fs.paths.docs + '/myimage.png');
+
+// View a file (preview in ios, view intent in android)
+await Fs.viewFile(Fs.paths.docs + '/myimage.png');
+```
+
+#### Pick file
+```ts
+// pick any single file
+const urls = await Fs.pickFile({ multiple: false })
+
+// pick one or more jpeg or png images
+const urls = await Fs.pickFile({ multiple: true, types: ['image/jpeg', 'image/png'] })
+
+// read the response
+if (urls.length > 0) {
+  const blob = await Fs.readURL(urls[0]);
+  // do something
+}
+```
+
+#### iTunes file sharing
+Add this to your Info.plist:
+```
+<key>UIFileSharingEnabled</key>
+<true/>
+```
+And write stuff to `Fs.paths.docs`
+
+#### Handling "Open In"
 
 Add to android manifest:
 ```
@@ -74,71 +169,14 @@ Fs.openFile.subscribe((event) => {
 If the app was started initially due to an open event, the event handler is
 called as soon as the first subscriber is there.
 
-### Mime Types and EXIF
+### Assorted stuff
+
+#### Mime Types and EXIF
 ```ts
 const mimeType = await Fs.getMimeType('png');
 
 // exif is not really done yet but might work for you ;)
 const exif = await Fs.getExif(myBlob);
-```
-
-### Working with Blobs
-
-#### Get URL for Blob
-
-```ts
-const url = Fs.getBlobURL(myBlob);
-return (<Image source={{ uri: url }} />);
-```
-
-#### Get contents of Blob
-
-```ts
-const base64_data = await Fs.readBlob(myBlob, 'base64');
-const string = await Fs.readBlob(myBlob, 'utf8');
-const arrayBuffer = await Fs.readBlob(myBlob, 'arraybuffer');
-```
-
-#### Create Blob from data
-
-```ts
-const myBlob = await Fs.createBlob('aGVsbG8gd29ybGQ=', 'base64');
-const myBlob = await Fs.createBlob('hello world', 'utf8');
-const myBlob = await Fs.createBlob(new Uint8Array([104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]), 'arraybuffer');
-```
-
-#### Reading files
-
-```ts
-const myBlob = await Fs.readFile(Fs.paths.docs + '/hello.jpg');
-const myText = await Fs.readTextFile(Fs.paths.docs + '/hello.txt');
-```
-
-#### Writing files
-
-```ts
-await Fs.writeFile(Fs.paths.docs + '/hello.jpg', myBlob);
-await Fs.writeTextFile(Fs.paths.docs + '/dump.json', JSON.stringify(data));
-await Fs.appendFile(Fs.paths.docs + '/hello.jpg', myBlob);
-await Fs.appendTextFile(Fs.paths.docs + '/log.txt', 'my log line\n');
-```
-
-#### File handling
-
-```ts
-await Fs.deleteFile(someFilePath);
-await Fs.deleteFile(someFolderPath, true); // delete recursive
-await Fs.renameFile(oldPath, newPath);
-await Fs.listDir(folderPath); // returns array of file names
-await Fs.createDir(Fs.paths.docs + '/logs'); // does not create parents
-const stat = await Fs.stat(Fs.path.docs + '/somefile.txt');
-if (!stat.exists) {
-  console.log('not found');
-} else if (stat.dir) {
-  console.log('is a dir');
-} else {
-  console.log('is a file with size', stat.size, 'modified', new Date(stat.modified));
-}
 ```
 
 #### Blob info / hashes
@@ -166,38 +204,6 @@ const thumbnailBlob = await Fs.resizeImage(myImageBlob, {
   quality: 0.3, // 0..1
 });
 ```
-
-#### Share / View file
-```ts
-// Share a file (open-in in ios, share intent in android)
-await Fs.shareFile(Fs.paths.docs + '/myimage.png');
-
-// View a file (preview in ios, view intent in android)
-await Fs.viewFile(Fs.paths.docs + '/myimage.png');
-```
-
-#### Pick file
-```ts
-// pick any single file
-const urls = await Fs.pickFile({ multiple: false })
-
-// pick one or more jpeg or png images
-const urls = await Fs.pickFile({ multiple: true, types: ['image/jpeg', 'image/png'] })
-
-// read the response
-if (urls.length > 0) {
-  const blob = await Fs.readURL(urls[0]);
-  // do something
-}
-```
-
-#### iTunes file sharing
-Add this to your Info.plist:
-```
-<key>UIFileSharingEnabled</key>
-<true/>
-```
-And write stuff to `Fs.paths.docs`
 
 ## Notes
 - iOS application:openURL: is swizzled on startup.
