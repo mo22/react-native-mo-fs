@@ -23,9 +23,9 @@ export interface Module {
   getUti(extension: string): Promise<string|undefined>;
   readBlob(blob: BlobData, mode: 'base64'|'utf8'): Promise<string>;
   createBlob(str: string, mode: 'base64'|'utf8'): Promise<BlobData>;
-  readFile(path: string): Promise<BlobData>;
-  writeFile(path: string, data: BlobData): Promise<void>;
-  appendFile(path: string, data: BlobData): Promise<void>;
+  readFile(path: string, offset?: number, length?: number): Promise<BlobData>;
+  writeFile(path: string, data: BlobData, offset?: number, length?: number, truncate?: boolean): Promise<void>;
+  // appendFile(path: string, data: BlobData): Promise<void>;
   deleteFile(path: string, recursive: boolean): Promise<void>;
   renameFile(fromPath: string, toPath: string): Promise<void>;
   listDir(path: string): Promise<string[]>;
@@ -49,9 +49,26 @@ export interface Module {
   getImageSize(blob: BlobData): Promise<{ width: number; height: number; }>;
   getExif(blob: BlobData): Promise<any>;
   updateImage(blob: BlobData, args?: any): Promise<BlobData>;
-  showDocumentInteractionController(args: { path: string; uti?: string; annotation?: string; type: 'preview'|'openin'|'options' }): Promise<void>;
-  showDocumentPickerView(args: { utis?: string[]; multiple?: boolean; }): Promise<undefined|string[]>; // UIDocumentPickerModeImport?,  ?
-  showImagePickerController(args: {}): Promise<unknown>;
+  showDocumentInteractionController(args: {
+    path: string;
+    uti?: string;
+    annotation?: string;
+    type: 'preview'|'openin'|'options';
+  }): Promise<void>;
+  showDocumentPickerView(args: {
+    utis?: string[];
+    multiple?: boolean;
+  }): Promise<undefined|string[]>;
+  showImagePickerController(args: {
+    sourceType?: number;
+    mediaTypes?: string[];
+    allowsEditing?: boolean;
+    showsCameraControls?: boolean;
+    videoMaximumDuration?: number;
+    imageExportPreset?: number;
+    videoExportPreset?: string;
+  }): Promise<{
+  }>;
 }
 
 export interface OpenURLEvent {

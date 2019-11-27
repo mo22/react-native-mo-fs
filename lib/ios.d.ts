@@ -21,9 +21,8 @@ export interface Module {
     getUti(extension: string): Promise<string | undefined>;
     readBlob(blob: BlobData, mode: 'base64' | 'utf8'): Promise<string>;
     createBlob(str: string, mode: 'base64' | 'utf8'): Promise<BlobData>;
-    readFile(path: string): Promise<BlobData>;
-    writeFile(path: string, data: BlobData): Promise<void>;
-    appendFile(path: string, data: BlobData): Promise<void>;
+    readFile(path: string, offset?: number, length?: number): Promise<BlobData>;
+    writeFile(path: string, data: BlobData, offset?: number, length?: number, truncate?: boolean): Promise<void>;
     deleteFile(path: string, recursive: boolean): Promise<void>;
     renameFile(fromPath: string, toPath: string): Promise<void>;
     listDir(path: string): Promise<string[]>;
@@ -62,7 +61,15 @@ export interface Module {
         utis?: string[];
         multiple?: boolean;
     }): Promise<undefined | string[]>;
-    showImagePickerController(args: {}): Promise<unknown>;
+    showImagePickerController(args: {
+        sourceType?: number;
+        mediaTypes?: string[];
+        allowsEditing?: boolean;
+        showsCameraControls?: boolean;
+        videoMaximumDuration?: number;
+        imageExportPreset?: number;
+        videoExportPreset?: string;
+    }): Promise<{}>;
 }
 export interface OpenURLEvent {
     url: string;

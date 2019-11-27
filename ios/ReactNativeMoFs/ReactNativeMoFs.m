@@ -2,7 +2,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTNetworking.h>
-#import <CommonCrypto/CommonDigest.h>
+#import <CommonCrypto/CommonCrypto.h>
 #import <CoreServices/CoreServices.h>
 #import "ReactNativeMoFs.h"
 #import <objc/runtime.h>
@@ -475,6 +475,21 @@ RCT_EXPORT_METHOD(setAttributes:(NSString*)path attributes:(NSDictionary*)attrib
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(getHash:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSData* data = [self.blobManager resolve:blob];
+    if (!data) {
+        reject(@"", @"blob not found", nil);
+        return;
+    }
+    // supported types: md5, sha1, sha256, sha?? hmac-xxx?
+    // key?
+    // CCHmac, CC_MD5, etc.
+    // can we also return the state to the client to support updates?
+    // CCCryptorGCM
+//    CCCrypt
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSData* data = [self.blobManager resolve:blob];
     if (!data) {
@@ -658,6 +673,7 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
         if (args[@"showsCameraControls"]) {
             controller.showsCameraControls = [args[@"showsCameraControls"] boolValue];
         }
+        // @TODO other fields
         if (!self.refs) self.refs = [NSMutableSet new];
         ReactNativeMoFsImagePickerControllerDelegate* delegate = [ReactNativeMoFsImagePickerControllerDelegate new];
         delegate.resolve = resolve;
@@ -667,63 +683,6 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
         [self.refs addObject:controller];
         controller.delegate = delegate;
         [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
-
-//        typedef NS_ENUM(NSInteger, UIImagePickerControllerSourceType) {
-//            UIImagePickerControllerSourceTypePhotoLibrary,
-//            UIImagePickerControllerSourceTypeCamera,
-//            UIImagePickerControllerSourceTypeSavedPhotosAlbum
-//        } API_UNAVAILABLE(tvos);
-//
-//        typedef NS_ENUM(NSInteger, UIImagePickerControllerQualityType) {
-//            UIImagePickerControllerQualityTypeHigh = 0,       // highest quality
-//            UIImagePickerControllerQualityTypeMedium = 1,     // medium quality, suitable for transmission via Wi-Fi
-//            UIImagePickerControllerQualityTypeLow = 2,         // lowest quality, suitable for tranmission via cellular network
-//            UIImagePickerControllerQualityType640x480 API_AVAILABLE(ios(4.0)) = 3,    // VGA quality
-//            UIImagePickerControllerQualityTypeIFrame1280x720 API_AVAILABLE(ios(5.0)) = 4,
-//            UIImagePickerControllerQualityTypeIFrame960x540 API_AVAILABLE(ios(5.0)) = 5,
-//        } API_UNAVAILABLE(tvos);
-//
-//        typedef NS_ENUM(NSInteger, UIImagePickerControllerCameraCaptureMode) {
-//            UIImagePickerControllerCameraCaptureModePhoto,
-//            UIImagePickerControllerCameraCaptureModeVideo
-//        } API_UNAVAILABLE(tvos);
-//
-//        typedef NS_ENUM(NSInteger, UIImagePickerControllerCameraDevice) {
-//            UIImagePickerControllerCameraDeviceRear,
-//            UIImagePickerControllerCameraDeviceFront
-//        } API_UNAVAILABLE(tvos);
-//
-//        typedef NS_ENUM(NSInteger, UIImagePickerControllerCameraFlashMode) {
-//            UIImagePickerControllerCameraFlashModeOff  = -1,
-//            UIImagePickerControllerCameraFlashModeAuto = 0,
-//            UIImagePickerControllerCameraFlashModeOn   = 1
-//        } API_UNAVAILABLE(tvos);
-//
-//        typedef NS_ENUM(NSInteger, UIImagePickerControllerImageURLExportPreset) {
-//            UIImagePickerControllerImageURLExportPresetCompatible = 0,
-//            UIImagePickerControllerImageURLExportPresetCurrent
-//        } API_AVAILABLE(ios(11.0)) API_UNAVAILABLE(tvos);
-
-        
-//        NSMutableArray* utis = [NSMutableArray new];
-//        if (args[@"utis"]) {
-//            [utis addObjectsFromArray:args[@"utis"]];
-//        } else {
-//            [utis addObject:@"public.item"]; // public.data public.item public.content
-//        }
-//        UIDocumentPickerViewController* controller = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:utis inMode:UIDocumentPickerModeImport];
-//        if (!self.refs) self.refs = [NSMutableSet new];
-//        ReactNativeMoFsPickerDelegate* delegate = [ReactNativeMoFsPickerDelegate new];
-//        delegate.resolve = resolve;
-//        delegate.reject = reject;
-//        delegate.refs = self.refs;
-//        [self.refs addObject:delegate];
-//        controller.delegate = delegate;
-//        controller.modalPresentationStyle = UIModalPresentationFormSheet;
-//        if (@available(iOS 11.0, *)) {
-//            controller.allowsMultipleSelection = [args[@"multiple"] boolValue];
-//        }
-//        [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
     });
 }
 
