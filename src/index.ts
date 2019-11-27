@@ -33,6 +33,7 @@ declare global {
 export type URL = string;
 export type Path = string;
 export type MimeType = string;
+export type Base64 = string;
 
 
 
@@ -87,6 +88,9 @@ export interface PickFileArgs {
   types?: MimeType[];
   /** allow multiple selection */
   multiple?: boolean;
+}
+
+export interface PickImageArgs {
 }
 
 export interface Paths {
@@ -287,7 +291,7 @@ export class Fs {
   /**
    * read file to blob
    */
-  public static async readFile(path: Path): Promise<Blob> {
+  public static async readFile(path: Path, args?: { offset?: number; size?: number; }): Promise<Blob> {
     if (ios.Module) {
       const blob = new Blob();
       blob.data = await ios.Module.readFile(path);
@@ -338,7 +342,7 @@ export class Fs {
   /**
    * write blob to file
    */
-  public static async writeFile(path: Path, blob: Blob): Promise<void> {
+  public static async writeFile(path: Path, blob: Blob, args?: { offset?: number; truncate?: boolean; }): Promise<void> {
     if (ios.Module) {
       return await ios.Module.writeFile(path, blob.data);
     } else if (android.Module) {
@@ -507,6 +511,7 @@ export class Fs {
    * get info about a blob. can calculate md5 / sha1 / sha256.
    */
   public static async getBlobInfo(blob: Blob, args: BlobInfoArgs = {}): Promise<BlobInfo> {
+    console.warn('Fs.getBlobInfo is deprecated');
     if (ios.Module) {
       return await ios.Module.getBlobInfo(blob.data, args);
     } else if (android.Module) {
@@ -645,6 +650,24 @@ export class Fs {
     } else if (Fs.android.Module) {
       const res = await Fs.android.Module.getContent({ types: args.types, multiple: args.multiple });
       return res || [];
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
+   * show a image open dialog
+   */
+  public static async pickImage(args: PickImageArgs): Promise<URL|undefined> {
+    if (Fs.ios.Module) {
+      const res = await Fs.ios.Module!.showImagePickerController({ });
+      console.log('RES', res);
+      return undefined;
+    } else if (Fs.android.Module) {
+      // @TODO: only images... ?
+      const res = await Fs.android.Module.getContent({ types: args.types });
+      console.log('RES', res);
+      return undefined;
     } else {
       throw new Error('platform not supported');
     }

@@ -21,8 +21,10 @@ export interface Module {
     getUti(extension: string): Promise<string | undefined>;
     readBlob(blob: BlobData, mode: 'base64' | 'utf8'): Promise<string>;
     createBlob(str: string, mode: 'base64' | 'utf8'): Promise<BlobData>;
-    readFile(path: string, offset?: number, length?: number): Promise<BlobData>;
-    writeFile(path: string, data: BlobData, offset?: number, length?: number, truncate?: boolean): Promise<void>;
+    hashBlob(blob: BlobData, hash: 'md5' | 'sha1' | 'sha256'): Promise<string>;
+    cryptBlob(blob: BlobData, encrypt: boolean, key: string, iv: string, algorithm: 'aes-256-cbc'): Promise<BlobData>;
+    readFile(path: string, offset: number, size: number): Promise<BlobData>;
+    writeFile(path: string, data: BlobData, offset: number, truncate: boolean): Promise<void>;
     deleteFile(path: string, recursive: boolean): Promise<void>;
     renameFile(fromPath: string, toPath: string): Promise<void>;
     listDir(path: string): Promise<string[]>;
@@ -44,7 +46,6 @@ export interface Module {
     setAttributes(path: string, attributes: {
         [k: string]: any;
     }): Promise<void>;
-    getBlobInfo(blob: BlobData, args?: any): Promise<any>;
     getImageSize(blob: BlobData): Promise<{
         width: number;
         height: number;
@@ -69,7 +70,9 @@ export interface Module {
         videoMaximumDuration?: number;
         imageExportPreset?: number;
         videoExportPreset?: string;
-    }): Promise<{}>;
+    }): Promise<{
+        todo: any;
+    }>;
 }
 export interface OpenURLEvent {
     url: string;

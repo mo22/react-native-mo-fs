@@ -28,9 +28,8 @@ export interface Module {
     getMimeType(extension: string): Promise<string | undefined>;
     readBlob(blob: BlobData, mode: 'base64' | 'utf8'): Promise<string>;
     createBlob(str: string, mode: 'base64' | 'utf8'): Promise<BlobData>;
-    readFile(path: string): Promise<BlobData>;
-    writeFile(path: string, data: BlobData): Promise<void>;
-    appendFile(path: string, data: BlobData): Promise<void>;
+    readFile(path: string, offset: number, size: number): Promise<BlobData>;
+    writeFile(path: string, data: BlobData, offset: number, truncate: boolean): Promise<void>;
     deleteFile(path: string, recursive: boolean): Promise<void>;
     renameFile(fromPath: string, toPath: string): Promise<void>;
     listDir(path: string): Promise<string[]>;
@@ -41,7 +40,6 @@ export interface Module {
         lastModified?: number;
     }>;
     chmod(path: string, mode: number): Promise<void>;
-    getBlobInfo(blob: BlobData, args?: any): Promise<any>;
     getImageSize(blob: BlobData): Promise<{
         width: number;
         height: number;

@@ -21,6 +21,7 @@ declare global {
 export declare type URL = string;
 export declare type Path = string;
 export declare type MimeType = string;
+export declare type Base64 = string;
 export interface BlobInfoArgs {
     /** calculate hex md5 of blob */
     md5?: boolean;
@@ -68,6 +69,8 @@ export interface PickFileArgs {
     types?: MimeType[];
     /** allow multiple selection */
     multiple?: boolean;
+}
+export interface PickImageArgs {
 }
 export interface Paths {
     cache: Path;
@@ -139,7 +142,10 @@ export declare class Fs {
     /**
      * read file to blob
      */
-    static readFile(path: Path): Promise<Blob>;
+    static readFile(path: Path, args?: {
+        offset?: number;
+        size?: number;
+    }): Promise<Blob>;
     /**
      * read file as text
      */
@@ -155,7 +161,10 @@ export declare class Fs {
     /**
      * write blob to file
      */
-    static writeFile(path: Path, blob: Blob): Promise<void>;
+    static writeFile(path: Path, blob: Blob, args?: {
+        offset?: number;
+        truncate?: boolean;
+    }): Promise<void>;
     /**
      * write text to file
      */
@@ -237,5 +246,9 @@ export declare class Fs {
      * show a file open dialog
      */
     static pickFile(args: PickFileArgs): Promise<URL[]>;
+    /**
+     * show a image open dialog
+     */
+    static pickImage(args: PickImageArgs): Promise<URL | undefined>;
 }
 export {};

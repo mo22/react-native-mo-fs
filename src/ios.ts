@@ -16,20 +16,29 @@ export interface Module {
     caches: string;
     library: string;
   };
+
   setVerbose(verbose: boolean): void;
+
   getLastOpenURL(): Promise<OpenURLEvent|undefined>;
+
   getMimeType(extension: string): Promise<string|undefined>;
   getUtiFromMimeType(mimeType: string): Promise<string|undefined>;
   getUti(extension: string): Promise<string|undefined>;
+
   readBlob(blob: BlobData, mode: 'base64'|'utf8'): Promise<string>;
   createBlob(str: string, mode: 'base64'|'utf8'): Promise<BlobData>;
-  readFile(path: string, offset?: number, length?: number): Promise<BlobData>;
-  writeFile(path: string, data: BlobData, offset?: number, length?: number, truncate?: boolean): Promise<void>;
-  // appendFile(path: string, data: BlobData): Promise<void>;
+  
+  hashBlob(blob: BlobData, hash: 'md5'|'sha1'|'sha256'): Promise<string>;
+  cryptBlob(blob: BlobData, encrypt: boolean, key: string, iv: string, algorithm: 'aes-256-cbc'): Promise<BlobData>;
+
+  readFile(path: string, offset: number, size: number): Promise<BlobData>;
+  writeFile(path: string, data: BlobData, offset: number, truncate: boolean): Promise<void>;
+
   deleteFile(path: string, recursive: boolean): Promise<void>;
   renameFile(fromPath: string, toPath: string): Promise<void>;
   listDir(path: string): Promise<string[]>;
   createDir(path: string): Promise<void>;
+
   stat(path: string): Promise<undefined | {
     NSFileOwnerAccountID?: null|number;
     NSFileCreationDate?: null|number;
@@ -44,21 +53,27 @@ export interface Module {
     NSFilePosixPermissions?: null|number;
     NSFileModificationDate?: null|number;
   }>;
-  setAttributes(path: string, attributes: { [k: string]: any }): Promise<void>;
-  getBlobInfo(blob: BlobData, args?: any): Promise<any>;
+
+  setAttributes(path: string, attributes: {
+    [k: string]: any;
+  }): Promise<void>;
+
   getImageSize(blob: BlobData): Promise<{ width: number; height: number; }>;
   getExif(blob: BlobData): Promise<any>;
   updateImage(blob: BlobData, args?: any): Promise<BlobData>;
+  
   showDocumentInteractionController(args: {
     path: string;
     uti?: string;
     annotation?: string;
     type: 'preview'|'openin'|'options';
   }): Promise<void>;
+
   showDocumentPickerView(args: {
     utis?: string[];
     multiple?: boolean;
   }): Promise<undefined|string[]>;
+  
   showImagePickerController(args: {
     sourceType?: number;
     mediaTypes?: string[];
@@ -68,7 +83,9 @@ export interface Module {
     imageExportPreset?: number;
     videoExportPreset?: string;
   }): Promise<{
+    todo
   }>;
+  
 }
 
 export interface OpenURLEvent {
