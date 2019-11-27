@@ -667,13 +667,26 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
         } else {
             controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         }
+        if (args[@"mediaTypes"]) {
+            controller.mediaTypes = args[@"mediaTypes"];
+        }
         if (args[@"allowsEditing"]) {
             controller.allowsEditing = [args[@"allowsEditing"] boolValue];
         }
         if (args[@"showsCameraControls"]) {
             controller.showsCameraControls = [args[@"showsCameraControls"] boolValue];
         }
-        // @TODO other fields
+        if (args[@"videoMaximumDuration"]) {
+            controller.videoMaximumDuration = [args[@"videoMaximumDuration"] doubleValue];
+        }
+        if (@available(iOS 11.0, *)) {
+            if (args[@"imageExportPreset"]) {
+                controller.imageExportPreset = [args[@"imageExportPreset"] intValue];
+            }
+            if (args[@"videoExportPreset"]) {
+                controller.videoExportPreset = args[@"videoExportPreset"];
+            }
+        }
         if (!self.refs) self.refs = [NSMutableSet new];
         ReactNativeMoFsImagePickerControllerDelegate* delegate = [ReactNativeMoFsImagePickerControllerDelegate new];
         delegate.resolve = resolve;
