@@ -650,11 +650,12 @@ export class Fs {
    * show a image open dialog
    */
   public static async pickImage(args: PickImageArgs): Promise<URL|undefined> {
+    console.log('pickImage', args);
     if (Fs.ios.Module) {
       // @TODO
       const res = await Fs.ios.Module!.showImagePickerController({
         allowsEditing: true,
-        mediaTypes: [],
+        mediaTypes: ['public.image', 'public.movie'],
       });
       // sourceType?: number;
       // mediaTypes?: string[];
@@ -667,7 +668,9 @@ export class Fs {
       return undefined;
     } else if (Fs.android.Module) {
       // @TODO
-      const res = await Fs.android.Module.getContent({ });
+      const res = await Fs.android.Module.getContent({
+        types: ['image/*', 'video/*'],
+      });
       console.log('RES', res);
       return undefined;
     } else {
