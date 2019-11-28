@@ -517,7 +517,10 @@ export class Fs {
   /**
    * get hmac of a blob. can calculate sha1 / sha256 / sha512. returns hex.
    */
-  public static async getBlobHmac(blob: Blob, algorithm: 'sha1'|'sha256'|'sha512', key: Base64): Promise<HexString> {
+  public static async getBlobHmac(blob: Blob, algorithm: 'sha1'|'sha256'|'sha512', key: Base64|ArrayBufferLike): Promise<HexString> {
+    if (typeof key !== 'string') {
+      key = base64.encode(key);
+    }
     if (ios.Module) {
       return await ios.Module.getBlobHmac(blob.data, algorithm, key);
     } else if (android.Module) {
@@ -530,7 +533,13 @@ export class Fs {
   /**
    * encrypt / decrypt a blob
    */
-  public static async cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt'|'decrypt', key: Base64, iv: Base64): Promise<BlobData> {
+  public static async cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt'|'decrypt', key: Base64|ArrayBufferLike, iv: Base64|ArrayBufferLike): Promise<BlobData> {
+    if (typeof key !== 'string') {
+      key = base64.encode(key);
+    }
+    if (typeof iv !== 'string') {
+      iv = base64.encode(iv);
+    }
     if (ios.Module) {
       return await ios.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
     } else if (android.Module) {

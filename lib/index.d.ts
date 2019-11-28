@@ -205,11 +205,11 @@ export declare class Fs {
     /**
      * get hmac of a blob. can calculate sha1 / sha256 / sha512. returns hex.
      */
-    static getBlobHmac(blob: Blob, algorithm: 'sha1' | 'sha256' | 'sha512', key: Base64): Promise<HexString>;
+    static getBlobHmac(blob: Blob, algorithm: 'sha1' | 'sha256' | 'sha512', key: Base64 | ArrayBufferLike): Promise<HexString>;
     /**
      * encrypt / decrypt a blob
      */
-    static cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt' | 'decrypt', key: Base64, iv: Base64): Promise<BlobData>;
+    static cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt' | 'decrypt', key: Base64 | ArrayBufferLike, iv: Base64 | ArrayBufferLike): Promise<BlobData>;
     /**
      * get size of an image.
      */
