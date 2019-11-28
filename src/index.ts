@@ -288,11 +288,13 @@ export class Fs {
   public static async readFile(path: Path): Promise<Blob> {
     if (ios.Module) {
       const blob = new Blob();
-      blob.data = await ios.Module.readFile(path);
+      // blob.data = await ios.Module.readFile(path);
+      blob.data = await ios.Module.readFile2({ path: path });
       return blob;
     } else if (android.Module) {
       const blob = new Blob();
-      blob.data = await android.Module.readFile(path);
+      // blob.data = await android.Module.readFile(path);
+      blob.data = await android.Module.readFile2({ path: path });
       const type = await this.getMimeType(path);
       if (type !== undefined) blob.data.type = type;
       return blob;
@@ -338,9 +340,10 @@ export class Fs {
    */
   public static async writeFile(path: Path, blob: Blob): Promise<void> {
     if (ios.Module) {
-      return await ios.Module.writeFile(path, blob.data);
+      // await ios.Module.writeFile(path, blob.data);
+      await ios.Module.writeFile2({ path: path, blob: blob.data });
     } else if (android.Module) {
-      return await android.Module.writeFile(path, blob.data);
+      await android.Module.writeFile2({ path: path, blob: blob.data });
     } else {
       throw new Error('platform not supported');
     }
@@ -375,9 +378,11 @@ export class Fs {
    */
   public static async appendFile(path: Path, blob: Blob): Promise<void> {
     if (ios.Module) {
-      return await ios.Module.appendFile(path, blob.data);
+      // await ios.Module.appendFile(path, blob.data);
+      await ios.Module.writeFile2({ path: path, blob: blob.data, offset: -1 });
     } else if (android.Module) {
-      return await android.Module.appendFile(path, blob.data);
+      // await android.Module.appendFile(path, blob.data);
+      await android.Module.writeFile2({ path: path, blob: blob.data, offset: -1 });
     } else {
       throw new Error('platform not supported');
     }
