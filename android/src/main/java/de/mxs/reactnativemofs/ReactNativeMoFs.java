@@ -46,7 +46,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.crypto.Cipher;
 import javax.crypto.Mac;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
@@ -482,6 +484,36 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             mac.update(data);
             byte[] tmp = mac.doFinal();
             promise.resolve(getHexFromBytes(tmp));
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void cryptBlob(ReadableMap blob, String algorithm, boolean encrypt, String key, String iv, Promise promise) {
+        try {
+            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            byte[] data = blobModule.resolve(blob);
+            if (data == null) {
+                promise.reject(new Error("blob not found"));
+                return;
+            }
+            byte[] keyData = Base64.decode(key, 0);
+            byte[] ivData = Base64.decode(iv, 0);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(
+                encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE,
+                new SecretKeySpec(keyData, cipher.getAlgorithm()),
+                new IvParameterSpec(ivData)
+            );
+            byte[] res = cipher.doFinal(data);
+            String blobId = blobModule.store(res);
+            WritableMap resBlob = Arguments.createMap();
+            resBlob.putInt("size", res.length);
+            resBlob.putInt("offset", 0);
+            resBlob.putString("blobId", blobId);
+            promise.resolve(resBlob);
         } catch (Exception e) {
             promise.reject(e);
         }
