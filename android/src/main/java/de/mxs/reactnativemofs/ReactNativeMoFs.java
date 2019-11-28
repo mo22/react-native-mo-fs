@@ -501,12 +501,17 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             }
             byte[] keyData = Base64.decode(key, 0);
             byte[] ivData = Base64.decode(iv, 0);
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
-            cipher.init(
-                encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE,
-                new SecretKeySpec(keyData, cipher.getAlgorithm()),
-                new IvParameterSpec(ivData)
-            );
+            Cipher cipher;
+            if ("aes-cbc".equals(algorithm)) {
+                cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                cipher.init(
+                    encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE,
+                    new SecretKeySpec(keyData, cipher.getAlgorithm()),
+                    new IvParameterSpec(ivData)
+                );
+            } else {
+                throw new RuntimeException("invalid algorithm");
+            }
             byte[] res = cipher.doFinal(data);
             String blobId = blobModule.store(res);
             WritableMap resBlob = Arguments.createMap();
