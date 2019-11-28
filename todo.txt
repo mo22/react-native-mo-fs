@@ -1,21 +1,10 @@
 [ ] pickImage
   [ ] ios UIImagePickerController options and typings
 
-[ ] getBlobHash
-  md5 / sha1 / sha256
-  [ ] ios
-  [ ] android
-
-[ ] getBlobHmac
-
-[ ] cryptBlob
-  [ ] ios
-  [ ] android
-
-[ ] docs
-  [ ] design principles? minimal, working with blobs etc.?
 
 [ ] xxx
+  getBlobHmac?
+  encryption?
   readFile(path: string): Promise<BlobData>; -- add offset and length?
   writeFile(path: string, data: BlobData): Promise<void>; -- add offset and length? and truncate? incorporate appendFile?
   Blob.slice() ? test

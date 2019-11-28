@@ -17,6 +17,26 @@ import { Fs } from 'react-native-mo-fs';
 Fs.setVerbose(true);
 ```
 
+### Basic ideas
+
+- `Fs.readFile` / `Fs.writeFile` all work with react-native's Blobs. These store
+  the data on the native side and only pass a handle to javascript to avoid
+  transferring lots of data using base64 encoding. As long as react-native does
+  not support UInt8Array to NSData*/byte[] bridging this is the fastest solution.
+  
+- You can read out or create blobs using `Fs.readBlob` and `Fs.createBlob` using
+  encodings like base64, utf8 or arraybuffers. If using arraybuffers the buffer
+  has to be converted to base64 internally first.
+  
+- Most of the time you do not need the data on the javascript side. You can load
+  a file to a blob and use that blob as payload data for `fetch()` or the other
+  way around.
+  
+- There is some assorted stuff in the library for hashing, image manipulation and
+  similar stuff. The base idea is to support only operations that do not require
+  additional native libraries to not bloat this library.
+
+
 ### System Paths
 
 ```ts
@@ -179,14 +199,12 @@ const mimeType = await Fs.getMimeType('png');
 const exif = await Fs.getExif(myBlob);
 ```
 
-#### Blob info / hashes
+#### Blob hash
 
 ```ts
-const info = await Fs.getBlobInfo(myBlob, { md5: true, sha1: true, sha256: true });
-console.log('size', info.size);
-console.log('md5-hex', info.md5);
-console.log('sha1-hex', info.sha1);
-console.log('sha256-hex', info.sha256);
+console.log('md5-hex', await Fs.getBlobHash(myBlob, 'md5'));
+console.log('sha1-hex', await Fs.getBlobHash(myBlob, 'sha1'));
+console.log('sha256-hex', await Fs.getBlobHash(myBlob, 'sha256'));
 ```
 
 #### Images
