@@ -325,25 +325,7 @@ RCT_EXPORT_METHOD(createBlob:(NSString*)str mode:(NSString*)mode resolve:(RCTPro
     });
 }
 
-RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSError* error = nil;
-    NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
-    if (self.verbose) NSLog(@"ReactNativeMoFs.readFile path=%@ size=%lu error=%@", path, (unsigned long)data.length, error);
-    if (!data) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-    NSString* blobId = [self.blobManager store:data];
-    resolve(@{
-        @"size": @([data length]),
-        @"offset": @(0),
-        @"blobId": blobId,
-        @"type": mimeTypeForPath(path),
-        @"name": [path lastPathComponent],
-    });
-}
-
-RCT_EXPORT_METHOD(readFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(readFile:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSError* error = nil;
     NSString* path = args[@"path"];
     NSNumber* offset = args[@"offset"];
@@ -403,23 +385,7 @@ RCT_EXPORT_METHOD(readFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)
     });
 }
 
-RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSData* data = [self.blobManager resolve:blob];
-    if (!data) {
-        reject(@"", @"blob not found", nil);
-        return;
-    }
-    NSError* error = nil;
-    [data writeToFile:path options:NSDataWritingAtomic error:&error];
-    if (self.verbose) NSLog(@"ReactNativeMoFs.writeFile path=%@ size=%lu error=%@", path, (unsigned long)data.length, error);
-    if (error) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-    resolve(nil);
-}
-
-RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(writeFile:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSError* error = nil;
     NSData* data = [self.blobManager resolve:args[@"blob"]];
     if (!data) {
@@ -485,53 +451,6 @@ RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock
             }
         }
     }
-    resolve(nil);
-}
-
-RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSData* data = [self.blobManager resolve:blob];
-    if (!data) {
-        reject(@"", @"blob not found", nil);
-        return;
-    }
-    NSError* error = nil;
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        if (self.verbose) NSLog(@"ReactNativeMoFs.appendFile path=%@ create", path);
-        [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
-    }
-    NSFileHandle* fp = [NSFileHandle fileHandleForWritingToURL:[NSURL fileURLWithPath:path] error:&error];
-    if (error) {
-        if (self.verbose) NSLog(@"ReactNativeMoFs.appendFile path=%@ size=%lu error=%@", path, (unsigned long)data.length, error);
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-    if (@available(iOS 13.0, *)) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000 // __IPHONE_13_0
-        [fp seekToEndReturningOffset:nil error:&error];
-        if (error) {
-            if (self.verbose) NSLog(@"ReactNativeMoFs.appendFile path=%@ size=%lu error=%@", path, (unsigned long)data.length, error);
-            reject(@"", [error localizedDescription], error);
-            return;
-        }
-        [fp writeData:data error:&error];
-        if (error) {
-            if (self.verbose) NSLog(@"ReactNativeMoFs.appendFile path=%@ size=%lu error=%@", path, (unsigned long)data.length, error);
-            reject(@"", [error localizedDescription], error);
-            return;
-        }
-        [fp closeAndReturnError:&error];
-        if (error) {
-            if (self.verbose) NSLog(@"ReactNativeMoFs.appendFile path=%@ size=%lu error=%@", path, (unsigned long)data.length, error);
-            reject(@"", [error localizedDescription], error);
-            return;
-        }
-#endif
-    } else {
-        [fp seekToEndOfFile];
-        [fp writeData:data];
-        [fp closeFile];
-    }
-    if (self.verbose) NSLog(@"ReactNativeMoFs.appendFile path=%@ size=%lu", path, (unsigned long)data.length);
     resolve(nil);
 }
 
