@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
@@ -108,6 +110,12 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         } else {
             return fileOrDirectory.delete();
         }
+    }
+
+    private String getHexFromBytes(byte[] data) {
+        StringBuilder sb = new StringBuilder(data.length * 2);
+        for (byte b : data) sb.append(String.format("%02x", b & 0xFF));
+        return sb.toString();
     }
 
     private WritableMap getMapFromIntent(Intent intent) {
@@ -409,7 +417,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void getBlobHash(ReadableMap blob, String hash, Promise promise) {
+    public void getBlobHash(ReadableMap blob, String algorithm, Promise promise) {
         try {
             BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
             byte[] data = blobModule.resolve(blob);
@@ -417,38 +425,63 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 promise.reject(new Error("blob not found"));
                 return;
             }
-            if (verbose) Log.i("ReactNativeMoFs", "getBlobHash " + hash + " " + data.length);
-            switch (hash) {
-                case "md5": {
-                    MessageDigest digest = MessageDigest.getInstance("MD5");
-                    digest.reset();
-                    byte[] tmp = digest.digest(data);
-                    StringBuilder sb = new StringBuilder(tmp.length * 2);
-                    for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
-                    promise.resolve(sb.toString());
-                    return;
-                }
-                case "sha1": {
-                    MessageDigest digest = MessageDigest.getInstance("SHA1");
-                    digest.reset();
-                    byte[] tmp = digest.digest(data);
-                    StringBuilder sb = new StringBuilder(tmp.length * 2);
-                    for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
-                    promise.resolve(sb.toString());
-                    return;
-                }
-                case "sha256": {
-                    MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                    digest.reset();
-                    byte[] tmp = digest.digest(data);
-                    StringBuilder sb = new StringBuilder(tmp.length * 2);
-                    for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
-                    promise.resolve(sb.toString());
-                    return;
-                }
+            if (verbose) Log.i("ReactNativeMoFs", "getBlobHash " + algorithm + " " + data.length);
+            MessageDigest digest;
+            switch (algorithm) {
+                case "md5":
+                    digest = MessageDigest.getInstance("MD5");
+                    break;
+                case "sha1":
+                    digest = MessageDigest.getInstance("SHA1");
+                    break;
+                case "sha256":
+                    digest = MessageDigest.getInstance("SHA-256");
+                    break;
+                case "sha512":
+                    digest = MessageDigest.getInstance("SHA-512");
+                    break;
                 default:
-                    throw new RuntimeException("invalid hash");
+                    throw new RuntimeException("invalid algorithm");
             }
+            digest.reset();
+            byte[] tmp = digest.digest(data);
+            promise.resolve(getHexFromBytes(tmp));
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void getBlobHmac(ReadableMap blob, String algorithm, String key, Promise promise) {
+        try {
+            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            byte[] data = blobModule.resolve(blob);
+            if (data == null) {
+                promise.reject(new Error("blob not found"));
+                return;
+            }
+            byte[] keyData = Base64.decode(key, 0);
+            if (verbose) Log.i("ReactNativeMoFs", "getBlobHash " + algorithm + " " + data.length);
+            Mac mac;
+            switch (algorithm) {
+                case "sha1":
+                    mac = Mac.getInstance("SHA1");
+                    break;
+                case "sha256":
+                    mac = Mac.getInstance("SHA-256");
+                    break;
+                case "sha512":
+                    mac = Mac.getInstance("SHA-512");
+                    break;
+                default:
+                    throw new RuntimeException("invalid algorithm");
+            }
+            mac.init(new SecretKeySpec(keyData, mac.getAlgorithm()));
+            mac.reset();
+            mac.update(data);
+            byte[] tmp = mac.doFinal();
+            promise.resolve(getHexFromBytes(tmp));
         } catch (Exception e) {
             promise.reject(e);
         }

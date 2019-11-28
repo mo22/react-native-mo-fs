@@ -44,6 +44,11 @@ NSString* mimeTypeForPath(NSString* path) {
     return mime;
 }
 
+NSString* hexStringForData(NSData* data) {
+    NSMutableString *output = [NSMutableString stringWithCapacity:data.length * 2];
+    for (int i = 0; i < data.length; i++) [output appendFormat:@"%02x", ((const char*)data.bytes)[i]];
+    return output;
+}
 
 
 @interface ReactNativeMoFsInteractionDelegate : NSObject <UIDocumentInteractionControllerDelegate>
@@ -500,32 +505,70 @@ RCT_EXPORT_METHOD(setAttributes:(NSString*)path attributes:(NSDictionary*)attrib
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(getBlobHash:(NSDictionary<NSString*,id>*)blob hash:(NSString*)hash resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(getBlobHash:(NSDictionary<NSString*,id>*)blob algorithm:(NSString*)algorithm resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
         return;
     }
-    if ([hash isEqualToString:@"sha1"]) {
+    if ([algorithm isEqualToString:@"sha1"]) {
         uint8_t digest[CC_SHA1_DIGEST_LENGTH];
         CC_SHA1(data.bytes, (CC_LONG)data.length, digest);
-        NSMutableString *output = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH * 2];
-        for (int i = 0; i < CC_SHA1_DIGEST_LENGTH; i++) [output appendFormat:@"%02x", digest[i]];
-        resolve(output);
-    } else if ([hash isEqualToString:@"md5"]) {
+        resolve(hexStringForData([NSData dataWithBytes:digest length:sizeof(digest)]));
+    } else if ([algorithm isEqualToString:@"md5"]) {
         uint8_t digest[CC_MD5_DIGEST_LENGTH];
         CC_MD5(data.bytes, (CC_LONG)data.length, digest);
-        NSMutableString *output = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
-        for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++) [output appendFormat:@"%02x", digest[i]];
-        resolve(output);
-    } else if ([hash isEqualToString:@"sha256"]) {
+        resolve(hexStringForData([NSData dataWithBytes:digest length:sizeof(digest)]));
+    } else if ([algorithm isEqualToString:@"sha256"]) {
         uint8_t digest[CC_SHA256_DIGEST_LENGTH];
         CC_SHA256(data.bytes, (CC_LONG)data.length, digest);
-        NSMutableString *output = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH * 2];
-        for (int i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) [output appendFormat:@"%02x", digest[i]];
-        resolve(output);
+        resolve(hexStringForData([NSData dataWithBytes:digest length:sizeof(digest)]));
+    } else if ([algorithm isEqualToString:@"sha512"]) {
+        uint8_t digest[CC_SHA512_DIGEST_LENGTH];
+        CC_SHA512(data.bytes, (CC_LONG)data.length, digest);
+        resolve(hexStringForData([NSData dataWithBytes:digest length:sizeof(digest)]));
     } else {
-        reject(@"", @"invalid hash", nil);
+        reject(@"", @"invalid algorithm", nil);
+        return;
+    }
+}
+
+RCT_EXPORT_METHOD(getBlobHmac:(NSDictionary<NSString*,id>*)blob algorithm:(NSString*)algorithm key:(NSString*)key resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSData* data = [self.blobManager resolve:blob];
+    if (!data) {
+        reject(@"", @"blob not found", nil);
+        return;
+    }
+    NSData* keyData = [[NSData alloc] initWithBase64EncodedString:key options:0];
+    if ([algorithm isEqualToString:@"sha1"]) {
+        uint8_t digest[CC_SHA1_DIGEST_LENGTH];
+        CCHmac(
+           kCCHmacAlgSHA1,
+           keyData.bytes, keyData.length,
+           data.bytes, data.length,
+           digest
+        );
+        resolve(hexStringForData([NSData dataWithBytes:digest length:sizeof(digest)]));
+    } else if ([algorithm isEqualToString:@"sha256"]) {
+        uint8_t digest[CC_SHA256_DIGEST_LENGTH];
+        CCHmac(
+           kCCHmacAlgSHA256,
+           keyData.bytes, keyData.length,
+           data.bytes, data.length,
+           digest
+        );
+        resolve(hexStringForData([NSData dataWithBytes:digest length:sizeof(digest)]));
+    } else if ([algorithm isEqualToString:@"sha512"]) {
+        uint8_t digest[CC_SHA256_DIGEST_LENGTH];
+        CCHmac(
+           kCCHmacAlgSHA512,
+           keyData.bytes, keyData.length,
+           data.bytes, data.length,
+           digest
+        );
+        resolve(hexStringForData([NSData dataWithBytes:digest length:sizeof(digest)]));
+    } else {
+        reject(@"", @"invalid algorithm", nil);
         return;
     }
 }

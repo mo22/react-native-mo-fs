@@ -8,3 +8,4 @@
   writeFile(path: string, data: BlobData): Promise<void>; -- add offset and length? and truncate? incorporate appendFile?
   
   Blob.slice() ? test
+
