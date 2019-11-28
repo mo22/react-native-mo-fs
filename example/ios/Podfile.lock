@@ -186,7 +186,7 @@ PODS:
     - React
   - react-native-image-picker (1.1.0):
     - React
-  - react-native-mo-fs (0.1.16):
+  - react-native-mo-fs (0.1.17):
     - React
   - React-RCTActionSheet (0.61.5):
     - React-Core/RCTActionSheetHeaders (= 0.61.5)
@@ -353,7 +353,7 @@ SPEC CHECKSUMS:
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-cameraroll: ad20f5a93c25cb83a76455df57a2c62fbb63aaed
   react-native-image-picker: 3637d63fef7e32a230141ab4660d3ceb773c824f
-  react-native-mo-fs: 9c1eb9360e335822f56bd94fc3ea7b6f9c64908a
+  react-native-mo-fs: f49d68298d76903d204be26b460b13b1b34e4be3
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
