@@ -199,6 +199,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 md.update(data);
                 const mdhash = Buffer.from(md.digest().data, 'binary').toString('hex');
                 const hash = await Fs.getBlobHash(blob, 'md5');
+                console.log('md5', hash, mdhash);
                 if (hash != mdhash) throw new Error('sha1 hash failure');
               }
               {
@@ -206,6 +207,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 md.update(data);
                 const mdhash = Buffer.from(md.digest().data, 'binary').toString('hex');
                 const hash = await Fs.getBlobHash(blob, 'sha1');
+                console.log('sha1', hash, mdhash);
                 if (hash != mdhash) throw new Error('sha1 hash failure');
               }
               {
@@ -213,8 +215,10 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 md.update(data);
                 const mdhash = Buffer.from(md.digest().data, 'binary').toString('hex');
                 const hash = await Fs.getBlobHash(blob, 'sha256');
+                console.log('sha256', hash, mdhash);
                 if (hash != mdhash) throw new Error('sha1 hash failure');
               }
+              Alert.alert('hashes match');
             } finally {
               blob.close();
             }
