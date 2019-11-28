@@ -323,7 +323,7 @@ RCT_EXPORT_METHOD(createBlob:(NSString*)str mode:(NSString*)mode resolve:(RCTPro
 RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSError* error = nil;
     NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
-    if (self.verbose) NSLog(@"ReactNativeMoFs.readFile path=%@ size=%lu error=%@", path, data.length, error);
+    if (self.verbose) NSLog(@"ReactNativeMoFs.readFile path=%@ size=%lu error=%@", path, (unsigned long)data.length, error);
     if (!data) {
         reject(@"", [error localizedDescription], error);
         return;
@@ -346,7 +346,7 @@ RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)bl
     }
     NSError* error = nil;
     [data writeToFile:path options:NSDataWritingAtomic error:&error];
-    if (self.verbose) NSLog(@"ReactNativeMoFs.writeFile path=%@ size=%lu error=%@", path, data.length, error);
+    if (self.verbose) NSLog(@"ReactNativeMoFs.writeFile path=%@ size=%lu error=%@", path, (unsigned long)data.length, error);
     if (error) {
         reject(@"", [error localizedDescription], error);
         return;
