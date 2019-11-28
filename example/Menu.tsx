@@ -214,7 +214,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 md.update(data);
                 const mdhash = Buffer.from(md.digest().data, 'binary').toString('hex');
                 const hash = await Fs.getBlobHmac(blob, 'sha256', 'a2V5a2V5a2V5');
-                console.log('sha256', hash, mdhash);
+                console.log('hmac-sha256', hash, mdhash);
                 if (hash != mdhash) throw new Error('sha256 hmac failure');
               }
               Alert.alert('hashes match');

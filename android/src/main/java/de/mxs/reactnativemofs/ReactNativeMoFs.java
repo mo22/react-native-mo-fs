@@ -466,13 +466,13 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             Mac mac;
             switch (algorithm) {
                 case "sha1":
-                    mac = Mac.getInstance("SHA1");
+                    mac = Mac.getInstance("HmacSHA1");
                     break;
                 case "sha256":
-                    mac = Mac.getInstance("SHA-256");
+                    mac = Mac.getInstance("HmacSHA256");
                     break;
                 case "sha512":
-                    mac = Mac.getInstance("SHA-512");
+                    mac = Mac.getInstance("HmacSHA512");
                     break;
                 default:
                     throw new RuntimeException("invalid algorithm");
