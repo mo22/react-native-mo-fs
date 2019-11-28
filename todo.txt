@@ -4,7 +4,7 @@
   api resutl type?
   filter by video/image?
   multiple?
-
+  ios ask for permissions?
 
 [ ] xxx
   getBlobHmac?

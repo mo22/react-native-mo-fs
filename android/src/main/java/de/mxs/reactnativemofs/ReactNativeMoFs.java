@@ -199,6 +199,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             promise.reject(new Error("blob not found"));
             return;
         }
+        if (verbose) Log.i("ReactNativeMoFs", "readBlob size=" + data.length);
         if (mode.equals("base64")) {
             promise.resolve(Base64.encodeToString(data, Base64.NO_WRAP));
         } else if (mode.equals("utf8")) {
@@ -222,6 +223,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             return;
         }
         String blobId = blobModule.store(buffer);
+        if (verbose) Log.i("ReactNativeMoFs", "createBlob size=" + buffer.length + " blobId=" + blobId);
         WritableMap blob = Arguments.createMap();
         blob.putInt("size", buffer.length);
         blob.putInt("offset", 0);
@@ -415,6 +417,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 promise.reject(new Error("blob not found"));
                 return;
             }
+            if (verbose) Log.i("ReactNativeMoFs", "getBlobHash " + hash + " " + data.length);
             switch (hash) {
                 case "md5": {
                     MessageDigest digest = MessageDigest.getInstance("MD5");
@@ -434,7 +437,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                     promise.resolve(sb.toString());
                     return;
                 }
-                case "256": {
+                case "sha256": {
                     MessageDigest digest = MessageDigest.getInstance("SHA-256");
                     digest.reset();
                     byte[] tmp = digest.digest(data);

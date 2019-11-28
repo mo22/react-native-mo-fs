@@ -191,8 +191,12 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={async () => {
-            const data = forge.random.getBytesSync(1024 * 1024);
+            console.log('create 1 MB random file');
+            // const data = forge.random.getBytesSync(1024 * 1024);
+            const data = forge.random.getBytesSync(1024 * 8);
+            console.log('have data');
             const blob = await Fs.createBlob(Buffer.from(data, 'binary'), 'arraybuffer');
+            console.log('have blob');
             try {
               {
                 const md = forge.md.md5.create();
