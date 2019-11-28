@@ -70,7 +70,10 @@ export interface Module {
         videoMaximumDuration?: number;
         imageExportPreset?: number;
         videoExportPreset?: string;
-    }): Promise<{}>;
+    }): Promise<{
+        UIImagePickerControllerImageURL: string;
+        UIImagePickerControllerReferenceURL: string;
+    }>;
 }
 export interface OpenURLEvent {
     url: string;

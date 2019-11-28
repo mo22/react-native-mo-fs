@@ -193,12 +193,31 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
           onPress={async () => {
             const data = forge.random.getBytesSync(1024 * 1024);
             const blob = await Fs.createBlob(Buffer.from(data, 'binary'), 'arraybuffer');
-            console.log('blob', await Fs.getBlobInfo(blob, { sha1: true, sha256: true }));
-            blob.close();
-            const md = forge.md.sha1.create();
-            md.update(data);
-            console.log(Buffer.from(md.digest().data, 'binary').toString('hex'));
-
+            try {
+              {
+                const md = forge.md.md5.create();
+                md.update(data);
+                const mdhash = Buffer.from(md.digest().data, 'binary').toString('hex');
+                const hash = await Fs.getBlobHash(blob, 'md5');
+                if (hash != mdhash) throw new Error('sha1 hash failure');
+              }
+              {
+                const md = forge.md.sha1.create();
+                md.update(data);
+                const mdhash = Buffer.from(md.digest().data, 'binary').toString('hex');
+                const hash = await Fs.getBlobHash(blob, 'sha1');
+                if (hash != mdhash) throw new Error('sha1 hash failure');
+              }
+              {
+                const md = forge.md.sha256.create();
+                md.update(data);
+                const mdhash = Buffer.from(md.digest().data, 'binary').toString('hex');
+                const hash = await Fs.getBlobHash(blob, 'sha256');
+                if (hash != mdhash) throw new Error('sha1 hash failure');
+              }
+            } finally {
+              blob.close();
+            }
           }}
           title="test hash and crypto"
         />

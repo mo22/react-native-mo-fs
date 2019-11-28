@@ -83,7 +83,8 @@ export interface Module {
     imageExportPreset?: number;
     videoExportPreset?: string;
   }): Promise<{
-    // @TODO
+    UIImagePickerControllerImageURL: string;
+    UIImagePickerControllerReferenceURL: string;
   }>;
   
 }
