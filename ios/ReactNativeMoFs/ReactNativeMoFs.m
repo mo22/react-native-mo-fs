@@ -347,8 +347,9 @@ RCT_EXPORT_METHOD(readFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)
     NSError* error = nil;
     
     NSString* path = args[@"path"];
-    int offset = [args[@"offset"] intValue];
-    int size = [args[@"size"] intValue];
+    NSNumber* offset = args[@"offset"];
+    NSNumber* size = args[@"size"];
+    NSLog(@"path=%@ offset=%@ size=%@", path, offset, size);
 
     NSDictionary<NSFileAttributeKey, id>* stat = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
     if (error) {
@@ -419,10 +420,15 @@ RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock
         reject(@"", @"blob not found", nil);
         return;
     }
-
     NSString* path = args[@"path"];
-    int offset = [args[@"offset"] intValue];
-
+    NSNumber* offset = args[@"offset"];
+    BOOL truncate = [args[@"truncate"] boolValue];
+    if (self.verbose) NSLog(@"ReactNativeMoFs.writeFile path=%@ offset=%@ truncate=%d data=%@", path, offset, truncate, data);
+    
+    if ([offset intValue] == 0 && truncate) {
+        NSLog(@"write atomically");
+    }
+    
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
     }
@@ -440,12 +446,12 @@ RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock
     }
     
     // negative?
-    NSLog(@"path=%@ offset=%d filesize=%@", path, offset, stat[NSFileSize]);
+    NSLog(@"path=%@ offset=%@ filesize=%@", path, offset, stat[NSFileSize]);
 
     if (@available(iOS 13.0, *)) {
-        [fp seekToOffset:offset error:&error];
+        [fp seekToOffset:[offset unsignedLongLongValue] error:&error];
     } else {
-        [fp seekToFileOffset:offset];
+        [fp seekToFileOffset:[offset unsignedLongLongValue]];
     }
     if (error) {
         reject(@"", [error localizedDescription], error);

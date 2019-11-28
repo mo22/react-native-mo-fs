@@ -338,6 +338,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             long offset = args.hasKey("offset") ? args.getInt("offset") : 0;
             if (offset < 0) offset = fileSize + offset + 1; // @TODO: ... ugly?
             boolean truncate = args.hasKey("truncate") && args.getBoolean("truncate");
+            // if offset == 0 and truncate then write atomically?
             RandomAccessFile raf = new RandomAccessFile(file, "rw");
             raf.seek(offset);
             raf.write(data);
