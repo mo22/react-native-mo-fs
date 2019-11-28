@@ -24,8 +24,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={async () => {
-            const res = await Fs.pickImage({});
-            console.log('RES', res);
+            const res = await Fs.pickImage({ type: 'image' });
             if (res) {
               const blob = await Fs.readURL(res);
               const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.jpg';

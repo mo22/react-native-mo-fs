@@ -83,6 +83,7 @@ export interface PickFileArgs {
 }
 
 export interface PickImageArgs {
+  /** select images or videos */
   type?: 'image'|'video'|'all';
 }
 

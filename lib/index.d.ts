@@ -64,6 +64,7 @@ export interface PickFileArgs {
     multiple?: boolean;
 }
 export interface PickImageArgs {
+    /** select images or videos */
     type?: 'image' | 'video' | 'all';
 }
 export interface Paths {
