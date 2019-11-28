@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.AtomicFile;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -279,7 +280,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             long fileSize = file.length();
             int size = args.hasKey("size") ? args.getInt("size") : (int)fileSize;
             long offset = args.hasKey("offset") ? args.getInt("offset") : 0;
-            if (offset < 0) offset = fileSize + offset;
+            if (offset < 0) offset = fileSize + offset + 1;
             byte[] buffer = new byte[size];
             FileInputStream fis = new FileInputStream(file);
             if (fis.skip(offset) != offset) throw new IOException("seek failed");
@@ -338,14 +339,21 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             long offset = args.hasKey("offset") ? args.getInt("offset") : 0;
             if (offset < 0) offset = fileSize + offset + 1; // @TODO: ... ugly?
             boolean truncate = args.hasKey("truncate") && args.getBoolean("truncate");
-            // if offset == 0 and truncate then write atomically?
-            RandomAccessFile raf = new RandomAccessFile(file, "rw");
-            raf.seek(offset);
-            raf.write(data);
-            if (truncate) {
-                raf.setLength(raf.getFilePointer());
+            if (offset == 0 && truncate && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                AtomicFile af = null;
+                af = new AtomicFile(file);
+                FileOutputStream fos = af.startWrite();
+                fos.write(data);
+                af.finishWrite(fos);
+            } else {
+                RandomAccessFile raf = new RandomAccessFile(file, "rw");
+                raf.seek(offset);
+                raf.write(data);
+                if (truncate) {
+                    raf.setLength(raf.getFilePointer());
+                }
+                raf.close();
             }
-            raf.close();
             promise.resolve(null);
         } catch (IOException e) {
             e.printStackTrace();

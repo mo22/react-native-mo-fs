@@ -370,7 +370,7 @@ RCT_EXPORT_METHOD(readFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)
         if ([offset longLongValue] < 0) {
             offset = [NSNumber numberWithLongLong:[stat[NSFileSize] longLongValue] + [offset longLongValue] + 1];
         }
-        NSLog(@"path=%@ offset=%@ size=%@ filesize=%@", path, offset, size, stat[NSFileSize]);
+        if (self.verbose) NSLog(@"ReactNativeMoFs.readFile path=%@ offset=%@ size=%@ filesize=%@", path, offset, size, stat[NSFileSize]);
         if (@available(iOS 13.0, *)) {
             [fp seekToOffset:[offset unsignedLongLongValue] error:&error];
         } else {
@@ -450,6 +450,7 @@ RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock
         if ([offset longLongValue] < 0) {
             offset = [NSNumber numberWithLongLong:[stat[NSFileSize] longLongValue] + [offset longLongValue] + 1];
         }
+        if (self.verbose) NSLog(@"ReactNativeMoFs.writeFile path=%@ offset=%@ filesize=%@", path, offset, stat[NSFileSize]);
         if (@available(iOS 13.0, *)) {
             [fp seekToOffset:[offset unsignedLongLongValue] error:&error];
         } else {
