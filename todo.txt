@@ -1,5 +1,9 @@
-[ ] pickImage
-  [ ] ios UIImagePickerController options and typings
+[ ] pickImage:
+  ios result typings
+  android proper call?
+  api resutl type?
+  filter by video/image?
+  multiple?
 
 
 [ ] xxx

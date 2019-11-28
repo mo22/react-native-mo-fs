@@ -503,7 +503,6 @@ export class Fs {
    * get hash of a blob. can calculate md5 / sha1 / sha256. returns hex.
    */
   public static async getBlobHash(blob: Blob, hash: 'md5'|'sha1'|'sha256'): Promise<HexString> {
-    console.warn('Fs.getBlobInfo is deprecated');
     if (ios.Module) {
       return await ios.Module.getBlobHash(blob.data, hash);
     } else if (android.Module) {
