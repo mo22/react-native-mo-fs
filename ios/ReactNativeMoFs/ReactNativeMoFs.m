@@ -46,7 +46,7 @@ NSString* mimeTypeForPath(NSString* path) {
 
 NSString* hexStringForData(NSData* data) {
     NSMutableString *output = [NSMutableString stringWithCapacity:data.length * 2];
-    for (int i = 0; i < data.length; i++) [output appendFormat:@"%02x", ((const char*)data.bytes)[i]];
+    for (int i = 0; i < data.length; i++) [output appendFormat:@"%02x", ((const unsigned char*)data.bytes)[i]];
     return output;
 }
 
