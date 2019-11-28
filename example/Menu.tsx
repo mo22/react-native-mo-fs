@@ -255,9 +255,9 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
             const b1 = await Fs.createBlob('hello', 'utf8');
             const b2 = await Fs.createBlob(' world', 'utf8');
             if (Fs.ios.Module) {
-              await Fs.ios.Module.writeFile2({ path: path, blob: b1.data, offset: 0, truncate: true });
-              await Fs.ios.Module.writeFile2({ path: path, blob: b2.slice(1, -1).data, offset: -1, truncate: true });
-              const r1 = new Blob(); r1.data = await Fs.ios.Module.readFile2({ path: path, offset: 1 });
+              await Fs.ios.Module.writeFile({ path: path, blob: b1.data, offset: 0, truncate: true });
+              await Fs.ios.Module.writeFile({ path: path, blob: b2.slice(1, -1).data, offset: -1, truncate: true });
+              const r1 = new Blob(); r1.data = await Fs.ios.Module.readFile({ path: path, offset: 1 });
               const res = await Fs.readBlob(r1, 'utf8');
               r1.close();
               if (res != 'elloworl') throw new Error('failed');
