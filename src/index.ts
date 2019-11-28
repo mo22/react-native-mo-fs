@@ -541,13 +541,13 @@ export class Fs {
       iv = base64.encode(iv);
     }
     if (ios.Module) {
-      const blob = new Blob();
-      blob.data = await ios.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
-      return blob;
+      const resBlob = new Blob();
+      resBlob.data = await ios.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+      return resBlob;
     } else if (android.Module) {
-      const blob = new Blob();
-      blob.data = await android.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
-      return blob;
+      const resBlob = new Blob();
+      resBlob.data = await android.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+      return resBlob;
     } else {
       throw new Error('platform not supported');
     }

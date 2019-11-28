@@ -225,6 +225,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 cipher.start({ iv: iv.toString('binary') });
                 cipher.update(new forge.util.ByteStringBuffer(data));
                 cipher.finish();
+                const cipherRef = Buffer.from(cipher.output.data, 'binary');
                 
                 const enc = await Fs.cryptBlob(
                   blob,
@@ -233,9 +234,11 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                   key.toString('base64'),
                   iv.toString('base64'),
                 );
+                const encData = Buffer.from(await Fs.readBlob(enc, 'arraybuffer'));
+                enc.close();
                 
-                const encData = await Fs.readBlob(enc, 'base64');
-                enc.class
+                console.log('A', cipherRef);
+                console.log('B', encData);
                 
               }
               Alert.alert('hashes match');
