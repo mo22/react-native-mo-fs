@@ -290,11 +290,10 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             File file = new File(path);
             long fileSize = file.exists() ? file.length() : 0;
             long offset = args.hasKey("offset") ? args.getInt("offset") : 0;
-            if (offset < 0) offset = fileSize + offset + 1; // @TODO: ... ugly?
+            if (offset < 0) offset = fileSize + offset + 1;
             boolean truncate = args.hasKey("truncate") && args.getBoolean("truncate");
             if (offset == 0 && truncate && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                AtomicFile af = null;
-                af = new AtomicFile(file);
+                AtomicFile af = new AtomicFile(file);
                 FileOutputStream fos = af.startWrite();
                 fos.write(data);
                 af.finishWrite(fos);
