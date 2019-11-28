@@ -504,11 +504,24 @@ export class Fs {
   /**
    * get hash of a blob. can calculate md5 / sha1 / sha256. returns hex.
    */
-  public static async getBlobHash(blob: Blob, hash: 'md5'|'sha1'|'sha256'): Promise<HexString> {
+  public static async getBlobHash(blob: Blob, algorithm: 'md5'|'sha1'|'sha256'|'sha512'): Promise<HexString> {
     if (ios.Module) {
-      return await ios.Module.getBlobHash(blob.data, hash);
+      return await ios.Module.getBlobHash(blob.data, algorithm);
     } else if (android.Module) {
-      return await android.Module.getBlobHash(blob.data, hash);
+      return await android.Module.getBlobHash(blob.data, algorithm);
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
+   * get hmac of a blob. can calculate sha1 / sha256 / sha512. returns hex.
+   */
+  public static async getBlobHmac(blob: Blob, algorithm: 'sha1'|'sha256'|'sha512', key: Base64): Promise<HexString> {
+    if (ios.Module) {
+      return await ios.Module.getBlobHmac(blob.data, algorithm, key);
+    } else if (android.Module) {
+      return await android.Module.getBlobHmac(blob.data, algorithm, key);
     } else {
       throw new Error('platform not supported');
     }

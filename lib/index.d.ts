@@ -201,7 +201,11 @@ export declare class Fs {
     /**
      * get hash of a blob. can calculate md5 / sha1 / sha256. returns hex.
      */
-    static getBlobHash(blob: Blob, hash: 'md5' | 'sha1' | 'sha256'): Promise<HexString>;
+    static getBlobHash(blob: Blob, algorithm: 'md5' | 'sha1' | 'sha256' | 'sha512'): Promise<HexString>;
+    /**
+     * get hmac of a blob. can calculate sha1 / sha256 / sha512. returns hex.
+     */
+    static getBlobHmac(blob: Blob, algorithm: 'sha1' | 'sha256' | 'sha512', key: Base64): Promise<HexString>;
     /**
      * get size of an image.
      */
