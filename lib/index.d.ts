@@ -207,6 +207,10 @@ export declare class Fs {
      */
     static getBlobHmac(blob: Blob, algorithm: 'sha1' | 'sha256' | 'sha512', key: Base64): Promise<HexString>;
     /**
+     * encrypt / decrypt a blob
+     */
+    static cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt' | 'decrypt', key: Base64, iv: Base64): Promise<BlobData>;
+    /**
      * get size of an image.
      */
     static getImageSize(blob: Blob): Promise<{

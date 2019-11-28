@@ -573,6 +573,37 @@ RCT_EXPORT_METHOD(getBlobHmac:(NSDictionary<NSString*,id>*)blob algorithm:(NSStr
     }
 }
 
+RCT_EXPORT_METHOD(cryptBlob:(NSDictionary<NSString*,id>*)blob algorithm:(NSString*)algorithm encrypt:(BOOL)encrypt key:(NSString*)key iv:(NSString*)iv resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSData* data = [self.blobManager resolve:blob];
+    if (!data) {
+        reject(@"", @"blob not found", nil);
+        return;
+    }
+    NSData* keyData = [[NSData alloc] initWithBase64EncodedString:key options:0];
+    NSData* ivData = [[NSData alloc] initWithBase64EncodedString:iv options:0];
+    NSMutableData* res = [NSMutableData dataWithCapacity:data.length];
+    size_t dataOutMoved = 0;
+    CCCryptorStatus status = CCCrypt(
+        encrypt ? kCCEncrypt : kCCDecrypt,
+        kCCAlgorithmAES128,
+        kCCOptionPKCS7Padding,
+        keyData.bytes, keyData.length,
+        ivData.bytes,
+        data.bytes, data.length,
+        res.mutableBytes, data.length,
+        &dataOutMoved
+    );
+    res.length = dataOutMoved;
+    NSLog(@"XXX %d %zu %lu", status, dataOutMoved, (unsigned long)data.length);
+
+    NSString* blobId = [self.blobManager store:res];
+    resolve(@{
+        @"size": @([res length]),
+        @"offset": @(0),
+        @"blobId": blobId,
+    });
+}
+
 RCT_EXPORT_METHOD(getImageSize:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSData* data = [self.blobManager resolve:blob];
     if (!data) {

@@ -528,6 +528,19 @@ export class Fs {
   }
 
   /**
+   * encrypt / decrypt a blob
+   */
+  public static async cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt'|'decrypt', key: Base64, iv: Base64): Promise<BlobData> {
+    if (ios.Module) {
+      return await ios.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+    } else if (android.Module) {
+      return await android.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
    * get size of an image.
    */
   public static async getImageSize(blob: Blob): Promise<{ width: number; height: number; }> {

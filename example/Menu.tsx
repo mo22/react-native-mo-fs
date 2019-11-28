@@ -217,6 +217,9 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 console.log('hmac-sha256', hash, mdhash);
                 if (hash != mdhash) throw new Error('sha256 hmac failure');
               }
+              {
+                const enc = await Fs.cryptBlob(blob, '', 'encrypt')
+              }
               Alert.alert('hashes match');
             } finally {
               blob.close();
