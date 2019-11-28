@@ -533,7 +533,7 @@ export class Fs {
   /**
    * encrypt / decrypt a blob
    */
-  public static async cryptBlob(blob: Blob, algorithm: 'aes-cbc', direction: 'encrypt'|'decrypt', key: Base64|ArrayBufferLike, iv: Base64|ArrayBufferLike): Promise<Blob> {
+  public static async cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt'|'decrypt', key: Base64|ArrayBufferLike, iv: Base64|ArrayBufferLike): Promise<Blob> {
     if (typeof key !== 'string') {
       key = base64.encode(key);
     }

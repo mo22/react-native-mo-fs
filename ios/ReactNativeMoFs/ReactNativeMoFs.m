@@ -581,6 +581,12 @@ RCT_EXPORT_METHOD(cryptBlob:(NSDictionary<NSString*,id>*)blob algorithm:(NSStrin
     }
     NSData* keyData = [[NSData alloc] initWithBase64EncodedString:key options:0];
     NSData* ivData = [[NSData alloc] initWithBase64EncodedString:iv options:0];
+    if ([algorithm isEqualToString:@"aes-cbc"]) {
+        // okay
+    } else {
+        reject(@"", @"invalid algorithm", nil);
+        return;
+    }
     NSMutableData* res = [NSMutableData dataWithLength:data.length + 64];
     size_t dataOutMoved = 0;
     CCCryptorStatus status = CCCrypt(
