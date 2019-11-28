@@ -219,7 +219,8 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
               }
               {
                 const key = Buffer.from('01234567890123456789012345678901');
-                const iv = Buffer.from('01234567890123456789012345678901');
+                // const iv = Buffer.from('01234567890123456789012345678901');
+                const iv = Buffer.from('0123456789012345');
                 
                 const cipher = forge.cipher.createCipher('AES-CBC', new forge.util.ByteStringBuffer(key));
                 cipher.start({ iv: iv.toString('binary') });

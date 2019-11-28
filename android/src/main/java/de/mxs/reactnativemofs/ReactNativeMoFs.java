@@ -501,7 +501,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             }
             byte[] keyData = Base64.decode(key, 0);
             byte[] ivData = Base64.decode(iv, 0);
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
             cipher.init(
                 encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE,
                 new SecretKeySpec(keyData, cipher.getAlgorithm()),
