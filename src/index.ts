@@ -34,17 +34,9 @@ export type URL = string;
 export type Path = string;
 export type MimeType = string;
 export type Base64 = string;
+export type HexString = string;
 
 
-
-export interface BlobInfoArgs {
-  /** calculate hex md5 of blob */
-  md5?: boolean;
-  /** calculate hex sha1 of blob */
-  sha1?: boolean;
-  /** calculate hex sha256 of blob */
-  sha256?: boolean;
-}
 
 export interface BlobInfo {
   /** size of blob */
@@ -250,8 +242,8 @@ export class Fs {
    * read blob to utf8 or base64 string
    */
   public static async readBlob(blob: Blob, mode: 'arraybuffer'): Promise<ArrayBuffer>;
-  public static async readBlob(blob: Blob, mode: 'base64'|'utf8'): Promise<string>;
-  public static async readBlob(blob: Blob, mode: 'base64'|'utf8'|'arraybuffer'): Promise<string|ArrayBuffer> {
+  public static async readBlob(blob: Blob, mode: 'base64'|'utf8'): Promise<Base64|string>;
+  public static async readBlob(blob: Blob, mode: 'base64'|'utf8'|'arraybuffer'): Promise<Base64|string|ArrayBuffer> {
     if (mode === 'arraybuffer') {
       return base64.decode(await this.readBlob(blob, 'base64'));
     }
@@ -268,8 +260,8 @@ export class Fs {
    * read blob to utf8 or base64 string
    */
   public static async createBlob(str: ArrayBuffer, mode: 'arraybuffer'): Promise<Blob>;
-  public static async createBlob(str: string, mode: 'base64'|'utf8'): Promise<Blob>;
-  public static async createBlob(str: string|ArrayBuffer, mode: 'base64'|'utf8'|'arraybuffer'): Promise<Blob> {
+  public static async createBlob(str: Base64|string, mode: 'base64'|'utf8'): Promise<Blob>;
+  public static async createBlob(str: Base64|string|ArrayBuffer, mode: 'base64'|'utf8'|'arraybuffer'): Promise<Blob> {
     if (mode === 'arraybuffer') {
       if (typeof str === 'string') throw new Error('str must be a ArrayBuffer');
       return await this.createBlob(base64.encode(str), 'base64');
@@ -510,26 +502,12 @@ export class Fs {
   /**
    * get hash of a blob. can calculate md5 / sha1 / sha256. returns hex.
    */
-  public static async getBlobHash(blob: Blob, hash: 'md5'|'sha1'|'sha256'): Promise<string> {
+  public static async getBlobHash(blob: Blob, hash: 'md5'|'sha1'|'sha256'): Promise<HexString> {
     console.warn('Fs.getBlobInfo is deprecated');
     if (ios.Module) {
       return await ios.Module.getBlobHash(blob.data, hash);
     } else if (android.Module) {
       return await android.Module.getBlobHash(blob.data, hash);
-    } else {
-      throw new Error('platform not supported');
-    }
-  }
-
-  /**
-   * get info about a blob. can calculate md5 / sha1 / sha256.
-   */
-  public static async getBlobInfo(blob: Blob, args: BlobInfoArgs = {}): Promise<BlobInfo> {
-    console.warn('Fs.getBlobInfo is deprecated');
-    if (ios.Module) {
-      return await ios.Module.getBlobInfo(blob.data, args);
-    } else if (android.Module) {
-      return await android.Module.getBlobInfo(blob.data, args);
     } else {
       throw new Error('platform not supported');
     }

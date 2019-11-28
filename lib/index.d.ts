@@ -22,14 +22,7 @@ export declare type URL = string;
 export declare type Path = string;
 export declare type MimeType = string;
 export declare type Base64 = string;
-export interface BlobInfoArgs {
-    /** calculate hex md5 of blob */
-    md5?: boolean;
-    /** calculate hex sha1 of blob */
-    sha1?: boolean;
-    /** calculate hex sha256 of blob */
-    sha256?: boolean;
-}
+export declare type HexString = string;
 export interface BlobInfo {
     /** size of blob */
     size: number;
@@ -133,12 +126,12 @@ export declare class Fs {
      * read blob to utf8 or base64 string
      */
     static readBlob(blob: Blob, mode: 'arraybuffer'): Promise<ArrayBuffer>;
-    static readBlob(blob: Blob, mode: 'base64' | 'utf8'): Promise<string>;
+    static readBlob(blob: Blob, mode: 'base64' | 'utf8'): Promise<Base64 | string>;
     /**
      * read blob to utf8 or base64 string
      */
     static createBlob(str: ArrayBuffer, mode: 'arraybuffer'): Promise<Blob>;
-    static createBlob(str: string, mode: 'base64' | 'utf8'): Promise<Blob>;
+    static createBlob(str: Base64 | string, mode: 'base64' | 'utf8'): Promise<Blob>;
     /**
      * read file to blob
      */
@@ -206,11 +199,7 @@ export declare class Fs {
     /**
      * get hash of a blob. can calculate md5 / sha1 / sha256. returns hex.
      */
-    static getBlobHash(blob: Blob, hash: 'md5' | 'sha1' | 'sha256'): Promise<string>;
-    /**
-     * get info about a blob. can calculate md5 / sha1 / sha256.
-     */
-    static getBlobInfo(blob: Blob, args?: BlobInfoArgs): Promise<BlobInfo>;
+    static getBlobHash(blob: Blob, hash: 'md5' | 'sha1' | 'sha256'): Promise<HexString>;
     /**
      * get size of an image.
      */
