@@ -343,6 +343,58 @@ RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resol
     });
 }
 
+RCT_EXPORT_METHOD(readFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSError* error = nil;
+    
+    NSString* path = args[@"path"];
+    
+    NSDictionary<NSFileAttributeKey, id>* stat = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
+    if (error) {
+        reject(@"", [error localizedDescription], error);
+        return;
+    }
+
+    NSFileHandle* fp = [NSFileHandle fileHandleForReadingFromURL:[NSURL fileURLWithPath:path] error:&error];
+    if (error) {
+        reject(@"", [error localizedDescription], error);
+        return;
+    }
+    
+    int offset = [args[@"offset"] intValue];
+    int size = [args[@"size"] intValue];
+    NSLog(@"path=%@ offset=%d size=%d filesize=%@", path, offset, size, stat[NSFileSize]);
+
+    if (@available(iOS 13.0, *)) {
+        [fp seekToOffset:offset error:&error];
+    } else {
+        [fp seekToFileOffset:offset];
+    }
+    if (error) {
+        reject(@"", [error localizedDescription], error);
+        return;
+    }
+
+    NSData* data;
+    if (@available(iOS 13.0, *)) {
+        data = [fp readDataUpToLength:size error:&error];
+    } else {
+        data = [fp readDataOfLength:size];
+    }
+    if (error) {
+        reject(@"", [error localizedDescription], error);
+        return;
+    }
+
+    NSString* blobId = [self.blobManager store:data];
+    resolve(@{
+        @"size": @([data length]),
+        @"offset": @(0),
+        @"blobId": blobId,
+        @"type": mimeTypeForPath(path),
+        @"name": [path lastPathComponent],
+    });
+}
+
 RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSData* data = [self.blobManager resolve:blob];
     if (!data) {
