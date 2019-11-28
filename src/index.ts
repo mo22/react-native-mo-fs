@@ -651,7 +651,6 @@ export class Fs {
    * show a image open dialog
    */
   public static async pickImage(args: PickImageArgs): Promise<URL|undefined> {
-    console.log('Fs.pickImage', args);
     const type = args.type || 'all';
     if (Fs.ios.Module) {
       const res = await Fs.ios.Module!.showImagePickerController({
@@ -661,14 +660,8 @@ export class Fs {
           ...((type === 'all' || type === 'video') && ['public.movie'] || []),
         ],
       });
-      console.log('Fs.pickImage res', res);
       if (res === undefined) return undefined;
       return res.UIImagePickerControllerImageURL || res.UIImagePickerControllerMediaURL || undefined;
-
-      // 2019-11-28 18:27:42.403549+0100 example[799:364451] 'RES', { UIImagePickerControllerCropRect: { width: 3024.000089401248, height: 3025, x: 0, y: 499 },
-      //   UIImagePickerControllerMediaType: 'public.image',
-      //   UIImagePickerControllerReferenceURL: 'assets-library://asset/asset.JPG?id=A9D65B4D-8F16-46A1-B69B-C6BC225E6CE7&ext=JPG',
-      //   UIImagePickerControllerImageURL: 'file:///private/var/mobile/Containers/Data/Application/2090DFD7-7934-4ABA-9CBB-5F7F406C1A89/tmp/B83946F3-94D2-46E0-9F2C-8A545FC521CA.jpeg' }
     } else if (Fs.android.Module) {
       const res = await Fs.android.Module.getContent({
         types: [
