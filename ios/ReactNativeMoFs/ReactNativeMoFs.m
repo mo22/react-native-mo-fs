@@ -594,7 +594,8 @@ RCT_EXPORT_METHOD(cryptBlob:(NSDictionary<NSString*,id>*)blob algorithm:(NSStrin
         &dataOutMoved
     );
     if (status != 0) {
-        // @TODO failed?
+        reject(@"", [NSString stringWithFormat:@"encryption error %d", status], nil);
+        return;
     }
     res.length = dataOutMoved;
     NSLog(@"XXX %d %zu %lu", status, dataOutMoved, (unsigned long)data.length);
