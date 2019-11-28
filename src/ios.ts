@@ -82,7 +82,7 @@ export interface Module {
     videoMaximumDuration?: number;
     imageExportPreset?: number;
     videoExportPreset?: string;
-  }): Promise<{
+  }): Promise<undefined|{
     UIImagePickerControllerReferenceURL: string;
     UIImagePickerControllerImageURL?: string;
     UIImagePickerControllerMediaURL?: string;
