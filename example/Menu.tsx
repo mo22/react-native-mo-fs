@@ -236,9 +236,12 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 );
                 const encData = Buffer.from(await Fs.readBlob(enc, 'arraybuffer'));
                 enc.close();
+
+                console.log('A', cipherRef.byteLength);
+                console.log('B', encData.byteLength);
                 
-                console.log('A', cipherRef);
-                console.log('B', encData);
+                console.log('A', cipherRef.toString('base64'));
+                console.log('B', encData.toString('base64'));
                 
               }
               Alert.alert('hashes match');
