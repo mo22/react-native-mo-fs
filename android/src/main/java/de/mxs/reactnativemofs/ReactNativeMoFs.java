@@ -616,19 +616,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         }
     }
 
-//    cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-//    cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, videoQuality);
-//    cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, videoDurationLimit);
-
-//    cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-//    libraryIntent = new Intent(Intent.ACTION_PICK);
-//    libraryIntent.setType("video/*");
-//    libraryIntent = new Intent(Intent.ACTION_PICK,
-//    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//    libraryIntent.setType("image/* video/*");
-
-
     @SuppressWarnings("unused")
     @ReactMethod
     public void getContent(ReadableMap args, final Promise promise) {
