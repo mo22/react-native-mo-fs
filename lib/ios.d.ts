@@ -21,10 +21,10 @@ export interface Module {
     getUti(extension: string): Promise<string | undefined>;
     readBlob(blob: BlobData, mode: 'base64' | 'utf8'): Promise<string>;
     createBlob(str: string, mode: 'base64' | 'utf8'): Promise<BlobData>;
-    hashBlob(blob: BlobData, hash: 'md5' | 'sha1' | 'sha256'): Promise<string>;
-    cryptBlob(blob: BlobData, encrypt: boolean, key: string, iv: string, algorithm: 'aes-256-cbc'): Promise<BlobData>;
-    readFile(path: string, offset: number, size: number): Promise<BlobData>;
-    writeFile(path: string, data: BlobData, offset: number, truncate: boolean): Promise<void>;
+    getBlobHash(blob: BlobData, hash: 'md5' | 'sha1' | 'sha256'): Promise<string>;
+    readFile(path: string): Promise<BlobData>;
+    writeFile(path: string, data: BlobData): Promise<void>;
+    appendFile(path: string, data: BlobData): Promise<void>;
     deleteFile(path: string, recursive: boolean): Promise<void>;
     renameFile(fromPath: string, toPath: string): Promise<void>;
     listDir(path: string): Promise<string[]>;

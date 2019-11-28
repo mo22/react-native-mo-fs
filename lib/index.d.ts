@@ -142,10 +142,7 @@ export declare class Fs {
     /**
      * read file to blob
      */
-    static readFile(path: Path, args?: {
-        offset?: number;
-        size?: number;
-    }): Promise<Blob>;
+    static readFile(path: Path): Promise<Blob>;
     /**
      * read file as text
      */
@@ -161,10 +158,7 @@ export declare class Fs {
     /**
      * write blob to file
      */
-    static writeFile(path: Path, blob: Blob, args?: {
-        offset?: number;
-        truncate?: boolean;
-    }): Promise<void>;
+    static writeFile(path: Path, blob: Blob): Promise<void>;
     /**
      * write text to file
      */
@@ -209,6 +203,10 @@ export declare class Fs {
      * set posix mode
      */
     static chmod(path: Path, mode: number): Promise<void>;
+    /**
+     * get hash of a blob. can calculate md5 / sha1 / sha256. returns hex.
+     */
+    static getBlobHash(blob: Blob, hash: 'md5' | 'sha1' | 'sha256'): Promise<string>;
     /**
      * get info about a blob. can calculate md5 / sha1 / sha256.
      */

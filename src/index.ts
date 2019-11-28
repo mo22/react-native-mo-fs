@@ -291,7 +291,7 @@ export class Fs {
   /**
    * read file to blob
    */
-  public static async readFile(path: Path, args?: { offset?: number; size?: number; }): Promise<Blob> {
+  public static async readFile(path: Path): Promise<Blob> {
     if (ios.Module) {
       const blob = new Blob();
       blob.data = await ios.Module.readFile(path);
@@ -342,7 +342,7 @@ export class Fs {
   /**
    * write blob to file
    */
-  public static async writeFile(path: Path, blob: Blob, args?: { offset?: number; truncate?: boolean; }): Promise<void> {
+  public static async writeFile(path: Path, blob: Blob): Promise<void> {
     if (ios.Module) {
       return await ios.Module.writeFile(path, blob.data);
     } else if (android.Module) {
@@ -502,6 +502,20 @@ export class Fs {
       });
     } else if (android.Module) {
       await android.Module.chmod(path, mode);
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
+   * get hash of a blob. can calculate md5 / sha1 / sha256. returns hex.
+   */
+  public static async getBlobHash(blob: Blob, hash: 'md5'|'sha1'|'sha256'): Promise<string> {
+    console.warn('Fs.getBlobInfo is deprecated');
+    if (ios.Module) {
+      return await ios.Module.getBlobHash(blob.data, hash);
+    } else if (android.Module) {
+      return await android.Module.getBlobHash(blob.data, hash);
     } else {
       throw new Error('platform not supported');
     }
