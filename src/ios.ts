@@ -85,6 +85,10 @@ export interface Module {
   }): Promise<{
     UIImagePickerControllerImageURL: string;
     UIImagePickerControllerReferenceURL: string;
+    UIImagePickerControllerMediaType: string;
+    // UIImagePickerControllerImageURL: 'file:///private/var/mobile/Containers/Data/Application/E398AB28-F29E-4DDC-BD6B-8683C9A2448E/tmp/AD955CA8-639F-4FFF-BCE1-5EA50D2190D6.jpeg',
+    // UIImagePickerControllerMediaType: 'public.image',
+    // UIImagePickerControllerReferenceURL: 'assets-library://asset/asset.JPG?id=A9D65B4D-8F16-46A1-B69B-C6BC225E6CE7&ext=JPG'
   }>;
   
 }

@@ -73,6 +73,7 @@ export interface Module {
     }): Promise<{
         UIImagePickerControllerImageURL: string;
         UIImagePickerControllerReferenceURL: string;
+        UIImagePickerControllerMediaType: string;
     }>;
 }
 export interface OpenURLEvent {
