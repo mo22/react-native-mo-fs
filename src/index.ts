@@ -341,9 +341,9 @@ export class Fs {
   public static async writeFile(path: Path, blob: Blob): Promise<void> {
     if (ios.Module) {
       // await ios.Module.writeFile(path, blob.data);
-      await ios.Module.writeFile2({ path: path, blob: blob.data });
+      await ios.Module.writeFile2({ path: path, blob: blob.data, offset: 0, truncate: true });
     } else if (android.Module) {
-      await android.Module.writeFile2({ path: path, blob: blob.data });
+      await android.Module.writeFile2({ path: path, blob: blob.data, offset: 0, truncate: true });
     } else {
       throw new Error('platform not supported');
     }
