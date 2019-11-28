@@ -1,6 +1,3 @@
-[ ] pickImage:
-  ios ask for permissions?
-
 [ ] xxx
   getBlobHmac?
   encryption?
