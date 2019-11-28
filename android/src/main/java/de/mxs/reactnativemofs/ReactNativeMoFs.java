@@ -246,33 +246,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void readFile(String path, Promise promise) {
-        BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
-        try {
-            File file = new File(path);
-            long length = file.length();
-            byte[] buffer = new byte[(int) length];
-            FileInputStream fis = new FileInputStream(file);
-            int res = fis.read(buffer);
-            if (res != buffer.length) throw new IOException("incomplete read");
-            fis.close();
-            String blobId = blobModule.store(buffer);
-            WritableMap blob = Arguments.createMap();
-            blob.putInt("size", buffer.length);
-            blob.putInt("offset", 0);
-            blob.putString("blobId", blobId);
-            blob.putString("type", "application/octet-string");
-            blob.putString("name", path); // only last?
-            promise.resolve(blob);
-        } catch (IOException e) {
-            e.printStackTrace();
-            promise.reject(e);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void readFile2(ReadableMap args, Promise promise) {
+    public void readFile(ReadableMap args, Promise promise) {
         BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
         try {
             String path = args.getString("path");
@@ -303,28 +277,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void writeFile(String path, ReadableMap blob, Promise promise) {
-        BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
-        byte[] data = blobModule.resolve(blob);
-        if (data == null) {
-            promise.reject(new Error("blob not found"));
-            return;
-        }
-        try {
-            File file = new File(path);
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(data);
-            fos.close();
-            promise.resolve(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            promise.reject(e);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void writeFile2(ReadableMap args, Promise promise) {
+    public void writeFile(ReadableMap args, Promise promise) {
         try {
             String path = args.getString("path");
             BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
@@ -354,27 +307,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 }
                 raf.close();
             }
-            promise.resolve(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            promise.reject(e);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void appendFile(String path, ReadableMap blob, Promise promise) {
-        BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
-        byte[] data = blobModule.resolve(blob);
-        if (data == null) {
-            promise.reject(new Error("blob not found"));
-            return;
-        }
-        try {
-            File file = new File(path);
-            FileOutputStream fos = new FileOutputStream(file, true);
-            fos.write(data);
-            fos.close();
             promise.resolve(null);
         } catch (IOException e) {
             e.printStackTrace();
