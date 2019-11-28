@@ -665,6 +665,8 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
             controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         }
         if (args[@"mediaTypes"]) {
+//            NSLog(@"A %@", [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum]);
+//            NSLog(@"B %@", [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]);
             controller.mediaTypes = args[@"mediaTypes"];
         }
         if (args[@"allowsEditing"]) {
