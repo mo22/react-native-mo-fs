@@ -652,12 +652,13 @@ export class Fs {
    */
   public static async pickImage(args: PickImageArgs): Promise<URL|undefined> {
     if (Fs.ios.Module) {
+      // @TODO
       const res = await Fs.ios.Module!.showImagePickerController({ });
       console.log('RES', res);
       return undefined;
     } else if (Fs.android.Module) {
-      // @TODO: only images... ?
-      const res = await Fs.android.Module.getContent({ types: args.types });
+      // @TODO
+      const res = await Fs.android.Module.getContent({ });
       console.log('RES', res);
       return undefined;
     } else {

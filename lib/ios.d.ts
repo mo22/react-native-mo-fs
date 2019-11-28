@@ -70,9 +70,7 @@ export interface Module {
         videoMaximumDuration?: number;
         imageExportPreset?: number;
         videoExportPreset?: string;
-    }): Promise<{
-        todo: any;
-    }>;
+    }): Promise<{}>;
 }
 export interface OpenURLEvent {
     url: string;
