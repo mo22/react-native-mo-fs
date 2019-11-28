@@ -288,13 +288,11 @@ export class Fs {
   public static async readFile(path: Path): Promise<Blob> {
     if (ios.Module) {
       const blob = new Blob();
-      // blob.data = await ios.Module.readFile(path);
-      blob.data = await ios.Module.readFile2({ path: path });
+      blob.data = await ios.Module.readFile({ path: path });
       return blob;
     } else if (android.Module) {
       const blob = new Blob();
-      // blob.data = await android.Module.readFile(path);
-      blob.data = await android.Module.readFile2({ path: path });
+      blob.data = await android.Module.readFile({ path: path });
       const type = await this.getMimeType(path);
       if (type !== undefined) blob.data.type = type;
       return blob;
@@ -340,10 +338,9 @@ export class Fs {
    */
   public static async writeFile(path: Path, blob: Blob): Promise<void> {
     if (ios.Module) {
-      // await ios.Module.writeFile(path, blob.data);
-      await ios.Module.writeFile2({ path: path, blob: blob.data, offset: 0, truncate: true });
+      await ios.Module.writeFile({ path: path, blob: blob.data, offset: 0, truncate: true });
     } else if (android.Module) {
-      await android.Module.writeFile2({ path: path, blob: blob.data, offset: 0, truncate: true });
+      await android.Module.writeFile({ path: path, blob: blob.data, offset: 0, truncate: true });
     } else {
       throw new Error('platform not supported');
     }
@@ -378,11 +375,9 @@ export class Fs {
    */
   public static async appendFile(path: Path, blob: Blob): Promise<void> {
     if (ios.Module) {
-      // await ios.Module.appendFile(path, blob.data);
-      await ios.Module.writeFile2({ path: path, blob: blob.data, offset: -1 });
+      await ios.Module.writeFile({ path: path, blob: blob.data, offset: -1 });
     } else if (android.Module) {
-      // await android.Module.appendFile(path, blob.data);
-      await android.Module.writeFile2({ path: path, blob: blob.data, offset: -1 });
+      await android.Module.writeFile({ path: path, blob: blob.data, offset: -1 });
     } else {
       throw new Error('platform not supported');
     }

@@ -32,12 +32,8 @@ export interface Module {
   getBlobHmac(blob: BlobData, algorithm: 'sha1'|'sha256'|'sha512', key: string): Promise<string>;
   cryptBlob(blob: BlobData, algorithm: unknown, encrypt: boolean, key: string, iv: string): Promise<BlobData>;
 
-  readFile(path: string): Promise<BlobData>;
-  writeFile(path: string, data: BlobData): Promise<void>;
-  appendFile(path: string, data: BlobData): Promise<void>;
-
-  readFile2(args: { path: string; size?: number; offset?: number; }): Promise<BlobData>;
-  writeFile2(args: { path: string; blob: BlobData, offset?: number; truncate?: boolean; }): Promise<BlobData>;
+  readFile(args: { path: string; size?: number; offset?: number; }): Promise<BlobData>;
+  writeFile(args: { path: string; blob: BlobData, offset?: number; truncate?: boolean; }): Promise<BlobData>;
 
   deleteFile(path: string, recursive: boolean): Promise<void>;
   renameFile(fromPath: string, toPath: string): Promise<void>;

@@ -24,15 +24,12 @@ export interface Module {
     getBlobHash(blob: BlobData, algorithm: 'md5' | 'sha1' | 'sha256' | 'sha512'): Promise<string>;
     getBlobHmac(blob: BlobData, algorithm: 'sha1' | 'sha256' | 'sha512', key: string): Promise<string>;
     cryptBlob(blob: BlobData, algorithm: unknown, encrypt: boolean, key: string, iv: string): Promise<BlobData>;
-    readFile(path: string): Promise<BlobData>;
-    writeFile(path: string, data: BlobData): Promise<void>;
-    appendFile(path: string, data: BlobData): Promise<void>;
-    readFile2(args: {
+    readFile(args: {
         path: string;
         size?: number;
         offset?: number;
     }): Promise<BlobData>;
-    writeFile2(args: {
+    writeFile(args: {
         path: string;
         blob: BlobData;
         offset?: number;
