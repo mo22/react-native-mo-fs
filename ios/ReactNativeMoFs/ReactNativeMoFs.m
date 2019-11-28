@@ -443,6 +443,9 @@ RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock
             reject(@"", [error localizedDescription], error);
             return;
         }
+        if ([offset intValue] < 0) {
+            offset = [NSNumber numberWithLongLong:[stat[NSFileSize] longLongValue] + [offset longLongValue] + 1];
+        }
         // negative?
         NSLog(@"path=%@ offset=%@ filesize=%@", path, offset, stat[NSFileSize]);
         if (@available(iOS 13.0, *)) {
@@ -462,6 +465,18 @@ RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock
         if (error) {
             reject(@"", [error localizedDescription], error);
             return;
+        }
+        if (truncate) {
+            unsigned long long end = [offset unsignedLongLongValue] + data.length;
+            if (@available(iOS 13.0, *)) {
+                [fp truncateAtOffset:end error:&error];
+            } else {
+                [fp truncateFileAtOffset:end];
+            }
+            if (error) {
+                reject(@"", [error localizedDescription], error);
+                return;
+            }
         }
     }
     resolve(nil);
