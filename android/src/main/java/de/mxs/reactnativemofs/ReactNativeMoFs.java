@@ -407,7 +407,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void getBlobInfo(ReadableMap blob, ReadableMap args, Promise promise) {
+    public void getBlobHash(ReadableMap blob, String hash, Promise promise) {
         try {
             BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
             byte[] data = blobModule.resolve(blob);
@@ -415,33 +415,37 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 promise.reject(new Error("blob not found"));
                 return;
             }
-            WritableMap res = Arguments.createMap();
-            res.putInt("size", data.length);
-            if (args.hasKey("md5") && args.getBoolean("md5")) {
-                MessageDigest digest = MessageDigest.getInstance("MD5");
-                digest.reset();
-                byte[] tmp = digest.digest(data);
-                StringBuilder sb = new StringBuilder(tmp.length * 2);
-                for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
-                res.putString("md5", sb.toString());
+            switch (hash) {
+                case "md5": {
+                    MessageDigest digest = MessageDigest.getInstance("MD5");
+                    digest.reset();
+                    byte[] tmp = digest.digest(data);
+                    StringBuilder sb = new StringBuilder(tmp.length * 2);
+                    for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
+                    promise.resolve(sb.toString());
+                    return;
+                }
+                case "sha1": {
+                    MessageDigest digest = MessageDigest.getInstance("SHA1");
+                    digest.reset();
+                    byte[] tmp = digest.digest(data);
+                    StringBuilder sb = new StringBuilder(tmp.length * 2);
+                    for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
+                    promise.resolve(sb.toString());
+                    return;
+                }
+                case "256": {
+                    MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                    digest.reset();
+                    byte[] tmp = digest.digest(data);
+                    StringBuilder sb = new StringBuilder(tmp.length * 2);
+                    for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
+                    promise.resolve(sb.toString());
+                    return;
+                }
+                default:
+                    throw new RuntimeException("invalid hash");
             }
-            if (args.hasKey("sha1") && args.getBoolean("sha1")) {
-                MessageDigest digest = MessageDigest.getInstance("SHA1");
-                digest.reset();
-                byte[] tmp = digest.digest(data);
-                StringBuilder sb = new StringBuilder(tmp.length * 2);
-                for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
-                res.putString("sha1", sb.toString());
-            }
-            if (args.hasKey("sha256") && args.getBoolean("sha256")) {
-                MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                digest.reset();
-                byte[] tmp = digest.digest(data);
-                StringBuilder sb = new StringBuilder(tmp.length * 2);
-                for (byte b : tmp) sb.append(String.format("%02x", b & 0xFF));
-                res.putString("sha256", sb.toString());
-            }
-            promise.resolve(res);
         } catch (Exception e) {
             promise.reject(e);
         }
