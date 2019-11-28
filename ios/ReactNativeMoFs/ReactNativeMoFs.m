@@ -345,47 +345,51 @@ RCT_EXPORT_METHOD(readFile:(NSString*)path resolve:(RCTPromiseResolveBlock)resol
 
 RCT_EXPORT_METHOD(readFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSError* error = nil;
-    
     NSString* path = args[@"path"];
     NSNumber* offset = args[@"offset"];
     NSNumber* size = args[@"size"];
-    NSLog(@"path=%@ offset=%@ size=%@", path, offset, size);
-
-    NSDictionary<NSFileAttributeKey, id>* stat = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
-    if (error) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-
-    NSFileHandle* fp = [NSFileHandle fileHandleForReadingFromURL:[NSURL fileURLWithPath:path] error:&error];
-    if (error) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-    
-    NSLog(@"path=%@ offset=%d size=%d filesize=%@", path, offset, size, stat[NSFileSize]);
-
-    if (@available(iOS 13.0, *)) {
-        [fp seekToOffset:offset error:&error];
-    } else {
-        [fp seekToFileOffset:offset];
-    }
-    if (error) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-
+    if (self.verbose) NSLog(@"ReactNativeMoFs.readFile path=%@ offset=%@ size=%@", path, offset, size);
     NSData* data;
-    if (@available(iOS 13.0, *)) {
-        data = [fp readDataUpToLength:size error:&error];
+    if ([offset intValue] == 0 && size == nil) {
+        data = [NSData dataWithContentsOfFile:path options:0 error:&error];
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
     } else {
-        data = [fp readDataOfLength:size];
+        NSDictionary<NSFileAttributeKey, id>* stat = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
+        NSFileHandle* fp = [NSFileHandle fileHandleForReadingFromURL:[NSURL fileURLWithPath:path] error:&error];
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
+        if ([offset longLongValue] < 0) {
+            offset = [NSNumber numberWithLongLong:[stat[NSFileSize] longLongValue] + [offset longLongValue] + 1];
+        }
+        NSLog(@"path=%@ offset=%@ size=%@ filesize=%@", path, offset, size, stat[NSFileSize]);
+        if (@available(iOS 13.0, *)) {
+            [fp seekToOffset:[offset unsignedLongLongValue] error:&error];
+        } else {
+            [fp seekToFileOffset:[offset unsignedLongLongValue]];
+        }
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
+        if (@available(iOS 13.0, *)) {
+            data = [fp readDataUpToLength:[size unsignedLongValue] error:&error];
+        } else {
+            data = [fp readDataOfLength:[size unsignedLongValue]];
+        }
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
     }
-    if (error) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-
     NSString* blobId = [self.blobManager store:data];
     resolve(@{
         @"size": @([data length]),
@@ -443,11 +447,9 @@ RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock
             reject(@"", [error localizedDescription], error);
             return;
         }
-        if ([offset intValue] < 0) {
+        if ([offset longLongValue] < 0) {
             offset = [NSNumber numberWithLongLong:[stat[NSFileSize] longLongValue] + [offset longLongValue] + 1];
         }
-        // negative?
-        NSLog(@"path=%@ offset=%@ filesize=%@", path, offset, stat[NSFileSize]);
         if (@available(iOS 13.0, *)) {
             [fp seekToOffset:[offset unsignedLongLongValue] error:&error];
         } else {
@@ -481,7 +483,6 @@ RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock
     }
     resolve(nil);
 }
-
 
 RCT_EXPORT_METHOD(appendFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSData* data = [self.blobManager resolve:blob];
