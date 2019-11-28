@@ -592,7 +592,7 @@ RCT_EXPORT_METHOD(cryptBlob:(NSDictionary<NSString*,id>*)blob algorithm:(NSStrin
     CCCryptorStatus status = CCCrypt(
         encrypt ? kCCEncrypt : kCCDecrypt,
         kCCAlgorithmAES,
-        0, // kCCOptionPKCS7Padding,
+        kCCOptionPKCS7Padding,
         keyData.bytes, keyData.length,
         ivData.bytes,
         data.bytes, data.length,
