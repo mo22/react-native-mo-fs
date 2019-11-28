@@ -30,6 +30,7 @@ export interface Module {
   
   getBlobHash(blob: BlobData, algorithm: 'md5'|'sha1'|'sha256'|'sha512'): Promise<string>;
   getBlobHmac(blob: BlobData, algorithm: 'sha1'|'sha256'|'sha512', key: string): Promise<string>;
+  cryptBlob(blob: BlobData, algorithm: unknown, encrypt: boolean, key: string, iv: string): Promise<BlobData>;
 
   readFile(path: string): Promise<BlobData>;
   writeFile(path: string, data: BlobData): Promise<void>;
