@@ -414,7 +414,6 @@ RCT_EXPORT_METHOD(writeFile:(NSString*)path blob:(NSDictionary<NSString*,id>*)bl
 
 RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSError* error = nil;
-    
     NSData* data = [self.blobManager resolve:args[@"blob"]];
     if (!data) {
         reject(@"", @"blob not found", nil);
@@ -424,50 +423,47 @@ RCT_EXPORT_METHOD(writeFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock
     NSNumber* offset = args[@"offset"];
     BOOL truncate = [args[@"truncate"] boolValue];
     if (self.verbose) NSLog(@"ReactNativeMoFs.writeFile path=%@ offset=%@ truncate=%d data=%@", path, offset, truncate, data);
-    
     if ([offset intValue] == 0 && truncate) {
-        NSLog(@"write atomically");
-    }
-    
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
-    }
-
-    NSDictionary<NSFileAttributeKey, id>* stat = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
-    if (error) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-
-    NSFileHandle* fp = [NSFileHandle fileHandleForWritingToURL:[NSURL fileURLWithPath:path] error:&error];
-    if (error) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-    
-    // negative?
-    NSLog(@"path=%@ offset=%@ filesize=%@", path, offset, stat[NSFileSize]);
-
-    if (@available(iOS 13.0, *)) {
-        [fp seekToOffset:[offset unsignedLongLongValue] error:&error];
+        [data writeToFile:path options:NSDataWritingAtomic error:&error];
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
     } else {
-        [fp seekToFileOffset:[offset unsignedLongLongValue]];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+            [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
+        }
+        NSDictionary<NSFileAttributeKey, id>* stat = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
+        NSFileHandle* fp = [NSFileHandle fileHandleForWritingToURL:[NSURL fileURLWithPath:path] error:&error];
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
+        // negative?
+        NSLog(@"path=%@ offset=%@ filesize=%@", path, offset, stat[NSFileSize]);
+        if (@available(iOS 13.0, *)) {
+            [fp seekToOffset:[offset unsignedLongLongValue] error:&error];
+        } else {
+            [fp seekToFileOffset:[offset unsignedLongLongValue]];
+        }
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
+        if (@available(iOS 13.0, *)) {
+            [fp writeData:data error:&error];
+        } else {
+            [fp writeData:data];
+        }
+        if (error) {
+            reject(@"", [error localizedDescription], error);
+            return;
+        }
     }
-    if (error) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-
-    if (@available(iOS 13.0, *)) {
-        [fp writeData:data error:&error];
-    } else {
-        [fp writeData:data];
-    }
-    if (error) {
-        reject(@"", [error localizedDescription], error);
-        return;
-    }
-    
     resolve(nil);
 }
 
