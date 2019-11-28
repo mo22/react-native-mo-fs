@@ -71,8 +71,9 @@ export interface Module {
         imageExportPreset?: number;
         videoExportPreset?: string;
     }): Promise<{
-        UIImagePickerControllerImageURL: string;
         UIImagePickerControllerReferenceURL: string;
+        UIImagePickerControllerImageURL?: string;
+        UIImagePickerControllerMediaURL?: string;
         UIImagePickerControllerCropRect?: null;
         UIImagePickerControllerMediaType?: string;
         UIImagePickerControllerPHAsset: null;

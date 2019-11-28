@@ -113,6 +113,21 @@ NSString* mimeTypeForPath(NSString* path) {
         }
         if ([value isKindOfClass:[NSURL class]]) {
             value = [value absoluteString];
+        } else if ([value isKindOfClass:[NSString class]]) {
+            // fine
+        } else if ([value isKindOfClass:[NSNumber class]]) {
+            // fine
+        } else if ([key isEqualToString:@"UIImagePickerControllerCropRect"]) {
+            value = @{
+                @"x": @([value CGRectValue].origin.x),
+                @"y": @([value CGRectValue].origin.y),
+                @"width": @([value CGRectValue].size.width),
+                @"height": @([value CGRectValue].size.height),
+            };
+        } else {
+            // NSLog(@"XXX %@ %@ %@", key, value, [value class]);
+            // skip
+            continue;
         }
         res[key] = value;
     }
@@ -665,8 +680,6 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
             controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         }
         if (args[@"mediaTypes"]) {
-//            NSLog(@"A %@", [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum]);
-//            NSLog(@"B %@", [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]);
             controller.mediaTypes = args[@"mediaTypes"];
         }
         if (args[@"allowsEditing"]) {
