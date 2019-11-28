@@ -657,8 +657,8 @@ export class Fs {
       const res = await Fs.ios.Module!.showImagePickerController({
         allowsEditing: true,
         mediaTypes: [
-          ...((type === 'all' || type === 'image') && [...'public.image'] || []),
-          ...((type === 'all' || type === 'video') && [...'public.movie'] || []),
+          ...((type === 'all' || type === 'image') && ['public.image'] || []),
+          ...((type === 'all' || type === 'video') && ['public.movie'] || []),
         ],
       });
       console.log('RES', res);
@@ -666,8 +666,8 @@ export class Fs {
     } else if (Fs.android.Module) {
       const res = await Fs.android.Module.getContent({
         types: [
-          ...((type === 'all' || type === 'image') && [...'image/*'] || []),
-          ...((type === 'all' || type === 'video') && [...'video/*'] || []),
+          ...((type === 'all' || type === 'image') && ['image/*'] || []),
+          ...((type === 'all' || type === 'video') && ['video/*'] || []),
         ],
       });
       console.log('RES', res);
