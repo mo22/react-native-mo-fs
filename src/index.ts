@@ -651,7 +651,7 @@ export class Fs {
    * show a image open dialog
    */
   public static async pickImage(args: PickImageArgs): Promise<URL|undefined> {
-    console.log('pickImage', args);
+    console.log('Fs.pickImage', args);
     const type = args.type || 'all';
     if (Fs.ios.Module) {
       const res = await Fs.ios.Module!.showImagePickerController({
@@ -661,7 +661,7 @@ export class Fs {
           ...((type === 'all' || type === 'video') && ['public.movie'] || []),
         ],
       });
-      console.log('RES', res);
+      console.log('Fs.pickImage res', res);
       if (res === undefined) return undefined;
       return res.UIImagePickerControllerImageURL || res.UIImagePickerControllerMediaURL || undefined;
 
@@ -676,7 +676,7 @@ export class Fs {
           ...((type === 'all' || type === 'video') && ['video/*'] || []),
         ],
       });
-      console.log('RES', res);
+      console.log('Fs.pickImage res', res);
       return undefined;
     } else {
       throw new Error('platform not supported');

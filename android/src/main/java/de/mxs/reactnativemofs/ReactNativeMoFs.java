@@ -633,7 +633,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getContent(ReadableMap args, final Promise promise) {
         Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT); // Intent.ACTION_PICK
+//        intent.setAction(Intent.ACTION_GET_CONTENT); // Intent.ACTION_PICK
+        intent.setAction(Intent.ACTION_PICK);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         ArrayList<String> types = new ArrayList<>();
         if (args.hasKey("types")) {
