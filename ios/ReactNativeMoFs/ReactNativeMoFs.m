@@ -475,51 +475,34 @@ RCT_EXPORT_METHOD(setAttributes:(NSString*)path attributes:(NSDictionary*)attrib
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(getHash:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(getBlobHash:(NSDictionary<NSString*,id>*)blob hash:(NSString*)hash resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
         return;
     }
-    // supported types: md5, sha1, sha256, sha?? hmac-xxx?
-    // key?
-    // CCHmac, CC_MD5, etc.
-    // can we also return the state to the client to support updates?
-    // CCCryptorGCM
-//    CCCrypt
-    resolve(nil);
-}
-
-RCT_EXPORT_METHOD(getBlobInfo:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSData* data = [self.blobManager resolve:blob];
-    if (!data) {
-        reject(@"", @"blob not found", nil);
-        return;
-    }
-    NSMutableDictionary* res = [NSMutableDictionary new];
-    res[@"size"] = @([data length]);
-    if (args[@"sha1"]) {
+    if ([hash isEqualToString:@"sha1"]) {
         uint8_t digest[CC_SHA1_DIGEST_LENGTH];
         CC_SHA1(data.bytes, (CC_LONG)data.length, digest);
         NSMutableString *output = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH * 2];
         for (int i = 0; i < CC_SHA1_DIGEST_LENGTH; i++) [output appendFormat:@"%02x", digest[i]];
-        res[@"sha1"] = output;
-    }
-    if (args[@"md5"]) {
+        resolve(output);
+    } else if ([hash isEqualToString:@"md5"]) {
         uint8_t digest[CC_MD5_DIGEST_LENGTH];
         CC_MD5(data.bytes, (CC_LONG)data.length, digest);
         NSMutableString *output = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
         for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++) [output appendFormat:@"%02x", digest[i]];
-        res[@"md5"] = output;
-    }
-    if (args[@"sha256"]) {
+        resolve(output);
+    } else if ([hash isEqualToString:@"sha256"]) {
         uint8_t digest[CC_SHA256_DIGEST_LENGTH];
         CC_SHA256(data.bytes, (CC_LONG)data.length, digest);
         NSMutableString *output = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH * 2];
         for (int i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) [output appendFormat:@"%02x", digest[i]];
-        res[@"sha256"] = output;
+        resolve(output);
+    } else {
+        reject(@"", @"invalid hash", nil);
+        return;
     }
-    resolve(res);
 }
 
 RCT_EXPORT_METHOD(getImageSize:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
