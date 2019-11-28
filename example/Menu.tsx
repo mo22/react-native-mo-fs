@@ -25,28 +25,14 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
         <ListItem
           onPress={async () => {
             const res = await Fs.pickImage({});
-            // if (Fs.ios.Module) {
-            //   const res = await Fs.ios.Module.showImagePickerController({});
-            //   console.log('res', res);
-            //   if (res) {
-            //     const blob1 = await Fs.readURL(res.UIImagePickerControllerImageURL);
-            //     console.log('blob1', blob1);
-            // 
-            //     const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.jpg';
-            //     await Fs.writeFile(path, blob1);
-            //     await new Promise((resolve) => Alert.alert('Success', 'Imported to ' + path, [{ onPress: resolve }]));
-            //     blob1.close();
-            // 
-            //     // assets-library://asset/asset.JPG?id=106E99A1-4F6A-45A2-B320-B0AD4A8E8473&ext=JPG ?
-            //     // this needs react-native-cameraroll enabled for assets-library:// url handling
-            //     const blob2 = await Fs.readURL(res.UIImagePickerControllerReferenceURL);
-            //     console.log('blob2', blob2);
-            //     blob2.close();
-            // 
-            //     await Fs.viewFile(path);
-            // 
-            //   }
-            // }
+            console.log('RES', res);
+            if (res) {
+              // const blob = await Fs.readURL(res.uri);
+              // const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.jpg';
+              // await Fs.writeFile(path, blob);
+              // blob.close();
+              // Alert.alert('Success', 'Imported to ' + path);
+            }
           }}
           onLongPress={() => {
             ImagePicker.showImagePicker({

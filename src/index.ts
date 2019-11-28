@@ -83,6 +83,7 @@ export interface PickFileArgs {
 }
 
 export interface PickImageArgs {
+  type?: 'image'|'video'|'all';
 }
 
 export interface Paths {
@@ -651,25 +652,23 @@ export class Fs {
    */
   public static async pickImage(args: PickImageArgs): Promise<URL|undefined> {
     console.log('pickImage', args);
+    const type = args.type || 'all';
     if (Fs.ios.Module) {
-      // @TODO
       const res = await Fs.ios.Module!.showImagePickerController({
         allowsEditing: true,
-        mediaTypes: ['public.image', 'public.movie'],
+        mediaTypes: [
+          ...((type === 'all' || type === 'image') && [...'public.image'] || []),
+          ...((type === 'all' || type === 'video') && [...'public.movie'] || []),
+        ],
       });
-      // sourceType?: number;
-      // mediaTypes?: string[];
-      // allowsEditing?: boolean;
-      // showsCameraControls?: boolean;
-      // videoMaximumDuration?: number;
-      // imageExportPreset?: number;
-      // videoExportPreset?: string;
       console.log('RES', res);
       return undefined;
     } else if (Fs.android.Module) {
-      // @TODO
       const res = await Fs.android.Module.getContent({
-        types: ['image/*', 'video/*'],
+        types: [
+          ...((type === 'all' || type === 'image') && [...'image/*'] || []),
+          ...((type === 'all' || type === 'video') && [...'video/*'] || []),
+        ],
       });
       console.log('RES', res);
       return undefined;
