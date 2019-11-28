@@ -85,6 +85,9 @@ export interface Module {
   }): Promise<{
     UIImagePickerControllerImageURL: string;
     UIImagePickerControllerReferenceURL: string;
+    UIImagePickerControllerCropRect?: null;
+    UIImagePickerControllerMediaType?: string; // uti
+    UIImagePickerControllerPHAsset: null;
   }>;
   
 }

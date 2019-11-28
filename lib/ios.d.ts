@@ -73,7 +73,9 @@ export interface Module {
     }): Promise<{
         UIImagePickerControllerImageURL: string;
         UIImagePickerControllerReferenceURL: string;
-        UIImagePickerControllerMediaType: string;
+        UIImagePickerControllerCropRect?: null;
+        UIImagePickerControllerMediaType?: string;
+        UIImagePickerControllerPHAsset: null;
     }>;
 }
 export interface OpenURLEvent {
