@@ -664,13 +664,15 @@ export class Fs {
       return res.UIImagePickerControllerImageURL || res.UIImagePickerControllerMediaURL || undefined;
     } else if (Fs.android.Module) {
       const res = await Fs.android.Module.getContent({
+        pick: true,
         types: [
           ...((type === 'all' || type === 'image') && ['image/*'] || []),
           ...((type === 'all' || type === 'video') && ['video/*'] || []),
         ],
       });
-      console.log('Fs.pickImage res', res);
-      return undefined;
+      if (res === undefined) return undefined;
+      if (res.length === 0) return undefined;
+      return res[0];
     } else {
       throw new Error('platform not supported');
     }

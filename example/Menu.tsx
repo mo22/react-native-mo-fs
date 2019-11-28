@@ -27,11 +27,11 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
             const res = await Fs.pickImage({});
             console.log('RES', res);
             if (res) {
-              // const blob = await Fs.readURL(res.uri);
-              // const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.jpg';
-              // await Fs.writeFile(path, blob);
-              // blob.close();
-              // Alert.alert('Success', 'Imported to ' + path);
+              const blob = await Fs.readURL(res);
+              const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.jpg';
+              await Fs.writeFile(path, blob);
+              blob.close();
+              Alert.alert('Success', 'Imported to ' + path);
             }
           }}
           onLongPress={() => {
