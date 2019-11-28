@@ -533,7 +533,7 @@ export class Fs {
   /**
    * encrypt / decrypt a blob
    */
-  public static async cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt'|'decrypt', key: Base64|ArrayBufferLike, iv: Base64|ArrayBufferLike): Promise<BlobData> {
+  public static async cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt'|'decrypt', key: Base64|ArrayBufferLike, iv: Base64|ArrayBufferLike): Promise<Blob> {
     if (typeof key !== 'string') {
       key = base64.encode(key);
     }
@@ -541,9 +541,13 @@ export class Fs {
       iv = base64.encode(iv);
     }
     if (ios.Module) {
-      return await ios.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+      const blob = new Blob();
+      blob.data = await ios.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+      return blob;
     } else if (android.Module) {
-      return await android.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+      const blob = new Blob();
+      blob.data = await android.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+      return blob;
     } else {
       throw new Error('platform not supported');
     }

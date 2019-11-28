@@ -209,7 +209,7 @@ export declare class Fs {
     /**
      * encrypt / decrypt a blob
      */
-    static cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt' | 'decrypt', key: Base64 | ArrayBufferLike, iv: Base64 | ArrayBufferLike): Promise<BlobData>;
+    static cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt' | 'decrypt', key: Base64 | ArrayBufferLike, iv: Base64 | ArrayBufferLike): Promise<Blob>;
     /**
      * get size of an image.
      */
