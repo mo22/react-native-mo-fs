@@ -213,12 +213,31 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 md.start('sha256', 'keykeykey');
                 md.update(data);
                 const mdhash = Buffer.from(md.digest().data, 'binary').toString('hex');
-                const hash = await Fs.getBlobHmac(blob, 'sha256', 'a2V5a2V5a2V5');
+                const hash = await Fs.getBlobHmac(blob, 'sha256', Buffer.from('keykeykey').toString('base64'));
                 console.log('hmac-sha256', hash, mdhash);
                 if (hash != mdhash) throw new Error('sha256 hmac failure');
               }
               {
-                const enc = await Fs.cryptBlob(blob, '', 'encrypt')
+                const key = Buffer.from('01234567890123456789012345678901');
+                const iv = Buffer.from('01234567890123456789012345678901');
+                
+                console.log('X1', key.toString('binary').length);
+                const cipher = forge.cipher.createCipher('AES-CBC', new forge.util.ByteStringBuffer(key));
+                console.log('X2');
+                cipher.start({ iv: iv.toString('binary') });
+                console.log('X3');
+                cipher.update(new forge.util.ByteStringBuffer(data));
+                console.log('X4');
+                cipher.finish();
+                console.log('cipher.output', Buffer.from(cipher.output.data, 'binary').toString('base64'));
+                
+                const enc = await Fs.cryptBlob(
+                  blob,
+                  '',
+                  'encrypt',
+                  key.toString('base64'),
+                  iv.toString('base64'),
+                );
               }
               Alert.alert('hashes match');
             } finally {

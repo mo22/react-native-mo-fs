@@ -581,7 +581,8 @@ RCT_EXPORT_METHOD(cryptBlob:(NSDictionary<NSString*,id>*)blob algorithm:(NSStrin
     }
     NSData* keyData = [[NSData alloc] initWithBase64EncodedString:key options:0];
     NSData* ivData = [[NSData alloc] initWithBase64EncodedString:iv options:0];
-    NSMutableData* res = [NSMutableData dataWithCapacity:data.length];
+    size_t capacity = data.length + 64;
+    NSMutableData* res = [NSMutableData dataWithCapacity:capacity];
     size_t dataOutMoved = 0;
     CCCryptorStatus status = CCCrypt(
         encrypt ? kCCEncrypt : kCCDecrypt,
@@ -590,12 +591,14 @@ RCT_EXPORT_METHOD(cryptBlob:(NSDictionary<NSString*,id>*)blob algorithm:(NSStrin
         keyData.bytes, keyData.length,
         ivData.bytes,
         data.bytes, data.length,
-        res.mutableBytes, data.length,
+        res.mutableBytes, capacity,
         &dataOutMoved
     );
+    if (status != 0) {
+        // @TODO
+    }
     res.length = dataOutMoved;
     NSLog(@"XXX %d %zu %lu", status, dataOutMoved, (unsigned long)data.length);
-
     NSString* blobId = [self.blobManager store:res];
     resolve(@{
         @"size": @([res length]),
