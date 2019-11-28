@@ -548,6 +548,7 @@ RCT_EXPORT_METHOD(getExif:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseR
 
 
 RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    if (self.verbose) NSLog(@"ReactNativeMoFs.updateImage args=%@", args);
     NSData* data = [self.blobManager resolve:blob];
     if (!data) {
         reject(@"", @"blob not found", nil);
@@ -594,6 +595,7 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
 
 RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.verbose) NSLog(@"ReactNativeMoFs.showDocumentInteractionController args=%@", args);
         UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
         NSString* path = args[@"path"];
         NSURL* url = [NSURL fileURLWithPath:path];
@@ -629,6 +631,7 @@ RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:
 
 RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.verbose) NSLog(@"ReactNativeMoFs.showDocumentPickerView args=%@", args);
         NSMutableArray* utis = [NSMutableArray new];
         if (args[@"utis"]) {
             [utis addObjectsFromArray:args[@"utis"]];
@@ -654,6 +657,7 @@ RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromise
 
 RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.verbose) NSLog(@"ReactNativeMoFs.showImagePickerController args=%@", args);
         UIImagePickerController* controller = [UIImagePickerController new];
         if (args[@"sourceType"]) {
             controller.sourceType = [args[@"sourceType"] intValue];
