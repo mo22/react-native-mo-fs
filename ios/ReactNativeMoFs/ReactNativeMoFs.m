@@ -370,6 +370,9 @@ RCT_EXPORT_METHOD(readFile2:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)
         if ([offset longLongValue] < 0) {
             offset = [NSNumber numberWithLongLong:[stat[NSFileSize] longLongValue] + [offset longLongValue] + 1];
         }
+        if ([size intValue] == 0) {
+            size = [NSNumber numberWithUnsignedLongLong:1024 * 1024 * 1024];
+        }
         if (self.verbose) NSLog(@"ReactNativeMoFs.readFile path=%@ offset=%@ size=%@ filesize=%@", path, offset, size, stat[NSFileSize]);
         if (@available(iOS 13.0, *)) {
             [fp seekToOffset:[offset unsignedLongLongValue] error:&error];
