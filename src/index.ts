@@ -652,7 +652,17 @@ export class Fs {
   public static async pickImage(args: PickImageArgs): Promise<URL|undefined> {
     if (Fs.ios.Module) {
       // @TODO
-      const res = await Fs.ios.Module!.showImagePickerController({ });
+      const res = await Fs.ios.Module!.showImagePickerController({
+        allowsEditing: true,
+        mediaTypes: [],
+      });
+      // sourceType?: number;
+      // mediaTypes?: string[];
+      // allowsEditing?: boolean;
+      // showsCameraControls?: boolean;
+      // videoMaximumDuration?: number;
+      // imageExportPreset?: number;
+      // videoExportPreset?: string;
       console.log('RES', res);
       return undefined;
     } else if (Fs.android.Module) {
