@@ -18,26 +18,26 @@ interface Intent {
 
 export interface Module {
   authorities: string;
-  
+
   paths: {
     externalCache?: string;
     files: string;
     packageResource: string;
     data?: string;
   };
-  
+
   setVerbose(verbose: boolean): void;
-  
+
   getInitialIntent(): Promise<Intent>;
-  
+
   getMimeType(extension: string): Promise<string|undefined>;
-  
+
   readBlob(blob: BlobData, mode: 'base64'|'utf8'): Promise<string>;
   createBlob(str: string, mode: 'base64'|'utf8'): Promise<BlobData>;
 
   getBlobHash(blob: BlobData, algorithm: 'md5'|'sha1'|'sha256'|'sha512'): Promise<string>;
   getBlobHmac(blob: BlobData, algorithm: 'sha1'|'sha256'|'sha512', key: string): Promise<string>;
-  cryptBlob(blob: BlobData, algorithm: unknown, encrypt: boolean, key: string, iv: string): Promise<BlobData>;
+  cryptBlob(blob: BlobData, algorithm: 'aes-cbc', encrypt: boolean, key: string, iv: string): Promise<BlobData>;
 
   readFile(args: { path: string; size?: number; offset?: number; }): Promise<BlobData>;
   writeFile(args: { path: string; blob: BlobData, offset?: number; truncate?: boolean; }): Promise<BlobData>;
@@ -52,13 +52,13 @@ export interface Module {
     lastModified?: number;
   }>;
   chmod(path: string, mode: number): Promise<void>;
-  
+
   getImageSize(blob: BlobData): Promise<{ width: number; height: number; }>;
   getExif(blob: BlobData): Promise<any>;
   updateImage(blob: BlobData, args?: any): Promise<BlobData>;
-  
+
   getProviderUri(path: string): Promise<string>;
-  
+
   sendIntentChooser(args: {
     path: string;
     type?: string;
@@ -67,9 +67,9 @@ export interface Module {
     text?: string;
   }): Promise<void>;
 
-  viewIntentChooser(args: 
+  viewIntentChooser(args:
     (
-      { url: string } | 
+      { url: string } |
       { path: string }
     ) & {
       title?: string;

@@ -33,6 +33,16 @@ export interface BlobInfo {
     /** hex sha256 */
     sha256?: string;
 }
+export interface CryptBlobArgs {
+    /** algorithm and mode */
+    algorithm: 'aes-cbc';
+    /** encryption / decryption */
+    direction: 'encrypt' | 'decrypt';
+    /** key as base64 string or buffer */
+    key: Base64 | ArrayBufferLike;
+    /** iv as base64 string or buffer */
+    iv: Base64 | ArrayBufferLike;
+}
 export interface UpdateImageArgs {
     /** crop to width */
     width?: number;
@@ -209,7 +219,7 @@ export declare class Fs {
     /**
      * encrypt / decrypt a blob
      */
-    static cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt' | 'decrypt', key: Base64 | ArrayBufferLike, iv: Base64 | ArrayBufferLike): Promise<Blob>;
+    static cryptBlob(blob: Blob, args: CryptBlobArgs): Promise<Blob>;
     /**
      * get size of an image.
      */

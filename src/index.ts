@@ -49,6 +49,17 @@ export interface BlobInfo {
   sha256?: string;
 }
 
+export interface CryptBlobArgs {
+  /** algorithm and mode */
+  algorithm: 'aes-cbc';
+  /** encryption / decryption */
+  direction: 'encrypt'|'decrypt';
+  /** key as base64 string or buffer */
+  key: Base64|ArrayBufferLike;
+  /** iv as base64 string or buffer */
+  iv: Base64|ArrayBufferLike
+}
+
 export interface UpdateImageArgs {
   /** crop to width */
   width?: number;
@@ -533,20 +544,16 @@ export class Fs {
   /**
    * encrypt / decrypt a blob
    */
-  public static async cryptBlob(blob: Blob, algorithm: unknown, direction: 'encrypt'|'decrypt', key: Base64|ArrayBufferLike, iv: Base64|ArrayBufferLike): Promise<Blob> {
-    if (typeof key !== 'string') {
-      key = base64.encode(key);
-    }
-    if (typeof iv !== 'string') {
-      iv = base64.encode(iv);
-    }
+  public static async cryptBlob(blob: Blob, args: CryptBlobArgs): Promise<Blob> {
+    const key = (typeof args.key !== 'string') ? base64.encode(args.key) : args.key;
+    const iv = (typeof args.iv !== 'string') ? base64.encode(args.iv) : args.iv;
     if (ios.Module) {
       const resBlob = new Blob();
-      resBlob.data = await ios.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+      resBlob.data = await ios.Module.cryptBlob(blob.data, args.algorithm, args.direction === 'encrypt', key, iv);
       return resBlob;
     } else if (android.Module) {
       const resBlob = new Blob();
-      resBlob.data = await android.Module.cryptBlob(blob.data, algorithm, direction === 'encrypt', key, iv);
+      resBlob.data = await android.Module.cryptBlob(blob.data, args.algorithm, args.direction === 'encrypt', key, iv);
       return resBlob;
     } else {
       throw new Error('platform not supported');
