@@ -30,7 +30,7 @@ export interface Module {
 
   getInitialIntent(): Promise<Intent>;
 
-  getMimeType(extension: string): Promise<string|undefined>;
+  getMimeType(extension: string): Promise<string|null>;
 
   readBlob(blob: BlobData, mode: 'base64'|'utf8'): Promise<string>;
   createBlob(str: string, mode: 'base64'|'utf8'): Promise<BlobData>;
@@ -81,7 +81,7 @@ export interface Module {
     types?: string[];
     multiple?: boolean;
     title?: string;
-  }): Promise<undefined|string[]>;
+  }): Promise<null|string[]>;
 }
 
 export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoFs as Module : undefined;

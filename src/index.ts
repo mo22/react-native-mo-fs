@@ -234,7 +234,7 @@ export class Fs {
     if (ios.Module) {
       return await ios.Module.getMimeType(extension);
     } else if (android.Module) {
-      return await android.Module.getMimeType(extension);
+      return await android.Module.getMimeType(extension) || undefined;
     } else {
       throw new Error('platform not supported');
     }
@@ -717,7 +717,7 @@ export class Fs {
           ...((type === 'all' || type === 'video') && ['video/*'] || []),
         ],
       });
-      if (res === undefined) return undefined;
+      if (res === undefined || res === null) return undefined;
       if (res.length === 0) return undefined;
       return res[0];
     } else {
