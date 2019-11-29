@@ -652,7 +652,6 @@ RCT_EXPORT_METHOD(cryptBlob:(NSDictionary<NSString*,id>*)blob algorithm:(NSStrin
         return;
     }
     res.length = dataOutMoved;
-    NSLog(@"XXX %d %zu %lu", status, dataOutMoved, (unsigned long)data.length);
     NSString* blobId = [self.blobManager store:res];
     resolve(@{
         @"size": @([res length]),
