@@ -72,6 +72,7 @@ export interface Module {
         path: string;
     }) & {
         title?: string;
+        type?: string;
     }): Promise<void>;
     getContent(args: {
         pick?: boolean;
