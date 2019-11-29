@@ -458,7 +458,7 @@ export class Fs {
   }
 
   /**
-   * create directory. succeeds if directory exists.
+   * create directory. succeeds if directory exists. creates parents.
    */
   public static async createDir(path: Path): Promise<void> {
     if (ios.Module) {

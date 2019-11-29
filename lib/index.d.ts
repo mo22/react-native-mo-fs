@@ -197,7 +197,7 @@ export declare class Fs {
      */
     static listDir(path: Path): Promise<string[]>;
     /**
-     * create directory. succeeds if directory exists.
+     * create directory. succeeds if directory exists. creates parents.
      */
     static createDir(path: Path): Promise<void>;
     /**
