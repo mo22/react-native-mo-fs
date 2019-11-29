@@ -700,11 +700,16 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         reject(@"", @"blob not found", nil);
         return;
     }
-    CIImage* image = [CIImage imageWithData:data];
+    NSMutableDictionary* options = [NSMutableDictionary new];
+    if (@available(iOS 11.0, *)) {
+        options[kCIImageApplyOrientationProperty] = @(YES);
+    }
+    CIImage* image = [CIImage imageWithData:data options:options];
     if (!image) {
         reject(@"", @"blob not an image", nil);
         return;
     }
+    
     if (args[@"matrix"]) {
         // input: [ a b tx ]
         //        [ c d ty ]
