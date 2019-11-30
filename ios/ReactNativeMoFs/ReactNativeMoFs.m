@@ -6,6 +6,7 @@
 #import <CoreServices/CoreServices.h>
 #import "ReactNativeMoFs.h"
 #import <objc/runtime.h>
+#import <AVKit/AVKit.h>
 
 #if __has_feature(modules)
 @import MobileCoreServices;
@@ -691,7 +692,6 @@ RCT_EXPORT_METHOD(getExif:(NSDictionary<NSString*,id>*)blob resolve:(RCTPromiseR
     resolve(image.properties);
 }
 
-
 RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     if (self.verbose) NSLog(@"ReactNativeMoFs.updateImage args=%@", args);
     NSData* data = [self.blobManager resolve:blob];
@@ -743,6 +743,34 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     if (blob[@"name"]) {
         resBlob[@"name"] = blob[@"name"];
     }
+    resolve(resBlob);
+}
+
+RCT_EXPORT_METHOD(assetImageGenerator:args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSURL* url = [NSURL URLWithString:args[@"url"]];
+    AVURLAsset* asset = [[AVURLAsset alloc] initWithURL:url options:nil];
+    AVAssetImageGenerator* assetImageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    NSError *error = nil;
+    CGImageRef image = [assetImageGenerator copyCGImageAtTime:CMTimeMake(1, 1) actualTime:NULL error:&error];
+    if (error) {
+        reject(@"", [error localizedDescription], error);
+        return;
+    }
+    // store image as blob
+    UIImage* uiImage = [UIImage imageWithCGImage:image];
+    NSData* output = nil;
+    if ([args[@"encoding"] isEqualToString:@"png"]) {
+        output = UIImagePNGRepresentation(uiImage);
+    } else {
+        output = UIImageJPEGRepresentation(uiImage, [args[@"quality"] floatValue]);
+    }
+    NSString* blobId = [self.blobManager store:output];
+    NSMutableDictionary* resBlob = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"size": @([output length]),
+        @"offset": @(0),
+        @"blobId": blobId,
+        @"type": [args[@"encoding"] isEqualToString:@"png"] ? @"image/png" : @"image/jpeg",
+    }];
     resolve(resBlob);
 }
 
