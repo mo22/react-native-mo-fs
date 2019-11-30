@@ -739,7 +739,7 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         @"offset": @(0),
         @"blobId": blobId,
         @"type": [args[@"encoding"] isEqualToString:@"png"] ? @"image/png" : @"image/jpeg",
-        @"name": blob[@"name"],
+        @"name": RCTNullIfNil(blob[@"name"]),
     });
 }
 
