@@ -11,9 +11,11 @@ import android.graphics.Matrix;
 import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
 
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AtomicFile;
 import android.util.Base64;
@@ -642,6 +644,41 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             blob2.putString("name", blob.getString("name"));
         }
         promise.resolve(blob2);
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void createThumbnail(ReadableMap args, Promise promise) {
+        try {
+            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            String path = args.getString("path");
+            Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
+            int quality = args.hasKey("quality") ? (int)(args.getDouble("quality") * 100) : 100;
+            Bitmap.CompressFormat format;
+            String mimeType;
+            if (args.hasKey("encoding") && "png".equals(args.getString("encoding"))) {
+                format = Bitmap.CompressFormat.PNG;
+                mimeType = "image/png";
+            } else if (args.hasKey("encoding") && "webp".equals(args.getString("encoding"))) {
+                format = Bitmap.CompressFormat.WEBP;
+                mimeType = "image/webp";
+            } else {
+                format = Bitmap.CompressFormat.JPEG;
+                mimeType = "image/jpeg";
+            }
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(format, quality, stream);
+            byte[] output = stream.toByteArray();
+            String blobId = blobModule.store(output);
+            WritableMap blob2 = Arguments.createMap();
+            blob2.putInt("size", output.length);
+            blob2.putInt("offset", 0);
+            blob2.putString("blobId", blobId);
+            blob2.putString("type", mimeType);
+            promise.resolve(blob2);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
 
     @SuppressWarnings("unused")
