@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 
 import androidx.core.content.FileProvider;
@@ -609,12 +610,11 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 m.setValues(v);
             }
         }
-        Log.i("XXX", "bmp " + bmp.getWidth() + " " + bmp.getHeight());
-        Log.i("XXX", "m " + m);
-        Log.i("XXX", "size " + width + " " + height);
-        if (width > bmp.getWidth()) width = bmp.getWidth();
-        if (height > bmp.getHeight()) height = bmp.getHeight();
-        Bitmap bmp2 = Bitmap.createBitmap(bmp, 0, 0, width, height, m, true);
+        // this has problems if the image is made larger.
+        // Bitmap bmp2 = Bitmap.createBitmap(bmp, 0, 0, width, height, m, true);
+        Bitmap bmp2 = Bitmap.createBitmap(width, height, bmp.getConfig());
+        Canvas canvas = new Canvas(bmp2);
+        canvas.drawBitmap(bmp, m, null);
 
         int quality = args.hasKey("quality") ? (int)(args.getDouble("quality") * 100) : 100;
         Bitmap.CompressFormat format;
