@@ -609,13 +609,25 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 m.setValues(v);
             }
         }
+        Log.i("XXX", "bmp " + bmp.getWidth() + " " + bmp.getHeight());
+        Log.i("XXX", "m " + m);
+        Log.i("XXX", "size " + width + " " + height);
+        if (width > bmp.getWidth()) width = bmp.getWidth();
+        if (height > bmp.getHeight()) height = bmp.getHeight();
         Bitmap bmp2 = Bitmap.createBitmap(bmp, 0, 0, width, height, m, true);
+
         int quality = args.hasKey("quality") ? (int)(args.getDouble("quality") * 100) : 100;
-        Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
+        Bitmap.CompressFormat format;
+        String mimeType;
         if (args.hasKey("encoding") && "png".equals(args.getString("encoding"))) {
             format = Bitmap.CompressFormat.PNG;
+            mimeType = "image/png";
         } else if (args.hasKey("encoding") && "webp".equals(args.getString("encoding"))) {
             format = Bitmap.CompressFormat.WEBP;
+            mimeType = "image/webp";
+        } else {
+            format = Bitmap.CompressFormat.JPEG;
+            mimeType = "image/jpeg";
         }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bmp2.compress(format, quality, stream);
@@ -625,8 +637,10 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         blob2.putInt("size", output.length);
         blob2.putInt("offset", 0);
         blob2.putString("blobId", blobId);
-        blob2.putString("type", "image/jpeg");
-        blob2.putString("name", blob.getString("name"));
+        blob2.putString("type", mimeType);
+        if (blob.hasKey("name")) {
+            blob2.putString("name", blob.getString("name"));
+        }
         promise.resolve(blob2);
     }
 

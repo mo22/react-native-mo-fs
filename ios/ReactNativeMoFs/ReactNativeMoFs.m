@@ -734,13 +734,16 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         output = UIImageJPEGRepresentation(uiImage, [args[@"quality"] floatValue]);
     }
     NSString* blobId = [self.blobManager store:output];
-    resolve(@{
+    NSMutableDictionary* resBlob = [NSMutableDictionary dictionaryWithDictionary:@{
         @"size": @([output length]),
         @"offset": @(0),
         @"blobId": blobId,
         @"type": [args[@"encoding"] isEqualToString:@"png"] ? @"image/png" : @"image/jpeg",
-        @"name": RCTNullIfNil(blob[@"name"]),
-    });
+    }];
+    if (blob[@"name"]) {
+        resBlob[@"name"] = blob[@"name"];
+    }
+    return resBlob;
 }
 
 RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
