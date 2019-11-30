@@ -743,7 +743,7 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     if (blob[@"name"]) {
         resBlob[@"name"] = blob[@"name"];
     }
-    return resBlob;
+    resolve(resBlob);
 }
 
 RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
