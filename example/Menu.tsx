@@ -26,6 +26,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
           onPress={async () => {
             const res = await Fs.pickImage({ type: 'image' });
             if (res) {
+              // @TODO: extension for mime type?
               const blob = await Fs.readURL(res);
               const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.jpg';
               await Fs.writeFile(path, blob);

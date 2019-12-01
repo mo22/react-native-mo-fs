@@ -62,7 +62,18 @@ export interface Module {
 
   getImageSize(blob: BlobData): Promise<{ width: number; height: number; }>;
   getExif(blob: BlobData): Promise<any>;
-  updateImage(blob: BlobData, args?: any): Promise<BlobData>;
+  updateImage(blob: BlobData, args?: {
+    width?: number;
+    height?: number;
+    matrix?: [number, number, number, number, number, number, number, number, number];
+    encoding?: 'jpeg'|'png';
+    quality?: number;
+  }): Promise<BlobData>;
+  assetImageGenerator(args: {
+    url: string;
+    encoding?: 'jpeg'|'png';
+    quality?: number;
+  }): Promise<BlobData>;
 
   showDocumentInteractionController(args: {
     path: string;

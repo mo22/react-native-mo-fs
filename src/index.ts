@@ -607,7 +607,10 @@ export class Fs {
     if (args.quality !== undefined && (args.quality < 0 || args.quality > 1)) throw new Error('quality must be 0..1');
     if (ios.Module) {
       const res = new Blob();
-      res.data = await ios.Module.updateImage(blob.data, args);
+      res.data = await ios.Module.updateImage(blob.data, {
+        ...args,
+        encoding: (args.encoding === 'webp') ? 'png' : args.encoding,
+      });
       return res;
     } else if (android.Module) {
       const res = new Blob();

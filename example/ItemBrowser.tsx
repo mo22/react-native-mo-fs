@@ -10,6 +10,7 @@ interface State {
   blob?: Blob;
   sha1?: string;
   uti?: string;
+  extension?: string;
   thumbnail?: Blob;
   text?: string;
 }
@@ -25,8 +26,9 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
     const mime = await Fs.getMimeType(path);
     this.setState({ mime: mime });
     if (Fs.ios.Module) {
-      this.setState({ uti: await Fs.ios.Module.getUti(path) });
+      this.setState({ uti: await Fs.ios.Module.getUtiForPath(path) });
     }
+    this.setState({ extension: mime && await Fs.getExtensionForMimeType(mime) });
     if (stat.exists && !stat.dir) {
       const blob = await Fs.readFile(path);
       const sha1 = await Fs.getBlobHash(blob, 'sha1');
@@ -46,14 +48,14 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
       } else if (blob.type.startsWith('video/')) {
         console.log('video!');
         if (Fs.ios.Module) {
-          const thumbnail = await Fs.ios.Module!.assetImageGenerator({
+          const thumbnail = await Fs.ios.Module.assetImageGenerator({
             url: 'file://' + path,
             encoding: 'jpeg',
             quality: 0.5,
           })
           this.setState({ thumbnail: thumbnail });
         } else if (Fs.android.Module) {
-          const thumbnail = await Fs.ios.Module!.createThumbnail({
+          const thumbnail = await Fs.android.Module.createThumbnail({
             path: path,
             encoding: 'jpeg',
             quality: 0.5,
@@ -101,6 +103,13 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           <ListItem
             title="mime"
             subtitle={this.state.mime}
+          />
+        )}
+
+        {this.state.extension && (
+          <ListItem
+            title="extension"
+            subtitle={this.state.extension}
           />
         )}
 
