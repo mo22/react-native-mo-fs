@@ -269,15 +269,21 @@ RCT_EXPORT_METHOD(getLastOpenURL:(RCTPromiseResolveBlock)resolve reject:(RCTProm
 }
 
 RCT_EXPORT_METHOD(getMimeType:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    resolve(mimeTypeForPath(extension));
+    NSString* type = mimeTypeForPath(extension);
+    if (self.verbose) NSLog(@"ReactNativeMoFs.getMimeType extension=%@ type=%@", extension, type);
+    resolve(type);
 }
 
 RCT_EXPORT_METHOD(getUtiFromMimeType:(NSString*)mimeType resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    resolve(utiForMimeType(mimeType));
+    NSString* uti = utiForMimeType(mimeType);
+    if (self.verbose) NSLog(@"ReactNativeMoFs.getUtiFromMimeType mimeType=%@ uti=%@", mimeType, uti);
+    resolve(uti);
 }
 
 RCT_EXPORT_METHOD(getUti:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    resolve(utiForPath(extension));
+    NSString* uti = utiForPath(extension);
+    if (self.verbose) NSLog(@"ReactNativeMoFs.getUti extension=%@ uti=%@", extension, uti);
+    resolve(uti);
 }
 
 RCT_EXPORT_METHOD(readBlob:(NSDictionary<NSString*,id>*)blob mode:(NSString*)mode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
