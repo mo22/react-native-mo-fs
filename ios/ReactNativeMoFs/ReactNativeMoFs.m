@@ -895,9 +895,6 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
             controller.videoQuality = [args[@"videoQuality"] intValue];
         }
         if (@available(iOS 11.0, *)) {
-            if (args[@"imageExportPreset"]) {
-                controller.imageExportPreset = [args[@"imageExportPreset"] intValue];
-            }
             if (args[@"videoExportPreset"]) {
                 controller.videoExportPreset = args[@"videoExportPreset"];
             }
