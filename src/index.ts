@@ -300,8 +300,6 @@ export class Fs {
     if (ios.Module) {
       const blob = new Blob();
       blob.data = await ios.Module.readFile({ path: path });
-      console.log('XXX1', blob.data.type);
-      console.log('XXX2', blob.type);
       return blob;
     } else if (android.Module) {
       const blob = new Blob();
