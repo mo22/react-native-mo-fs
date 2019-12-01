@@ -48,14 +48,16 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
       } else if (blob.type.startsWith('video/')) {
         console.log('video!');
         if (Fs.ios.Module) {
-          const thumbnail = await Fs.ios.Module.assetImageGenerator({
+          const thumbnail = new Blob();
+          thumbnail.data = await Fs.ios.Module.assetImageGenerator({
             url: 'file://' + path,
             encoding: 'jpeg',
             quality: 0.5,
           })
           this.setState({ thumbnail: thumbnail });
         } else if (Fs.android.Module) {
-          const thumbnail = await Fs.android.Module.createThumbnail({
+          const thumbnail = new Blob();
+          thumbnail.data = await Fs.android.Module.createThumbnail({
             path: path,
             encoding: 'jpeg',
             quality: 0.5,
