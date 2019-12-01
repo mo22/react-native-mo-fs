@@ -82,7 +82,8 @@ NSString* hexStringForData(NSData* data) {
     [self.refs removeObject:controller];
 }
 - (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
-    return RCTSharedApplication().delegate.window.rootViewController;
+    return RCTPresentedViewController();
+//    return RCTSharedApplication().delegate.window.rootViewController;
 }
 @end
 
@@ -122,6 +123,7 @@ NSString* hexStringForData(NSData* data) {
     NSMutableDictionary* res = [NSMutableDictionary new];
     for (NSString* key in info.allKeys) {
         id value = info[key];
+        NSLog(@"XXX %@ %@ %@", key, value, [value class]);
         if ([value isKindOfClass:[UIImage class]]) {
             continue;
         }
@@ -139,16 +141,19 @@ NSString* hexStringForData(NSData* data) {
                 @"height": @([value CGRectValue].size.height),
             };
         } else {
-            // NSLog(@"XXX %@ %@ %@", key, value, [value class]);
             // skip
             continue;
         }
         res[key] = value;
     }
+    // @TODO: UIImagePickerControllerMediaURL is deleted as soon as this method returns.
+    // move to temp dir?
+    // use asset url?
     self.resolve(res);
     [picker dismissViewControllerAnimated:YES completion:nil];
     [self.refs removeObject:self];
     [self.refs removeObject:picker];
+    sleep(1);
 }
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -797,7 +802,7 @@ RCT_EXPORT_METHOD(assetImageGenerator:(NSDictionary*)args resolve:(RCTPromiseRes
 RCT_EXPORT_METHOD(showDocumentInteractionController:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.verbose) NSLog(@"ReactNativeMoFs.showDocumentInteractionController args=%@", args);
-        UIView* view = RCTSharedApplication().delegate.window.rootViewController.view;
+        UIView* view = RCTPresentedViewController().view;
         NSString* path = args[@"path"];
         NSURL* url = [NSURL fileURLWithPath:path];
         UIDocumentInteractionController* controller = [UIDocumentInteractionController interactionControllerWithURL:url];
@@ -852,7 +857,7 @@ RCT_EXPORT_METHOD(showDocumentPickerView:(NSDictionary*)args resolve:(RCTPromise
         if (@available(iOS 11.0, *)) {
             controller.allowsMultipleSelection = [args[@"multiple"] boolValue];
         }
-        [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
+        [RCTPresentedViewController() presentViewController:controller animated:YES completion:nil];
     });
 }
 
@@ -874,8 +879,20 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
         if (args[@"showsCameraControls"]) {
             controller.showsCameraControls = [args[@"showsCameraControls"] boolValue];
         }
+        if (args[@"cameraCaptureMode"]) {
+            controller.cameraCaptureMode = [args[@"cameraCaptureMode"] intValue];
+        }
+        if (args[@"cameraDevice"]) {
+            controller.cameraDevice = [args[@"cameraDevice"] intValue];
+        }
+        if (args[@"cameraFlashMode"]) {
+            controller.cameraFlashMode = [args[@"cameraFlashMode"] intValue];
+        }
         if (args[@"videoMaximumDuration"]) {
             controller.videoMaximumDuration = [args[@"videoMaximumDuration"] doubleValue];
+        }
+        if (args[@"videoQuality"]) {
+            controller.videoQuality = [args[@"videoQuality"] intValue];
         }
         if (@available(iOS 11.0, *)) {
             if (args[@"imageExportPreset"]) {
@@ -893,7 +910,7 @@ RCT_EXPORT_METHOD(showImagePickerController:(NSDictionary*)args resolve:(RCTProm
         [self.refs addObject:delegate];
         [self.refs addObject:controller];
         controller.delegate = delegate;
-        [RCTSharedApplication().delegate.window.rootViewController presentViewController:controller animated:YES completion:nil];
+        [RCTPresentedViewController() presentViewController:controller animated:YES completion:nil];
     });
 }
 
