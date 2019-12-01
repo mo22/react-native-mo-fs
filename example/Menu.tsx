@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, Alert } from 'react-native';
+import { ScrollView, Alert, PermissionsAndroid } from 'react-native';
 import { NavigationInjectedProps, NavigationActions } from 'react-navigation';
 import { ListItem } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
@@ -83,6 +83,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
               console.log('res', res);
 
             } else if (Fs.android.Module) {
+              await PermissionsAndroid.request('android.permission.CAMERA');
               const res = await Fs.android.Module.getCamera({
 
               });

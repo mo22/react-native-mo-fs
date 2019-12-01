@@ -124,6 +124,9 @@ NSString* hexStringForData(NSData* data) {
     for (NSString* key in info.allKeys) {
         id value = info[key];
         NSLog(@"XXX %@ %@ %@", key, value, [value class]);
+        // UIImagePickerControllerOriginalImage -- store as blob?
+        // UIImagePickerControllerEditedImage - store as blob?
+        // UIImagePickerControllerMediaMetadata - ?
         if ([value isKindOfClass:[UIImage class]]) {
             continue;
         }
@@ -133,6 +136,8 @@ NSString* hexStringForData(NSData* data) {
             // fine
         } else if ([value isKindOfClass:[NSNumber class]]) {
             // fine
+        } else if ([value isKindOfClass:[NSDictionary class]]) {
+            // fine(?)
         } else if ([key isEqualToString:@"UIImagePickerControllerCropRect"]) {
             value = @{
                 @"x": @([value CGRectValue].origin.x),
