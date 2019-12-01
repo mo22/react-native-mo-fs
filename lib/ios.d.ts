@@ -1,4 +1,27 @@
 import { EmitterSubscription } from 'react-native';
+export declare enum ImagePickerControllerSourceType {
+    PhotoLibrary = 0,
+    Camera = 1,
+    SavedPhotosAlbum = 2
+}
+export declare enum ImagePickerControllerQualityType {
+    High = 0,
+    Medium = 1,
+    Low = 2
+}
+export declare enum ImagePickerControllerCameraCaptureMode {
+    Photo = 0,
+    Video = 1
+}
+export declare enum ImagePickerControllerCameraDevice {
+    Rear = 0,
+    Front = 1
+}
+export declare enum ImagePickerControllerCameraFlashMode {
+    Off = -1,
+    Auto = 0,
+    On = 1
+}
 interface BlobData {
     blobId: string;
     offset: number;
@@ -85,16 +108,15 @@ export interface Module {
         multiple?: boolean;
     }): Promise<undefined | string[]>;
     showImagePickerController(args: {
-        sourceType?: number;
+        sourceType?: ImagePickerControllerSourceType;
         mediaTypes?: string[];
         allowsEditing?: boolean;
         showsCameraControls?: boolean;
-        cameraCaptureMode?: number;
-        cameraDevice?: number;
-        cameraFlashMode?: number;
+        cameraCaptureMode?: ImagePickerControllerCameraCaptureMode;
+        cameraDevice?: ImagePickerControllerCameraDevice;
+        cameraFlashMode?: ImagePickerControllerCameraFlashMode;
         videoMaximumDuration?: number;
-        videoQuality?: number;
-        imageExportPreset?: number;
+        videoQuality?: ImagePickerControllerQualityType;
         videoExportPreset?: string;
     }): Promise<undefined | {
         UIImagePickerControllerReferenceURL: string;
