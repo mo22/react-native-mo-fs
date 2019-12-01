@@ -36,20 +36,20 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
       if (blob.type === 'image/jpeg' || blob.type === 'image/png') {
         // get image size?
         const thumbnail = await Fs.resizeImage(blob, {
-          maxWidth: 32, // 256,
+          maxWidth: 256,
           maxHeight: 256,
           fill: true,
           encoding: 'jpeg',
           quality: 0.5,
         });
         this.setState({ thumbnail: thumbnail });
+      } else if (blob.type.startsWith('video/')) {
+        console.log('video!');
       }
       if (blob.type === 'text/plain' || blob.type === 'application/json') {
         const text = await Fs.readBlob(blob, 'utf8');
         this.setState({ text: text.slice(0, 8000) });
       }
-      const buffer = await Fs.readBlob(blob.slice(0, 100), 'arraybuffer');
-      console.log('arraybuffer', buffer.constructor.name, buffer.byteLength);
     }
   }
 
@@ -121,7 +121,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           <React.Fragment>
             <ListItem
               chevron={true}
-              title="Open In"
+              title="iOS Open In"
               onPress={async () => {
                 const res = await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'openin' });
                 console.log('res', res);
@@ -129,7 +129,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
             />
             <ListItem
               chevron={true}
-              title="Options"
+              title="iOS Options"
               onPress={async () => {
                 const res = await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'options' });
                 console.log('res', res);
@@ -137,7 +137,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
             />
             <ListItem
               chevron={true}
-              title="Preview"
+              title="iOS Preview"
               onPress={async () => {
                 const res = await Fs.ios.Module!.showDocumentInteractionController({ path: path, type: 'preview' });
                 console.log('res', res);
@@ -150,14 +150,14 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
           <React.Fragment>
             <ListItem
               chevron={true}
-              title="Send To"
+              title="Android Send To"
               onPress={async () => {
                 await Fs.android.Module!.sendIntentChooser({ path: path, title: 'Choose', subject: 'subject', text: 'text' });
               }}
             />
             <ListItem
               chevron={true}
-              title="View"
+              title="Android View"
               onPress={async () => {
                 await Fs.android.Module!.viewIntentChooser({ path: path, title: 'Choose' });
               }}
@@ -186,7 +186,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
 
         {this.state.thumbnail && (
           <Image
-            style={{ width: 32, height: 256 }}
+            style={{ width: 256, height: 256 }}
             source={{ uri: Fs.getBlobURL(this.state.thumbnail) }}
           />
         )}

@@ -746,7 +746,7 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
     resolve(resBlob);
 }
 
-RCT_EXPORT_METHOD(assetImageGenerator:args:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(assetImageGenerator:(NSDictionary*)args resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSURL* url = [NSURL URLWithString:args[@"url"]];
     AVURLAsset* asset = [[AVURLAsset alloc] initWithURL:url options:nil];
     AVAssetImageGenerator* assetImageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
