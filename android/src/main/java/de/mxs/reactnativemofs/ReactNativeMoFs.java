@@ -68,12 +68,13 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             @Override
             public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
             }
+
             @Override
             public void onNewIntent(Intent intent) {
                 if (verbose) Log.i("ReactNativeMoFs", "onNewIntent " + intent);
                 getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(
-                    "ReactNativeMoFsNewIntent",
-                    getMapFromIntent(intent)
+                        "ReactNativeMoFsNewIntent",
+                        getMapFromIntent(intent)
                 );
             }
         });
@@ -137,13 +138,13 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             for (String key : extras.keySet()) {
                 Object val = extras.get(key);
                 if (val instanceof String) {
-                    resExtras.putString(key, (String)val);
+                    resExtras.putString(key, (String) val);
                 } else if (val instanceof Uri) {
                     resExtras.putString(key, val.toString());
                 } else if (val instanceof Number) {
-                    resExtras.putDouble(key, ((Number)val).doubleValue());
+                    resExtras.putDouble(key, ((Number) val).doubleValue());
                 } else if (val instanceof Boolean) {
-                    resExtras.putBoolean(key, (Boolean)val);
+                    resExtras.putBoolean(key, (Boolean) val);
                 } else if (val == null) {
                     resExtras.putNull(key);
                 }
@@ -164,9 +165,9 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     private Uri getUriForPath(String path) {
         return FileProvider.getUriForFile(
-            getReactApplicationContext(),
-            getProviderAuthority(),
-            new File(path)
+                getReactApplicationContext(),
+                getProviderAuthority(),
+                new File(path)
         );
     }
 
@@ -185,9 +186,11 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                     promise.resolve(null);
                 }
             }
+
             @Override
             public void onHostPause() {
             }
+
             @Override
             public void onHostDestroy() {
             }
@@ -245,7 +248,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             return;
         }
         String blobId = blobModule.store(buffer);
-        if (verbose) Log.i("ReactNativeMoFs", "createBlob size=" + buffer.length + " blobId=" + blobId);
+        if (verbose)
+            Log.i("ReactNativeMoFs", "createBlob size=" + buffer.length + " blobId=" + blobId);
         WritableMap blob = Arguments.createMap();
         blob.putInt("size", buffer.length);
         blob.putInt("offset", 0);
@@ -261,7 +265,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             String path = args.getString("path");
             File file = new File(path);
             long fileSize = file.length();
-            int size = args.hasKey("size") ? args.getInt("size") : (int)fileSize;
+            int size = args.hasKey("size") ? args.getInt("size") : (int) fileSize;
             long offset = args.hasKey("offset") ? args.getInt("offset") : 0;
             if (offset < 0) offset = fileSize + offset + 1;
             byte[] buffer = new byte[size];
@@ -397,7 +401,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             WritableMap res = Arguments.createMap();
             if (file.isFile()) {
                 res.putString("type", "file");
-                res.putInt("length", (int)file.length());
+                res.putInt("length", (int) file.length());
                 res.putDouble("lastModified", file.lastModified());
             } else if (file.isDirectory()) {
                 res.putString("type", "directory");
@@ -421,7 +425,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             boolean otherExecutable = (mode & 1) > 0;
             boolean otherWritable = (mode & 2) > 0;
             boolean otherReadable = (mode & 4) > 0;
-            if (!file.setExecutable(executable, !otherExecutable)) throw new IOException("chmod failed");
+            if (!file.setExecutable(executable, !otherExecutable))
+                throw new IOException("chmod failed");
             if (!file.setReadable(readable, !otherReadable)) throw new IOException("chmod failed");
             if (!file.setWritable(writable, !otherReadable)) throw new IOException("chmod failed");
             promise.resolve(null);
@@ -518,9 +523,9 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             if ("aes-cbc".equals(algorithm)) {
                 cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
                 cipher.init(
-                    encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE,
-                    new SecretKeySpec(keyData, cipher.getAlgorithm()),
-                    new IvParameterSpec(ivData)
+                        encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE,
+                        new SecretKeySpec(keyData, cipher.getAlgorithm()),
+                        new IvParameterSpec(ivData)
                 );
             } else {
                 throw new RuntimeException("invalid algorithm");
@@ -579,7 +584,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                     if (!Modifier.isPublic(field.getModifiers())) continue;
                     if (!field.getName().startsWith("TAG_")) continue;
                     try {
-                        String tag = (String)field.get(exif);
+                        String tag = (String) field.get(exif);
                         String value = exif.getAttribute(tag);
                         if (value != null) {
                             res.putString(field.getName(), value);
@@ -612,8 +617,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             ReadableArray a = args.getArray("matrix");
             if (a != null) {
                 float[] v = new float[9];
-                for (int i=0; i<v.length; i++) {
-                    v[i] = (float)a.getDouble(i);
+                for (int i = 0; i < v.length; i++) {
+                    v[i] = (float) a.getDouble(i);
                 }
                 m.setValues(v);
             }
@@ -624,7 +629,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         Canvas canvas = new Canvas(bmp2);
         canvas.drawBitmap(bmp, m, null);
 
-        int quality = args.hasKey("quality") ? (int)(args.getDouble("quality") * 100) : 100;
+        int quality = args.hasKey("quality") ? (int) (args.getDouble("quality") * 100) : 100;
         Bitmap.CompressFormat format;
         String mimeType;
         if (args.hasKey("encoding") && "png".equals(args.getString("encoding"))) {
@@ -659,7 +664,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
             String path = args.getString("path");
             Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
-            int quality = args.hasKey("quality") ? (int)(args.getDouble("quality") * 100) : 100;
+            int quality = args.hasKey("quality") ? (int) (args.getDouble("quality") * 100) : 100;
             Bitmap.CompressFormat format;
             String mimeType;
             if (args.hasKey("encoding") && "png".equals(args.getString("encoding"))) {
@@ -706,7 +711,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setType(type);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-        if (args.hasKey("subject")) intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
+        if (args.hasKey("subject"))
+            intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
         if (args.hasKey("text")) intent.putExtra(Intent.EXTRA_TEXT, args.getString("text"));
         ComponentName target = intent.resolveActivity(getReactApplicationContext().getPackageManager());
         if (target != null) {
@@ -764,7 +770,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         if (args.hasKey("types")) {
             ReadableArray tmp = args.getArray("types");
             if (tmp == null) throw new RuntimeException("types == null");
-            for (int i=0; i<tmp.size(); i++) {
+            for (int i = 0; i < tmp.size(); i++) {
                 types.add(tmp.getString(i));
             }
         }
@@ -796,7 +802,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                     } else {
                         if (data.getClipData() != null) {
                             WritableArray res = Arguments.createArray();
-                            for (int i=0; i<data.getClipData().getItemCount(); i++) {
+                            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
                                 Uri uri = data.getClipData().getItemAt(i).getUri();
                                 if (uri != null) {
                                     res.pushString(uri.toString());
@@ -811,6 +817,61 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                             promise.resolve(null);
                         }
                     }
+                }
+            }
+
+            @Override
+            public void onNewIntent(Intent intent) {
+            }
+        };
+        getReactApplicationContext().addActivityEventListener(listener);
+        Activity activity = getReactApplicationContext().getCurrentActivity();
+        if (activity == null) throw new RuntimeException("activity == null");
+        activity.startActivityForResult(intent, 13131);
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void getCamera(ReadableMap args, final Promise promise) {
+        Intent intent = new Intent();
+
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI);
+
+        intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            String title = args.hasKey("title") ? args.getString("title") : "";
+            intent = Intent.createChooser(intent, title);
+        }
+
+        ActivityEventListener listener = new ActivityEventListener() {
+            @Override
+            public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+                if (requestCode == 13131) {
+                    Log.i("XXX", "got camera photo " + resultCode + " " + data);
+//                    if (data == null) {
+//                        promise.resolve(null);
+//                    } else {
+//                        if (data.getClipData() != null) {
+//                            WritableArray res = Arguments.createArray();
+//                            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+//                                Uri uri = data.getClipData().getItemAt(i).getUri();
+//                                if (uri != null) {
+//                                    res.pushString(uri.toString());
+//                                }
+//                            }
+//                            promise.resolve(res);
+//                        } else if (data.getData() != null) {
+//                            WritableArray res = Arguments.createArray();
+//                            res.pushString(data.getData().toString());
+//                            promise.resolve(res);
+//                        } else {
+//                            promise.resolve(null);
+//                        }
+//                    }
                 }
             }
             @Override

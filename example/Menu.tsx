@@ -75,6 +75,23 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
         <ListItem
           onPress={async () => {
             if (Fs.ios.Module) {
+              const res = await Fs.ios.Module.showImagePickerController({
+                sourceType: 1,
+                allowsEditing: true,
+                mediaTypes: ['public.image', 'public.movie'],
+              });
+              console.log('res', res);
+
+            } else if (Fs.android.Module) {
+
+            }
+          }}
+          title="take photo / video"
+        />
+
+        <ListItem
+          onPress={async () => {
+            if (Fs.ios.Module) {
               const res = await Fs.ios.Module.showDocumentPickerView({ utis: ['public.jpeg'] });
               if (res) {
                 const url = res[0];
