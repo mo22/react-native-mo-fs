@@ -77,6 +77,8 @@
 	<string>example</string>
 	<key>NSCameraUsageDescription</key>
 	<string>example</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>example</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
   <key>LSSupportsOpeningDocumentsInPlace</key>
