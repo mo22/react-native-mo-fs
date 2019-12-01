@@ -35,12 +35,16 @@ NSString* utiForPath(NSString* path) {
 }
 
 NSString* utiForMimeType(NSString* mimeType) {
-    return CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef _Nonnull)mimeType, NULL));
+    return CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef _Nonnull)(mimeType), NULL));
+}
+
+NSString* mimeTypeForUti(NSString* uti) {
+    return CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef _Nonnull)(uti), kUTTagClassMIMEType));
 }
 
 NSString* mimeTypeForPath(NSString* path) {
     NSString* uti = utiForPath(path);
-    NSString* mime = CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef _Nonnull)(uti), kUTTagClassMIMEType));
+    NSString* mime = mimeTypeForUti(uti);
     if (!mime) return @"application/octet-stream";
     return mime;
 }
@@ -269,7 +273,7 @@ RCT_EXPORT_METHOD(getLastOpenURL:(RCTPromiseResolveBlock)resolve reject:(RCTProm
 }
 
 RCT_EXPORT_METHOD(getMimeType:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSString* type = mimeTypeForPath(extension);
+    NSString* type = mimeTypeForPath([NSString stringWithFormat:@"x.%@", extension]);
     if (self.verbose) NSLog(@"ReactNativeMoFs.getMimeType extension=%@ type=%@", extension, type);
     resolve(type);
 }
@@ -281,7 +285,7 @@ RCT_EXPORT_METHOD(getUtiFromMimeType:(NSString*)mimeType resolve:(RCTPromiseReso
 }
 
 RCT_EXPORT_METHOD(getUti:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSString* uti = utiForPath(extension);
+    NSString* uti = utiForPath([NSString stringWithFormat:@"x.%@", extension]);
     if (self.verbose) NSLog(@"ReactNativeMoFs.getUti extension=%@ uti=%@", extension, uti);
     resolve(uti);
 }
