@@ -95,6 +95,10 @@ export interface Module {
     multiple?: boolean;
     title?: string;
   }): Promise<null|string[]>;
+
+  getCamera(args: {
+    title?: string;
+  }): Promise<null|string>;
 }
 
 export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoFs as Module : undefined;

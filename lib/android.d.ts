@@ -92,6 +92,9 @@ export interface Module {
         multiple?: boolean;
         title?: string;
     }): Promise<null | string[]>;
+    getCamera(args: {
+        title?: string;
+    }): Promise<null | string>;
 }
 export declare const Module: Module | undefined;
 export declare const Events: {

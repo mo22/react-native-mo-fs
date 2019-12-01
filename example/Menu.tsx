@@ -83,6 +83,10 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
               console.log('res', res);
 
             } else if (Fs.android.Module) {
+              const res = await Fs.android.Module.getCamera({
+
+              });
+              console.log('res', res);
 
             }
           }}
