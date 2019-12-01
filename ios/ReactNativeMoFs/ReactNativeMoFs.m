@@ -276,9 +276,9 @@ RCT_EXPORT_METHOD(getLastOpenURL:(RCTPromiseResolveBlock)resolve reject:(RCTProm
     resolve(self.lastOpenURL);
 }
 
-RCT_EXPORT_METHOD(getMimeType:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSString* type = mimeTypeForPath([NSString stringWithFormat:@"x.%@", extension]);
-    if (self.verbose) NSLog(@"ReactNativeMoFs.getMimeType extension=%@ type=%@", extension, type);
+RCT_EXPORT_METHOD(getMimeTypeForPath:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSString* type = mimeTypeForPath([NSString stringWithFormat:@"x.%@", path]);
+    if (self.verbose) NSLog(@"ReactNativeMoFs.getMimeTypeForPath path=%@ type=%@", path, type);
     resolve(type);
 }
 
@@ -288,9 +288,9 @@ RCT_EXPORT_METHOD(getUtiFromMimeType:(NSString*)mimeType resolve:(RCTPromiseReso
     resolve(uti);
 }
 
-RCT_EXPORT_METHOD(getUti:(NSString*)extension resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    NSString* uti = utiForPath([NSString stringWithFormat:@"x.%@", extension]);
-    if (self.verbose) NSLog(@"ReactNativeMoFs.getUti extension=%@ uti=%@", extension, uti);
+RCT_EXPORT_METHOD(getUtiForPath:(NSString*)path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSString* uti = utiForPath([NSString stringWithFormat:@"x.%@", path]);
+    if (self.verbose) NSLog(@"ReactNativeMoFs.getUtiForPath path=%@ uti=%@", path, uti);
     resolve(uti);
 }
 
