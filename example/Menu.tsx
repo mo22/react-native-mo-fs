@@ -28,7 +28,8 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
             if (res) {
               // @TODO: extension for mime type?
               const blob = await Fs.readURL(res);
-              const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.jpg';
+              const ext = await Fs.getExtensionForMimeType(blob.type) || res.split('.').slice(-1)[0];
+              const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
               await Fs.writeFile(path, blob);
               blob.close();
               Alert.alert('Success', 'Imported to ' + path);
@@ -61,7 +62,8 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
             const res = await Fs.pickImage({ type: 'video' });
             if (res) {
               const blob = await Fs.readURL(res);
-              const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.jpg';
+              const ext = await Fs.getExtensionForMimeType(blob.type) || res.split('.').slice(-1)[0];
+              const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
               await Fs.writeFile(path, blob);
               blob.close();
               Alert.alert('Success', 'Imported to ' + path);
