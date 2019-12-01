@@ -30,7 +30,8 @@ export interface Module {
 
   getInitialIntent(): Promise<Intent>;
 
-  getMimeType(extension: string): Promise<string|null>;
+  getMimeTypeForPath(path: string): Promise<string|null>;
+  getExtensionForMimeType(mimeType: string): Promise<string|null>;
 
   readBlob(blob: BlobData, mode: 'base64'|'utf8'): Promise<string>;
   createBlob(str: string, mode: 'base64'|'utf8'): Promise<BlobData>;
