@@ -229,12 +229,24 @@ export class Fs {
   /**
    * get mime type by file extension
    */
-  public static async getMimeType(extension: string): Promise<MimeType|undefined> {
-    extension = extension.split('.').slice(-1).pop()!;
+  public static async getMimeType(path: string): Promise<MimeType|undefined> {
     if (ios.Module) {
-      return await ios.Module.getMimeType(extension);
+      return await ios.Module.getMimeTypeForPath(path);
     } else if (android.Module) {
-      return await android.Module.getMimeType(extension) || undefined;
+      return await android.Module.getMimeTypeForPath(path) || undefined;
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
+
+  /**
+   * get default extension for mime type
+   */
+  public static async getExtensionForMimeType(mimeType: string): Promise<MimeType|undefined> {
+    if (ios.Module) {
+      return await ios.Module.getExtensionForMimeType(mimeType);
+    } else if (android.Module) {
+      return await android.Module.getExtensionForMimeType(mimeType) || undefined;
     } else {
       throw new Error('platform not supported');
     }
@@ -680,7 +692,7 @@ export class Fs {
   public static async pickFile(args: PickFileArgs): Promise<URL[]> {
     if (Fs.ios.Module) {
       const utis = args.types ? (
-        await Promise.all(args.types.map((i) => Fs.ios.Module!.getUtiFromMimeType(i) as Promise<string>))
+        await Promise.all(args.types.map((i) => Fs.ios.Module!.getUtiForMimeType(i) as Promise<string>))
       ) : (
         ['public.item']
       );

@@ -129,7 +129,11 @@ export declare class Fs {
     /**
      * get mime type by file extension
      */
-    static getMimeType(extension: string): Promise<MimeType | undefined>;
+    static getMimeType(path: string): Promise<MimeType | undefined>;
+    /**
+     * get default extension for mime type
+     */
+    static getExtensionForMimeType(mimeType: string): Promise<MimeType | undefined>;
     /**
      * get url for sharing a blob
      */
