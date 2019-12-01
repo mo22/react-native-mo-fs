@@ -299,7 +299,11 @@ export class Fs {
   public static async readFile(path: Path): Promise<Blob> {
     if (ios.Module) {
       const blob = new Blob();
+      console.log('path', path);
       blob.data = await ios.Module.readFile({ path: path });
+      console.log('blob.data', blob.data);
+      const type = await this.getMimeType(path);
+      if (type !== undefined) blob.data.type = type;
       return blob;
     } else if (android.Module) {
       const blob = new Blob();
