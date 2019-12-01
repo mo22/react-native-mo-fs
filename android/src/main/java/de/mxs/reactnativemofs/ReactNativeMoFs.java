@@ -833,45 +833,39 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void getCamera(ReadableMap args, final Promise promise) {
-        Intent intent = new Intent();
+        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI); // required :/
 
-        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI);
+        Intent videoTntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//        videoTntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // 0 = low, 1 = high
+//        videoTntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10); // seconds
+//        videoTntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10); // bytes?
+//        videoTntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI); // supported
+        // also setClipData?
 
-        intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            String title = args.hasKey("title") ? args.getString("title") : "";
-            intent = Intent.createChooser(intent, title);
-        }
+        String title = args.hasKey("title") ? args.getString("title") : "";
+        Intent intent = Intent.createChooser(pictureIntent, title);
+        intent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{ videoTntent });
 
         ActivityEventListener listener = new ActivityEventListener() {
             @Override
             public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                 if (requestCode == 13131) {
                     Log.i("XXX", "got camera photo " + resultCode + " " + data);
-//                    if (data == null) {
-//                        promise.resolve(null);
-//                    } else {
-//                        if (data.getClipData() != null) {
-//                            WritableArray res = Arguments.createArray();
-//                            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-//                                Uri uri = data.getClipData().getItemAt(i).getUri();
-//                                if (uri != null) {
-//                                    res.pushString(uri.toString());
-//                                }
-//                            }
-//                            promise.resolve(res);
-//                        } else if (data.getData() != null) {
-//                            WritableArray res = Arguments.createArray();
-//                            res.pushString(data.getData().toString());
-//                            promise.resolve(res);
-//                        } else {
-//                            promise.resolve(null);
-//                        }
-//                    }
+                    if (data != null) {
+                        Log.i("XXX", "cd=" + data.getClipData());
+                        Log.i("XXX", "d=" + data.getData());
+                    }
+                    // 2019-12-01 17:45:13.084 18532-18532/com.example I/XXX: got camera photo -1 Intent { act=inline-data dat=content://media/external/video/media/63 flg=0x1 }
+                    if (data == null) {
+                        promise.resolve(null);
+                    } else if (data.getData() != null) {
+                        WritableArray res = Arguments.createArray();
+                        res.pushString(data.getData().toString());
+                        promise.resolve(res);
+                    } else {
+                        promise.resolve(null);
+                    }
                 }
             }
             @Override
