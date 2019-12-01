@@ -49,6 +49,10 @@ NSString* mimeTypeForPath(NSString* path) {
     return mime;
 }
 
+NSString* extensionForUti(NSString* uti) {
+    return CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef _Nonnull)(uti), kUTTagClassFilenameExtension));
+}
+
 NSString* hexStringForData(NSData* data) {
     NSMutableString *output = [NSMutableString stringWithCapacity:data.length * 2];
     for (int i = 0; i < data.length; i++) [output appendFormat:@"%02x", ((const unsigned char*)data.bytes)[i]];
@@ -288,6 +292,12 @@ RCT_EXPORT_METHOD(getUti:(NSString*)extension resolve:(RCTPromiseResolveBlock)re
     NSString* uti = utiForPath([NSString stringWithFormat:@"x.%@", extension]);
     if (self.verbose) NSLog(@"ReactNativeMoFs.getUti extension=%@ uti=%@", extension, uti);
     resolve(uti);
+}
+
+RCT_EXPORT_METHOD(getExtensionForMimeType:(NSString*)mimeType resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSString* uti = utiForMimeType(mimeType);
+    NSString* extension = extensionForUti(uti);
+    resolve(extension);
 }
 
 RCT_EXPORT_METHOD(readBlob:(NSDictionary<NSString*,id>*)blob mode:(NSString*)mode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {

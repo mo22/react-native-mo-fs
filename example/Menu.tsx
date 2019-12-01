@@ -57,6 +57,20 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={async () => {
+            const res = await Fs.pickImage({ type: 'video' });
+            if (res) {
+              const blob = await Fs.readURL(res);
+              const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.jpg';
+              await Fs.writeFile(path, blob);
+              blob.close();
+              Alert.alert('Success', 'Imported to ' + path);
+            }
+          }}
+          title="ImagePicker video"
+        />
+
+        <ListItem
+          onPress={async () => {
             if (Fs.ios.Module) {
               const res = await Fs.ios.Module.showDocumentPickerView({ utis: ['public.jpeg'] });
               if (res) {

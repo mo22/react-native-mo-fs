@@ -202,8 +202,14 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void getMimeType(String extension, Promise promise) {
-        promise.resolve(getMimeTypePath(extension));
+    public void getMimeTypeFromPath(String path, Promise promise) {
+        promise.resolve(getMimeTypePath(path));
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void getExtensionForMimeType(String mimeType, Promise promise) {
+        promise.resolve(MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType));
     }
 
     @SuppressWarnings("unused")
