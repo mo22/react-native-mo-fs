@@ -89,7 +89,11 @@ export interface Module {
         mediaTypes?: string[];
         allowsEditing?: boolean;
         showsCameraControls?: boolean;
+        cameraCaptureMode?: number;
+        cameraDevice?: number;
+        cameraFlashMode?: number;
         videoMaximumDuration?: number;
+        videoQuality?: number;
         imageExportPreset?: number;
         videoExportPreset?: string;
     }): Promise<undefined | {

@@ -92,9 +92,13 @@ export interface Module {
     mediaTypes?: string[];
     allowsEditing?: boolean;
     showsCameraControls?: boolean;
+    cameraCaptureMode?: number; // @TODO: enum
+    cameraDevice?: number; // @TODO: enum
+    cameraFlashMode?: number; // @TODO: enum
     videoMaximumDuration?: number;
-    imageExportPreset?: number;
-    videoExportPreset?: string;
+    videoQuality?: number; // @TODO: enum
+    imageExportPreset?: number; // @TODO: enum
+    videoExportPreset?: string; // @TODO: enum
   }): Promise<undefined|{
     UIImagePickerControllerReferenceURL: string;
     UIImagePickerControllerImageURL?: string;
