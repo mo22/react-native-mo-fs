@@ -899,7 +899,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                     if (requestCode == 13131) {
                         if (!targetFile.exists() || targetFile.length() == 0) {
-                            targetFile.delete();
+                            boolean ignore = targetFile.delete();
                             promise.resolve(null);
                         } else {
                             promise.resolve(targetFile.getAbsolutePath());
