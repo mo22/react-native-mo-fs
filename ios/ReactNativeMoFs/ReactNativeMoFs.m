@@ -152,20 +152,36 @@ NSString* hexStringForData(NSData* data) {
     res[@"uti"] = info[UIImagePickerControllerMediaType];
     BOOL done = NO;
     if (@available(iOS 11.0, *)) {
-        if (info[UIImagePickerControllerReferenceURL] && info[UIImagePickerControllerImageURL]) {
+        if (info[UIImagePickerControllerImageURL]) {
             NSURL* url = info[UIImagePickerControllerImageURL];
             res[@"url"] = [url absoluteString];
             res[@"type"] = mimeTypeForPath([url absoluteString]);
             done = YES;
         }
     }
-    if (!done && info[UIImagePickerControllerReferenceURL] && info[UIImagePickerControllerMediaURL]) {
-        // @TODO: need to copy
+    if (!done && info[UIImagePickerControllerMediaURL]) {
         NSURL* url = info[UIImagePickerControllerMediaURL];
         res[@"type"] = mimeTypeForPath([url absoluteString]);
-        
-        [NSFileManager defaultManager] moveItemAtURL:<#(nonnull NSURL *)#> toURL:<#(nonnull NSURL *)#> error:<#(NSError *__autoreleasing  _Nullable * _Nullable)#>;
-        
+        NSString* tempPath = [NSString stringWithFormat:@"%@%@.%@", NSTemporaryDirectory(), [[NSUUID new] UUIDString], [url pathExtension]];
+        NSLog(@"tempPath [%@]", tempPath);
+        NSError* error = nil;
+        [[NSFileManager defaultManager] moveItemAtURL:url toURL:[NSURL fileURLWithPath:tempPath] error:&error];
+        if (error) {
+            NSLog(@"FAIL %@", error);
+        }
+        res[@"url"] = [[NSURL fileURLWithPath:tempPath] absoluteString];
+        res[@"tempPath"] = tempPath;
+        done = YES;
+    }
+    if (!done && (info[UIImagePickerControllerEditedImage] || info[UIImagePickerControllerOriginalImage])) {
+        UIImage* image = info[UIImagePickerControllerEditedImage] ? info[UIImagePickerControllerEditedImage] : info[UIImagePickerControllerOriginalImage];
+        NSLog(@"image %@", image);
+        NSData* data = UIImageJPEGRepresentation(image, 0.9);
+        NSString* tempPath = [NSString stringWithFormat:@"%@%@.jpeg", NSTemporaryDirectory(), [[NSUUID new] UUIDString]];
+        [data writeToFile:tempPath atomically:YES];
+        res[@"type"] = @"image/jpeg";
+        res[@"url"] = [[NSURL fileURLWithPath:tempPath] absoluteString];
+        res[@"tempPath"] = tempPath;
         done = YES;
     }
     if (!done) {
