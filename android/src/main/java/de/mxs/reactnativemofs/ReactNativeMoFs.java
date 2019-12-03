@@ -15,6 +15,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AtomicFile;
@@ -94,6 +95,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         if (getReactApplicationContext().getExternalCacheDir() != null) {
             paths.put("externalCache", getReactApplicationContext().getExternalCacheDir().getAbsolutePath());
         }
+        paths.put("cache", getReactApplicationContext().getCacheDir().getAbsolutePath());
         paths.put("files", getReactApplicationContext().getFilesDir().getAbsolutePath());
         paths.put("packageResource", getReactApplicationContext().getPackageResourcePath());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -164,6 +166,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     }
 
     private Uri getUriForPath(String path) {
+        // @TODO: use android.support.v4.content.FileProvider ?
         return FileProvider.getUriForFile(
                 getReactApplicationContext(),
                 getProviderAuthority(),
@@ -701,114 +704,184 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void sendIntentChooser(ReadableMap args, Promise promise) {
-        String path = args.getString("path");
-        if (path == null) throw new RuntimeException("path == null");
-        String type = args.hasKey("type") ? args.getString("type") : null;
-        if (type == null) type = getMimeTypePath(path);
-        Uri uri = getUriForPath(path);
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setType(type);
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        if (args.hasKey("subject"))
-            intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
-        if (args.hasKey("text")) intent.putExtra(Intent.EXTRA_TEXT, args.getString("text"));
-        ComponentName target = intent.resolveActivity(getReactApplicationContext().getPackageManager());
-        if (target != null) {
-            getReactApplicationContext().grantUriPermission(target.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Activity activity = getReactApplicationContext().getCurrentActivity();
-            if (activity == null) throw new RuntimeException("activity == null");
-            String title = args.hasKey("title") ? args.getString("title") : "";
-            activity.startActivity(Intent.createChooser(intent, title));
-            promise.resolve(null);
-        } else {
-            promise.reject(new Exception("cannot handle file type"));
+        try {
+            String path = args.getString("path");
+            if (path == null) throw new RuntimeException("path == null");
+            String type = args.hasKey("type") ? args.getString("type") : null;
+            if (type == null) type = getMimeTypePath(path);
+            Uri uri = getUriForPath(path);
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setType(type);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            if (args.hasKey("subject"))
+                intent.putExtra(Intent.EXTRA_SUBJECT, args.getString("subject"));
+            if (args.hasKey("text")) intent.putExtra(Intent.EXTRA_TEXT, args.getString("text"));
+            ComponentName target = intent.resolveActivity(getReactApplicationContext().getPackageManager());
+            if (target != null) {
+                getReactApplicationContext().grantUriPermission(target.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                Activity activity = getReactApplicationContext().getCurrentActivity();
+                if (activity == null) throw new RuntimeException("activity == null");
+                String title = args.hasKey("title") ? args.getString("title") : "";
+                activity.startActivity(Intent.createChooser(intent, title));
+                promise.resolve(null);
+            } else {
+                throw new Exception("cannot handle file type");
+            }
+        } catch (Exception e) {
+            promise.reject(e);
         }
     }
 
     @SuppressWarnings("unused")
     @ReactMethod
     public void viewIntentChooser(ReadableMap args, Promise promise) {
-        Uri uri;
-        if (args.hasKey("path")) {
-            String path = args.getString("path");
-            uri = getUriForPath(path);
-        } else {
-            uri = Uri.parse(args.getString("url"));
-        }
-        Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setAction(Intent.ACTION_VIEW);
-        if (args.hasKey("type")) {
-            intent.setDataAndType(uri, args.getString("type"));
-        } else {
-            intent.setData(uri);
-        }
-        if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
-            Activity activity = getReactApplicationContext().getCurrentActivity();
-            if (activity == null) throw new RuntimeException("activity == null");
-            String title = args.hasKey("title") ? args.getString("title") : "";
-            activity.startActivity(Intent.createChooser(intent, title));
-            promise.resolve(null);
-        } else {
-            promise.reject(new Exception("cannot handle file type"));
+        try {
+            Uri uri;
+            if (args.hasKey("path")) {
+                String path = args.getString("path");
+                uri = getUriForPath(path);
+            } else {
+                uri = Uri.parse(args.getString("url"));
+            }
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setAction(Intent.ACTION_VIEW);
+            if (args.hasKey("type")) {
+                intent.setDataAndType(uri, args.getString("type"));
+            } else {
+                intent.setData(uri);
+            }
+            if (intent.resolveActivity(getReactApplicationContext().getPackageManager()) != null) {
+                Activity activity = getReactApplicationContext().getCurrentActivity();
+                if (activity == null) throw new RuntimeException("activity == null");
+                String title = args.hasKey("title") ? args.getString("title") : "";
+                activity.startActivity(Intent.createChooser(intent, title));
+                promise.resolve(null);
+            } else {
+                throw new Exception("cannot handle file type");
+            }
+        } catch (Exception e) {
+            promise.reject(e);
         }
     }
 
     @SuppressWarnings("unused")
     @ReactMethod
     public void getContent(ReadableMap args, final Promise promise) {
-        Intent intent = new Intent();
-        if (args.hasKey("pick") && args.getBoolean("pick")) {
-            intent.setAction(Intent.ACTION_PICK);
-        } else {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-        }
-        ArrayList<String> types = new ArrayList<>();
-        if (args.hasKey("types")) {
-            ReadableArray tmp = args.getArray("types");
-            if (tmp == null) throw new RuntimeException("types == null");
-            for (int i = 0; i < tmp.size(); i++) {
-                types.add(tmp.getString(i));
+        try {
+            Intent intent = new Intent();
+            if (args.hasKey("pick") && args.getBoolean("pick")) {
+                intent.setAction(Intent.ACTION_PICK);
+            } else {
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
             }
-        }
-        if (types.size() == 0) {
-            intent.setType("*/*");
-        } else if (types.size() == 1) {
-            intent.setType(types.get(0));
-        } else {
-            intent.setType(TextUtils.join("|", types));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                intent.putExtra(Intent.EXTRA_MIME_TYPES, types.toArray());
+            ArrayList<String> types = new ArrayList<>();
+            if (args.hasKey("types")) {
+                ReadableArray tmp = args.getArray("types");
+                if (tmp == null) throw new RuntimeException("types == null");
+                for (int i = 0; i < tmp.size(); i++) {
+                    types.add(tmp.getString(i));
+                }
             }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (args.hasKey("multiple") && args.getBoolean("multiple")) {
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            if (types.size() == 0) {
+                intent.setType("*/*");
+            } else if (types.size() == 1) {
+                intent.setType(types.get(0));
+            } else {
+                intent.setType(TextUtils.join("|", types));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES, types.toArray());
+                }
             }
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            String title = args.hasKey("title") ? args.getString("title") : "";
-            intent = Intent.createChooser(intent, title);
-        }
-        ActivityEventListener listener = new ActivityEventListener() {
-            @Override
-            public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-                if (requestCode == 13131) {
-                    if (data == null) {
-                        promise.resolve(null);
-                    } else {
-                        if (data.getClipData() != null) {
-                            WritableArray res = Arguments.createArray();
-                            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                                Uri uri = data.getClipData().getItemAt(i).getUri();
-                                if (uri != null) {
-                                    res.pushString(uri.toString());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                if (args.hasKey("multiple") && args.getBoolean("multiple")) {
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                }
+            }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                String title = args.hasKey("title") ? args.getString("title") : "";
+                intent = Intent.createChooser(intent, title);
+            }
+            ActivityEventListener listener = new ActivityEventListener() {
+                @Override
+                public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+                    if (requestCode == 13131) {
+                        if (data == null) {
+                            promise.resolve(null);
+                        } else {
+                            if (data.getClipData() != null) {
+                                WritableArray res = Arguments.createArray();
+                                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                                    Uri uri = data.getClipData().getItemAt(i).getUri();
+                                    if (uri != null) {
+                                        res.pushString(uri.toString());
+                                    }
                                 }
+                                promise.resolve(res);
+                            } else if (data.getData() != null) {
+                                WritableArray res = Arguments.createArray();
+                                res.pushString(data.getData().toString());
+                                promise.resolve(res);
+                            } else {
+                                promise.resolve(null);
                             }
-                            promise.resolve(res);
+                        }
+                    }
+                }
+
+                @Override
+                public void onNewIntent(Intent intent) {
+                }
+            };
+            getReactApplicationContext().addActivityEventListener(listener);
+            Activity activity = getReactApplicationContext().getCurrentActivity();
+            if (activity == null) throw new RuntimeException("activity == null");
+            activity.startActivityForResult(intent, 13131);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void getCamera(ReadableMap args, final Promise promise) {
+        try {
+            Log.i("XXX", "externalFiles " + getReactApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+
+            File targetFile = File.createTempFile("temp", "dat", getReactApplicationContext().getCacheDir());
+            Log.i("XXX", "targetFile " + targetFile);
+            targetFile.deleteOnExit();
+
+            Uri targetUri = FileProvider.getUriForFile(getReactApplicationContext(), getProviderAuthority(), targetFile);
+
+            Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
+
+            Intent videoTntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+    //        videoTntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // 0 = low, 1 = high
+    //        videoTntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10); // seconds
+    //        videoTntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10); // bytes?
+            videoTntent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
+
+            String title = args.hasKey("title") ? args.getString("title") : "";
+            Intent intent = Intent.createChooser(pictureIntent, title);
+            intent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{ videoTntent });
+
+            ActivityEventListener listener = new ActivityEventListener() {
+                @Override
+                public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+                    if (requestCode == 13131) {
+                        Log.i("XXX", "got camera photo " + resultCode + " " + data);
+                        if (data != null) {
+                            Log.i("XXX", "cd=" + data.getClipData());
+                            Log.i("XXX", "d=" + data.getData());
+                        }
+                        // 2019-12-01 17:45:13.084 18532-18532/com.example I/XXX: got camera photo -1 Intent { act=inline-data dat=content://media/external/video/media/63 flg=0x1 }
+                        if (data == null) {
+                            promise.resolve(null);
                         } else if (data.getData() != null) {
                             WritableArray res = Arguments.createArray();
                             res.pushString(data.getData().toString());
@@ -818,63 +891,16 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                         }
                     }
                 }
-            }
-
-            @Override
-            public void onNewIntent(Intent intent) {
-            }
-        };
-        getReactApplicationContext().addActivityEventListener(listener);
-        Activity activity = getReactApplicationContext().getCurrentActivity();
-        if (activity == null) throw new RuntimeException("activity == null");
-        activity.startActivityForResult(intent, 13131);
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void getCamera(ReadableMap args, final Promise promise) {
-        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI); // required :/
-
-        Intent videoTntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-//        videoTntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // 0 = low, 1 = high
-//        videoTntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10); // seconds
-//        videoTntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10); // bytes?
-//        videoTntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI); // supported
-        // also setClipData?
-
-        String title = args.hasKey("title") ? args.getString("title") : "";
-        Intent intent = Intent.createChooser(pictureIntent, title);
-        intent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{ videoTntent });
-
-        ActivityEventListener listener = new ActivityEventListener() {
-            @Override
-            public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-                if (requestCode == 13131) {
-                    Log.i("XXX", "got camera photo " + resultCode + " " + data);
-                    if (data != null) {
-                        Log.i("XXX", "cd=" + data.getClipData());
-                        Log.i("XXX", "d=" + data.getData());
-                    }
-                    // 2019-12-01 17:45:13.084 18532-18532/com.example I/XXX: got camera photo -1 Intent { act=inline-data dat=content://media/external/video/media/63 flg=0x1 }
-                    if (data == null) {
-                        promise.resolve(null);
-                    } else if (data.getData() != null) {
-                        WritableArray res = Arguments.createArray();
-                        res.pushString(data.getData().toString());
-                        promise.resolve(res);
-                    } else {
-                        promise.resolve(null);
-                    }
+                @Override
+                public void onNewIntent(Intent intent) {
                 }
-            }
-            @Override
-            public void onNewIntent(Intent intent) {
-            }
-        };
-        getReactApplicationContext().addActivityEventListener(listener);
-        Activity activity = getReactApplicationContext().getCurrentActivity();
-        if (activity == null) throw new RuntimeException("activity == null");
-        activity.startActivityForResult(intent, 13131);
+            };
+            getReactApplicationContext().addActivityEventListener(listener);
+            Activity activity = getReactApplicationContext().getCurrentActivity();
+            if (activity == null) throw new RuntimeException("activity == null");
+            activity.startActivityForResult(intent, 13131);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
 }
