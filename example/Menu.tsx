@@ -98,11 +98,14 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
               });
               console.log('res', res);
               if (res) {
-                const blob = await Fs.readURL(res);
-                const ext = await Fs.getExtensionForMimeType(blob.type) || res.split('.').slice(-1)[0];
+                const blob = await Fs.readURL(res.uri);
+                const ext = await Fs.getExtensionForMimeType(blob.type) || res.uri.split('.').slice(-1)[0];
                 const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
                 await Fs.writeFile(path, blob);
                 blob.close();
+                if (res.tempPath) {
+                  await Fs.deleteFile(res.tempPath);
+                }
                 Alert.alert('Success', 'Imported to ' + path);
               }
             }
