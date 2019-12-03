@@ -879,12 +879,16 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     public void getCamera(ReadableMap args, final Promise promise) {
         try {
             File pictureFile = File.createTempFile("temp", ".jpg", getReactApplicationContext().getCacheDir());
-            boolean ignore = pictureFile.delete();
+            boolean ignore1 = pictureFile.delete();
+
             Intent pictureIntent = null;
             if (args.getBoolean("picture")) {
                 pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getReactApplicationContext(), getFileProviderAuthority(), pictureFile));
             }
+
+            File videoFile = File.createTempFile("temp", ".mp4", getReactApplicationContext().getCacheDir());
+            boolean ignore2 = videoFile.delete();
 
             Intent videoIntent = null;
             if (args.getBoolean("video")) {
@@ -898,7 +902,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 if (args.hasKey("sizeLimit")) {
                     videoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, args.getInt("sizeLimit")); // bytes?
                 }
-//                videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoFile);
+                videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getReactApplicationContext(), getFileProviderAuthority(), videoFile));
             }
 
             Intent intent;
@@ -921,6 +925,13 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                             res.putString("tempPath", pictureFile.getAbsolutePath());
                             res.putString("type", "image/jpeg");
                             res.putString("uri", getUriForPath(pictureFile.getAbsolutePath()).toString());
+                            promise.resolve(res);
+
+                        } else if (resultCode == Activity.RESULT_OK && videoFile.exists() && videoFile.length() > 0) {
+                            WritableMap res = Arguments.createMap();
+                            res.putString("tempPath", videoFile.getAbsolutePath());
+                            res.putString("type", "video/mp4");
+                            res.putString("uri", getUriForPath(videoFile.getAbsolutePath()).toString());
                             promise.resolve(res);
 
                         } else if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
