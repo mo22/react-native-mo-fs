@@ -853,52 +853,56 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getCamera(ReadableMap args, final Promise promise) {
         try {
-            Log.i("XXX", "externalFiles " + getReactApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+//            Log.i("XXX", "externalFiles " + getReactApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
             // externalFiles /storage/emulated/0/Android/data/com.example/files/Pictures
 
-            File targetFile = File.createTempFile("temp", ".jpg", getReactApplicationContext().getCacheDir());
-            Log.i("XXX", "targetFile " + targetFile);
+            File targetFile = File.createTempFile("temp", "", getReactApplicationContext().getCacheDir());
+//            Log.i("XXX", "targetFile " + targetFile);
             // targetFile /data/user/0/com.example/cache/temp3003051029901184955dat
-            targetFile.deleteOnExit();
+            targetFile.deleteOnExit(); // does not work?
 
             Uri targetUri = FileProvider.getUriForFile(getReactApplicationContext(), getFileProviderAuthority(), targetFile);
 
-            Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
+            Intent pictureIntent = null;
+            if (args.getBoolean("picture")) {
+                pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
+            }
 
-            Intent videoTntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-    //        videoTntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // 0 = low, 1 = high
-    //        videoTntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10); // seconds
-    //        videoTntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10); // bytes?
-            videoTntent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
+            Intent videoIntent = null;
+            if (args.getBoolean("video")) {
+                videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                if (args.hasKey("videoQuality")) {
+                    videoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, args.getDouble("videoQuality")); // 0 = low, 1 = high
+                }
+                if (args.hasKey("durationLimit")) {
+                    videoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, args.getInt("durationLimit")); // seconds
+                }
+                if (args.hasKey("sizeLimit")) {
+                    videoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, args.getInt("sizeLimit")); // bytes?
+                }
+                videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
+            }
 
-            String title = args.hasKey("title") ? args.getString("title") : "";
-            Intent intent = Intent.createChooser(pictureIntent, title);
-            intent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{ videoTntent });
+            Intent intent;
+            if (pictureIntent == null) {
+                intent = videoIntent;
+            } else if (videoIntent == null) {
+                intent = pictureIntent;
+            } else {
+                intent = Intent.createChooser(pictureIntent, args.hasKey("title") ? args.getString("title") : "");
+                intent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{ videoIntent });
+            }
 
             ActivityEventListener listener = new ActivityEventListener() {
                 @Override
                 public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                     if (requestCode == 13131) {
-                        Log.i("XXX", "got camera photo " + resultCode + " " + data);
-                        if (data != null) {
-                            Log.i("XXX", "cd=" + data.getClipData());
-                            Log.i("XXX", "d=" + data.getData());
-                        }
-                        if (targetFile.exists()) {
-                            Log.i("XXX", "targetFile.exists yes " + targetFile.length());
-                        } else {
-                            Log.i("XXX", "targetFile.exists no");
-                        }
-                        // 2019-12-01 17:45:13.084 18532-18532/com.example I/XXX: got camera photo -1 Intent { act=inline-data dat=content://media/external/video/media/63 flg=0x1 }
-                        if (data == null) {
+                        if (!targetFile.exists() || targetFile.length() == 0) {
+                            targetFile.delete();
                             promise.resolve(null);
-                        } else if (data.getData() != null) {
-                            WritableArray res = Arguments.createArray();
-                            res.pushString(data.getData().toString());
-                            promise.resolve(res);
                         } else {
-                            promise.resolve(null);
+                            promise.resolve(targetFile.getAbsolutePath());
                         }
                     }
                 }
