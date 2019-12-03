@@ -766,7 +766,7 @@ export class Fs {
     if (Fs.ios.Module) {
       const res = await Fs.ios.Module!.showImagePickerController({
         // allowsEditing: true, // ?
-        sourceType: ios.ImagePickerControllerSourceType.PhotoLibrary,
+        sourceType: ios.ImagePickerControllerSourceType.Camera,
         mediaTypes: [
           ...((type === 'all' || type === 'image') && ['public.image'] || []),
           ...((type === 'all' || type === 'video') && ['public.movie'] || []),

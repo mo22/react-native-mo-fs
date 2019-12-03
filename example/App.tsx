@@ -5,7 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { Fs } from 'react-native-mo-fs';
 import { Alert } from 'react-native';
 
-if (__DEV__) Fs.setVerbose(true);
+Fs.setVerbose(__DEV__);
 
 const AppNavigator = createStackNavigator({
   Menu: {
