@@ -15,7 +15,6 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AtomicFile;
@@ -815,6 +814,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 @Override
                 public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                     if (requestCode == 13131) {
+                        getReactApplicationContext().removeActivityEventListener(this);
                         if (data == null || resultCode != Activity.RESULT_OK) {
                             promise.resolve(null);
                         } else {
@@ -900,17 +900,16 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 @Override
                 public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                     if (requestCode == 13131) {
-                        Log.i("XXX", "resultCode " + resultCode + " data " + data);
+                        getReactApplicationContext().removeActivityEventListener(this);
+                        Log.i("XXX", "resultCode " + resultCode + " data " + data + " size " + targetFile.length());
+                        // image or video?
+                        // what kind of file format?
                         if (!targetFile.exists() || targetFile.length() == 0 || resultCode != Activity.RESULT_OK) {
                             boolean ignore = targetFile.delete();
                             promise.resolve(null);
                         } else {
                             promise.resolve(targetFile.getAbsolutePath());
                         }
-//                        public static final int RESULT_CANCELED = 0;
-//                        public static final int RESULT_FIRST_USER = 1;
-//                        public static final int RESULT_OK = -1;
-
                     }
                 }
                 @Override
