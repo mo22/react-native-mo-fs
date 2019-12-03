@@ -188,6 +188,17 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
                 await Fs.android.Module!.viewIntentChooser({ path: path, title: 'Choose' });
               }}
             />
+            <ListItem
+              chevron={true}
+              title="Android View Blob"
+              onPress={async () => {
+                const blob = await Fs.readFile(path);
+                const uri = Fs.getBlobURL(blob);
+                console.log('uri', uri);
+                await Fs.android.Module!.viewIntentChooser({ url: uri, title: 'Choose' });
+                // blob.close() ?
+              }}
+            />
           </React.Fragment>
         )}
 

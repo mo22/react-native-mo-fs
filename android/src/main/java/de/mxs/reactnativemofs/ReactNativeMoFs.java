@@ -169,13 +169,10 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     }
 
     private Uri getUriForPath(String path) {
-        Log.i("XXX", "getUriForPath " + path);
-        // @TODO: check if blob?
         return FileProvider.getUriForFile(
-                getReactApplicationContext(),
-//                getProviderAuthority(),
-                getFileProviderAuthority(),
-                new File(path)
+            getReactApplicationContext(),
+            getFileProviderAuthority(),
+            new File(path)
         );
     }
 
