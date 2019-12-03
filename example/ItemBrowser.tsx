@@ -196,7 +196,7 @@ export default class ItemBrowser extends React.Component<NavigationInjectedProps
                 const uri = Fs.getBlobURL(blob);
                 console.log('uri', uri);
                 await Fs.android.Module!.viewIntentChooser({ url: uri, title: 'Choose' });
-                // blob.close() ?
+                blob.close();
               }}
             />
           </React.Fragment>
