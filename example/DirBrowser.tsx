@@ -19,7 +19,7 @@ export default class DirBrowser extends React.Component<NavigationInjectedProps<
       this.setState({ entries: Fs.paths as any });
     } else {
       const entries: { [name: string]: string } = {};
-      for (const rs of await Fs.listDir(path)) {
+      for (const rs of (await Fs.listDir(path)).sort()) {
         entries[rs] = path + '/' + rs;
       }
       this.setState({ entries: entries });
