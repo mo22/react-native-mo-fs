@@ -895,6 +895,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                         if (resultCode == Activity.RESULT_OK && pictureFile.exists() && pictureFile.length() > 0) {
                             promise.resolve(getUriForPath(pictureFile.getAbsolutePath()).toString());
                         } else if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+                            Log.i("XXX", "data " + data.getData() + " " + data.getType());
                             promise.resolve(data.getData().toString());
                         } else {
                             promise.resolve(null);

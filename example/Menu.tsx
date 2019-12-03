@@ -81,6 +81,14 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 mediaTypes: ['public.image', 'public.movie'],
               });
               console.log('res', res);
+              // if (res) {
+              //   const blob = await Fs.readURL(res);
+              //   const ext = await Fs.getExtensionForMimeType(blob.type) || res.split('.').slice(-1)[0];
+              //   const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
+              //   await Fs.writeFile(path, blob);
+              //   blob.close();
+              //   Alert.alert('Success', 'Imported to ' + path);
+              // }
 
             } else if (Fs.android.Module) {
               await PermissionsAndroid.request('android.permission.CAMERA');
@@ -89,7 +97,14 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 video: true,
               });
               console.log('res', res);
-              // 'res', '/data/user/0/com.example/cache/temp6791982887805555808'
+              if (res) {
+                const blob = await Fs.readURL(res);
+                const ext = await Fs.getExtensionForMimeType(blob.type) || res.split('.').slice(-1)[0];
+                const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
+                await Fs.writeFile(path, blob);
+                blob.close();
+                Alert.alert('Success', 'Imported to ' + path);
+              }
             }
           }}
           title="take photo / video"
