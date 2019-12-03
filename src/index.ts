@@ -38,17 +38,6 @@ export type HexString = string;
 
 
 
-export interface BlobInfo {
-  /** size of blob */
-  size: number;
-  /** hex md5 */
-  md5?: string;
-  /** hex sha1 */
-  sha1?: string;
-  /** hex sha256 */
-  sha256?: string;
-}
-
 export interface CryptBlobArgs {
   /** algorithm and mode */
   algorithm: 'aes-cbc';
@@ -105,7 +94,6 @@ export interface Paths {
 
   bundle?: Path;
   document?: Path;
-  caches?: Path;
   externalCache?: Path;
   files?: Path;
   packageResource?: Path;
@@ -160,12 +148,12 @@ export class Fs {
    */
   public static readonly paths: Paths = ios.Module ? {
     ...ios.Module.paths,
-    cache: ios.Module.paths.caches,
+    cache: ios.Module.paths.cache,
     docs: ios.Module.paths.document,
     data: ios.Module.paths.library,
   } : android.Module ? {
     ...android.Module.paths,
-    cache: android.Module.paths.externalCache || android.Module.paths.data || android.Module.paths.files,
+    cache: android.Module.paths.cache,
     docs: android.Module.paths.files,
     data: android.Module.paths.data || android.Module.paths.files,
   } : {

@@ -23,16 +23,6 @@ export declare type Path = string;
 export declare type MimeType = string;
 export declare type Base64 = string;
 export declare type HexString = string;
-export interface BlobInfo {
-    /** size of blob */
-    size: number;
-    /** hex md5 */
-    md5?: string;
-    /** hex sha1 */
-    sha1?: string;
-    /** hex sha256 */
-    sha256?: string;
-}
 export interface CryptBlobArgs {
     /** algorithm and mode */
     algorithm: 'aes-cbc';
@@ -83,7 +73,6 @@ export interface Paths {
     data: Path;
     bundle?: Path;
     document?: Path;
-    caches?: Path;
     externalCache?: Path;
     files?: Path;
     packageResource?: Path;

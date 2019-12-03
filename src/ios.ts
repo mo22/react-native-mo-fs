@@ -41,7 +41,7 @@ export interface Module {
   paths: {
     bundle: string;
     document: string;
-    caches: string;
+    cache: string;
     library: string;
   };
 

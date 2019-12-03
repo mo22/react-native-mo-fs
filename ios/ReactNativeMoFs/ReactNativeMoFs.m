@@ -160,10 +160,12 @@ NSString* hexStringForData(NSData* data) {
         }
     }
     if (!done && info[UIImagePickerControllerReferenceURL] && info[UIImagePickerControllerMediaURL]) {
-        NSLog(@"X4 %@", info[UIImagePickerControllerMediaURL]);
+        // @TODO: need to copy
         NSURL* url = info[UIImagePickerControllerMediaURL];
-        res[@"url"] = [url absoluteString];
         res[@"type"] = mimeTypeForPath([url absoluteString]);
+        
+        [NSFileManager defaultManager] moveItemAtURL:<#(nonnull NSURL *)#> toURL:<#(nonnull NSURL *)#> error:<#(NSError *__autoreleasing  _Nullable * _Nullable)#>;
+        
         done = YES;
     }
     if (!done) {
@@ -260,7 +262,7 @@ RCT_EXPORT_MODULE()
     constants[@"paths"] = @{
         @"bundle": [[NSBundle mainBundle] bundlePath],
         @"document": [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],
-        @"caches": [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject],
+        @"cache": [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject],
         @"library": [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject],
     };
     return constants;
