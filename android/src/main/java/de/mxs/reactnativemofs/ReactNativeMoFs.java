@@ -170,6 +170,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     }
 
     private Uri getUriForPath(String path) {
+        Log.i("XXX", "getUriForPath " + path);
+        // @TODO: check if blob?
         return FileProvider.getUriForFile(
                 getReactApplicationContext(),
 //                getProviderAuthority(),
@@ -813,7 +815,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 @Override
                 public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                     if (requestCode == 13131) {
-                        if (data == null) {
+                        if (data == null || resultCode != Activity.RESULT_OK) {
                             promise.resolve(null);
                         } else {
                             if (data.getClipData() != null) {
@@ -898,12 +900,17 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 @Override
                 public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                     if (requestCode == 13131) {
-                        if (!targetFile.exists() || targetFile.length() == 0) {
+                        Log.i("XXX", "resultCode " + resultCode + " data " + data);
+                        if (!targetFile.exists() || targetFile.length() == 0 || resultCode != Activity.RESULT_OK) {
                             boolean ignore = targetFile.delete();
                             promise.resolve(null);
                         } else {
                             promise.resolve(targetFile.getAbsolutePath());
                         }
+//                        public static final int RESULT_CANCELED = 0;
+//                        public static final int RESULT_FIRST_USER = 1;
+//                        public static final int RESULT_OK = -1;
+
                     }
                 }
                 @Override

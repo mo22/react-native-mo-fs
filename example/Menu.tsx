@@ -85,10 +85,11 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
             } else if (Fs.android.Module) {
               await PermissionsAndroid.request('android.permission.CAMERA');
               const res = await Fs.android.Module.getCamera({
-
+                picture: true,
+                video: true,
               });
               console.log('res', res);
-
+              // 'res', '/data/user/0/com.example/cache/temp6791982887805555808'
             }
           }}
           title="take photo / video"
