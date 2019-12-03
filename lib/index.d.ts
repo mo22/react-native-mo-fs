@@ -63,9 +63,17 @@ export interface PickFileArgs {
     /** allow multiple selection */
     multiple?: boolean;
 }
-export interface PickImageArgs {
+export interface PickMediaArgs {
     /** select images or videos */
     type?: 'image' | 'video' | 'all';
+}
+export interface PickMediaResult {
+    /** url of the result */
+    url: URL;
+    /** result mime type */
+    mimeType: string;
+    /** the result handle needs to be released when done */
+    release: () => void;
 }
 export interface Paths {
     cache: Path;
@@ -247,8 +255,14 @@ export declare class Fs {
      */
     static pickFile(args: PickFileArgs): Promise<URL[]>;
     /**
-     * show a image open dialog
+     * show a image / video open dialog
+     * the result must be released by calling res.release()
      */
-    static pickImage(args: PickImageArgs): Promise<URL | undefined>;
+    static pickMedia(args: PickMediaArgs): Promise<(PickMediaResult) | undefined>;
+    /**
+     * capture a photo or video
+     * the result must be released by calling res.release()
+     */
+    static captureMedia(args: PickMediaArgs): Promise<PickMediaResult | undefined>;
 }
 export {};

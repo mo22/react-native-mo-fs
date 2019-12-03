@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, Alert, PermissionsAndroid } from 'react-native';
+import { ScrollView, Alert } from 'react-native';
 import { NavigationInjectedProps, NavigationActions } from 'react-navigation';
 import { ListItem } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
@@ -24,15 +24,16 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={async () => {
-            const res = await Fs.pickImage({ type: 'image' });
-            console.log('pickImage res', res);
+            const res = await Fs.pickMedia({ type: 'image' });
+            // console.log('pickImage res', res);
             if (res) {
               // @TODO: extension for mime type?
-              const blob = await Fs.readURL(res);
-              const ext = await Fs.getExtensionForMimeType(blob.type) || res.split('.').slice(-1)[0];
+              const blob = await Fs.readURL(res.url);
+              const ext = await Fs.getExtensionForMimeType(blob.type) || res.url.split('.').slice(-1)[0];
               const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
               await Fs.writeFile(path, blob);
               blob.close();
+              res.release();
               Alert.alert('Success', 'Imported to ' + path);
             }
           }}
@@ -60,13 +61,14 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={async () => {
-            const res = await Fs.pickImage({ type: 'video' });
+            const res = await Fs.pickMedia({ type: 'video' });
             if (res) {
-              const blob = await Fs.readURL(res);
-              const ext = await Fs.getExtensionForMimeType(blob.type) || res.split('.').slice(-1)[0];
+              const blob = await Fs.readURL(res.url);
+              const ext = await Fs.getExtensionForMimeType(blob.type) || res.url.split('.').slice(-1)[0];
               const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
               await Fs.writeFile(path, blob);
               blob.close();
+              res.release();
               Alert.alert('Success', 'Imported to ' + path);
             }
           }}
@@ -75,44 +77,56 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
 
         <ListItem
           onPress={async () => {
-            if (Fs.ios.Module) {
-              const res = await Fs.ios.Module.showImagePickerController({
-                sourceType: 1,
-                allowsEditing: true,
-                mediaTypes: ['public.image', 'public.movie'],
-              });
-              console.log('res', res);
-              if (res) {
-                const blob = await Fs.readURL(res.url);
-                const ext = await Fs.getExtensionForMimeType(blob.type) || res.url.split('.').slice(-1)[0];
-                const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
-                await Fs.writeFile(path, blob);
-                blob.close();
-                if (res.tempPath) {
-                  await Fs.deleteFile(res.tempPath);
-                }
-                Alert.alert('Success', 'Imported to ' + path);
-              }
-
-            } else if (Fs.android.Module) {
-              await PermissionsAndroid.request('android.permission.CAMERA');
-              const res = await Fs.android.Module.getCamera({
-                picture: true,
-                video: true,
-              });
-              console.log('res', res);
-              if (res) {
-                const blob = await Fs.readURL(res.uri);
-                const ext = await Fs.getExtensionForMimeType(blob.type) || res.uri.split('.').slice(-1)[0];
-                const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
-                await Fs.writeFile(path, blob);
-                blob.close();
-                if (res.tempPath) {
-                  await Fs.deleteFile(res.tempPath);
-                }
-                Alert.alert('Success', 'Imported to ' + path);
-              }
+            const res = await Fs.captureMedia({
+            });
+            if (res) {
+              const blob = await Fs.readURL(res.url);
+              const ext = await Fs.getExtensionForMimeType(blob.type) || res.url.split('.').slice(-1)[0];
+              const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
+              await Fs.writeFile(path, blob);
+              blob.close();
+              res.release();
+              Alert.alert('Success', 'Imported to ' + path);
             }
+            //
+            // if (Fs.ios.Module) {
+            //   const res = await Fs.ios.Module.showImagePickerController({
+            //     sourceType: 1,
+            //     allowsEditing: true,
+            //     mediaTypes: ['public.image', 'public.movie'],
+            //   });
+            //   console.log('res', res);
+            //   if (res) {
+            //     const blob = await Fs.readURL(res.url);
+            //     const ext = await Fs.getExtensionForMimeType(blob.type) || res.url.split('.').slice(-1)[0];
+            //     const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
+            //     await Fs.writeFile(path, blob);
+            //     blob.close();
+            //     if (res.tempPath) {
+            //       await Fs.deleteFile(res.tempPath);
+            //     }
+            //     Alert.alert('Success', 'Imported to ' + path);
+            //   }
+            //
+            // } else if (Fs.android.Module) {
+            //   await PermissionsAndroid.request('android.permission.CAMERA');
+            //   const res = await Fs.android.Module.getCamera({
+            //     picture: true,
+            //     video: true,
+            //   });
+            //   console.log('res', res);
+            //   if (res) {
+            //     const blob = await Fs.readURL(res.uri);
+            //     const ext = await Fs.getExtensionForMimeType(blob.type) || res.uri.split('.').slice(-1)[0];
+            //     const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
+            //     await Fs.writeFile(path, blob);
+            //     blob.close();
+            //     if (res.tempPath) {
+            //       await Fs.deleteFile(res.tempPath);
+            //     }
+            //     Alert.alert('Success', 'Imported to ' + path);
+            //   }
+            // }
           }}
           title="take photo / video"
         />

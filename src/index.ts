@@ -2,6 +2,7 @@ import * as ios from './ios';
 import * as android from './android';
 import * as base64 from 'base64-arraybuffer';
 import { Event } from 'mo-core';
+import { PermissionsAndroid } from 'react-native';
 
 
 
@@ -82,9 +83,18 @@ export interface PickFileArgs {
   multiple?: boolean;
 }
 
-export interface PickImageArgs {
+export interface PickMediaArgs {
   /** select images or videos */
   type?: 'image'|'video'|'all';
+}
+
+export interface PickMediaResult {
+  /** url of the result */
+  url: URL;
+  /** result mime type */
+  mimeType: string;
+  /** the result handle needs to be released when done */
+  release: () => void;
 }
 
 export interface Paths {
@@ -706,10 +716,10 @@ export class Fs {
   }
 
   /**
-   * show a image open dialog
+   * show a image / video open dialog
+   * the result must be released by calling res.release()
    */
-  // return something that must be closed
-  public static async pickImage(args: PickImageArgs): Promise<URL|undefined> {
+  public static async pickMedia(args: PickMediaArgs): Promise<(PickMediaResult)|undefined> {
     const type = args.type || 'all';
     if (Fs.ios.Module) {
       const res = await Fs.ios.Module!.showImagePickerController({
@@ -720,8 +730,15 @@ export class Fs {
         ],
       });
       if (res === undefined) return undefined;
-      console.log('showImagePickerController res', res);
-      return res.url;
+      return {
+        url: res.url,
+        mimeType: res.type,
+        release: () => {
+          if (res.tempPath) {
+            Fs.deleteFile(res.tempPath).catch(() => {});
+          }
+        },
+      };
     } else if (Fs.android.Module) {
       const res = await Fs.android.Module.getContent({
         pick: true,
@@ -732,12 +749,66 @@ export class Fs {
       });
       if (res === undefined || res === null) return undefined;
       if (res.length === 0) return undefined;
-      return res[0];
+      return {
+        url: res[0],
+        mimeType: '', // @TODO
+        release: () => {
+        },
+      };
     } else {
       throw new Error('platform not supported');
     }
   }
 
-  // pick camera
+  /**
+   * capture a photo or video
+   * the result must be released by calling res.release()
+   */
+  public static async captureMedia(args: PickMediaArgs): Promise<PickMediaResult|undefined> {
+    const type = args.type || 'all';
+    if (Fs.ios.Module) {
+      const res = await Fs.ios.Module!.showImagePickerController({
+        // allowsEditing: true, // ?
+        sourceType: ios.ImagePickerControllerSourceType.PhotoLibrary,
+        mediaTypes: [
+          ...((type === 'all' || type === 'image') && ['public.image'] || []),
+          ...((type === 'all' || type === 'video') && ['public.movie'] || []),
+        ],
+      });
+      if (res === undefined) return undefined;
+      return {
+        url: res.url,
+        mimeType: res.type,
+        release: () => {
+          if (res.tempPath) {
+            Fs.deleteFile(res.tempPath).catch(() => {});
+          }
+        },
+      };
+    } else if (Fs.android.Module) {
+      if (await PermissionsAndroid.request('android.permission.CAMERA') !== 'granted') {
+        return undefined;
+      }
+      const res = await Fs.android.Module.getCamera({
+        picture: (type === 'all' || type === 'image'),
+        video: (type === 'all' || type === 'video'),
+        // videoQuality?: number; // 0=low, 1=high
+        // durationLimit?: number; // seconds
+        // sizeLimit?: number;
+      });
+      if (res === undefined || res === null) return undefined;
+      return {
+        url: res.uri,
+        mimeType: res.type,
+        release: () => {
+          if (res.tempPath) {
+            Fs.deleteFile(res.tempPath).catch(() => {});
+          }
+        },
+      };
+    } else {
+      throw new Error('platform not supported');
+    }
+  }
 
 }
