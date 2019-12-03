@@ -100,7 +100,11 @@ export interface Module {
         videoQuality?: number;
         durationLimit?: number;
         sizeLimit?: number;
-    }): Promise<null | string>;
+    }): Promise<null | {
+        uri: string;
+        type: string;
+        tempPath?: string;
+    }>;
 }
 export declare const Module: Module | undefined;
 export declare const Events: {

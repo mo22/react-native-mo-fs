@@ -104,7 +104,11 @@ export interface Module {
     videoQuality?: number; // 0=low, 1=high
     durationLimit?: number; // seconds
     sizeLimit?: number;
-  }): Promise<null|string>; // path
+  }): Promise<null|{
+    uri: string;
+    type: string;
+    tempPath?: string; // must be deleted manually
+  }>;
 }
 
 export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoFs as Module : undefined;
