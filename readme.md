@@ -23,15 +23,15 @@ Fs.setVerbose(true);
   the data on the native side and only pass a handle to javascript to avoid
   transferring lots of data using base64 encoding. As long as react-native does
   not support UInt8Array to NSData*/byte[] bridging this is the fastest solution.
-  
+
 - You can read out or create blobs using `Fs.readBlob` and `Fs.createBlob` using
   encodings like base64, utf8 or arraybuffers. If using arraybuffers the buffer
   has to be converted to base64 internally first.
-  
+
 - Most of the time you do not need the data on the javascript side. You can load
   a file to a blob and use that blob as payload data for `fetch()` or the other
   way around.
-  
+
 - There is some assorted stuff in the library for hashing, image manipulation and
   similar stuff. The base idea is to support only operations that do not require
   additional native libraries to not bloat this library.
@@ -136,6 +136,16 @@ const urls = await Fs.pickFile({ multiple: true, types: ['image/jpeg', 'image/pn
 if (urls.length > 0) {
   const blob = await Fs.readURL(urls[0]);
   // do something
+}
+```
+
+#### Pick/capture image/video
+```ts
+const res = await Fs.pickMedia({ });
+const res = await Fs.captureMedia({ });
+if (res) {
+  const blob = await Fs.readURL(res.url);
+  res.release();
 }
 ```
 
