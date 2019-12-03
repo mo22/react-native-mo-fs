@@ -152,8 +152,25 @@ NSString* hexStringForData(NSData* data) {
         res[key] = value;
     }
     // @TODO: UIImagePickerControllerMediaURL is deleted as soon as this method returns.
-    // move to temp dir?
-    // use asset url?
+    // @TODO: always copy to temp dir?
+    // take photo:
+    //      UIImagePickerControllerEditedImage UIImage
+    //      UIImagePickerControllerMediaMetadata
+    //      UIImagePickerControllerOriginalImage UIImage
+    //      UIImagePickerControllerCropRect
+    //      UIImagePickerControllerMediaType
+    // take video:
+    //      UIImagePickerControllerMediaURL
+    //      UIImagePickerControllerMediaType
+    // pick image:
+    //      UIImagePickerControllerReferenceURL assets-library://
+    //      UIImagePickerControllerImageURL data url
+    //      UIImagePickerControllerMediaType
+    //      UIImagePickerControllerOriginalImage UIImage
+    // pick video:
+    //      UIImagePickerControllerReferenceURL assets-library://
+    //      UIImagePickerControllerMediaURL
+    //      UIImagePickerControllerMediaType
     self.resolve(res);
     [picker dismissViewControllerAnimated:YES completion:nil];
     [self.refs removeObject:self];
