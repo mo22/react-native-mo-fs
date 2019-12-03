@@ -165,11 +165,15 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         return getReactApplicationContext().getPackageName() + ".ReactNativeMoFs";
     }
 
+    private String getFileProviderAuthority() {
+        return getReactApplicationContext().getPackageName() + ".ReactNativeMoFsFile";
+    }
+
     private Uri getUriForPath(String path) {
-        // @TODO: use android.support.v4.content.FileProvider ?
         return FileProvider.getUriForFile(
                 getReactApplicationContext(),
-                getProviderAuthority(),
+//                getProviderAuthority(),
+                getFileProviderAuthority(),
                 new File(path)
         );
     }
@@ -850,12 +854,14 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     public void getCamera(ReadableMap args, final Promise promise) {
         try {
             Log.i("XXX", "externalFiles " + getReactApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+            // externalFiles /storage/emulated/0/Android/data/com.example/files/Pictures
 
-            File targetFile = File.createTempFile("temp", "dat", getReactApplicationContext().getCacheDir());
+            File targetFile = File.createTempFile("temp", ".jpg", getReactApplicationContext().getCacheDir());
             Log.i("XXX", "targetFile " + targetFile);
+            // targetFile /data/user/0/com.example/cache/temp3003051029901184955dat
             targetFile.deleteOnExit();
 
-            Uri targetUri = FileProvider.getUriForFile(getReactApplicationContext(), getProviderAuthority(), targetFile);
+            Uri targetUri = FileProvider.getUriForFile(getReactApplicationContext(), getFileProviderAuthority(), targetFile);
 
             Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
@@ -878,6 +884,11 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                         if (data != null) {
                             Log.i("XXX", "cd=" + data.getClipData());
                             Log.i("XXX", "d=" + data.getData());
+                        }
+                        if (targetFile.exists()) {
+                            Log.i("XXX", "targetFile.exists yes " + targetFile.length());
+                        } else {
+                            Log.i("XXX", "targetFile.exists no");
                         }
                         // 2019-12-01 17:45:13.084 18532-18532/com.example I/XXX: got camera photo -1 Intent { act=inline-data dat=content://media/external/video/media/63 flg=0x1 }
                         if (data == null) {
