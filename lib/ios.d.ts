@@ -119,12 +119,10 @@ export interface Module {
         videoQuality?: ImagePickerControllerQualityType;
         videoExportPreset?: string;
     }): Promise<undefined | {
-        UIImagePickerControllerReferenceURL: string;
-        UIImagePickerControllerImageURL?: string;
-        UIImagePickerControllerMediaURL?: string;
-        UIImagePickerControllerCropRect?: null;
-        UIImagePickerControllerMediaType?: string;
-        UIImagePickerControllerPHAsset: null;
+        type: string;
+        uti: string;
+        url: string;
+        tempPath?: string;
     }>;
 }
 export interface OpenURLEvent {

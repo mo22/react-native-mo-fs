@@ -25,6 +25,7 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
         <ListItem
           onPress={async () => {
             const res = await Fs.pickImage({ type: 'image' });
+            console.log('pickImage res', res);
             if (res) {
               // @TODO: extension for mime type?
               const blob = await Fs.readURL(res);

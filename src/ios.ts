@@ -127,12 +127,10 @@ export interface Module {
     videoQuality?: ImagePickerControllerQualityType;
     videoExportPreset?: string; // @TODO: enum?
   }): Promise<undefined|{
-    UIImagePickerControllerReferenceURL: string;
-    UIImagePickerControllerImageURL?: string;
-    UIImagePickerControllerMediaURL?: string;
-    UIImagePickerControllerCropRect?: null;
-    UIImagePickerControllerMediaType?: string; // uti
-    UIImagePickerControllerPHAsset: null;
+    type: string;
+    uti: string;
+    url: string;
+    tempPath?: string;
   }>;
 
 }

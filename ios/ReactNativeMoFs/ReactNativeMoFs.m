@@ -120,39 +120,15 @@ NSString* hexStringForData(NSData* data) {
 @end
 @implementation ReactNativeMoFsImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
-    NSMutableDictionary* res = [NSMutableDictionary new];
     for (NSString* key in info.allKeys) {
         id value = info[key];
         NSLog(@"XXX %@ %@ %@", key, value, [value class]);
-        // UIImagePickerControllerOriginalImage -- store as blob?
-        // UIImagePickerControllerEditedImage - store as blob?
-        // UIImagePickerControllerMediaMetadata - ?
-        if ([value isKindOfClass:[UIImage class]]) {
-            continue;
-        }
-        if ([value isKindOfClass:[NSURL class]]) {
-            value = [value absoluteString];
-        } else if ([value isKindOfClass:[NSString class]]) {
-            // fine
-        } else if ([value isKindOfClass:[NSNumber class]]) {
-            // fine
-        } else if ([value isKindOfClass:[NSDictionary class]]) {
-            // fine(?)
-        } else if ([key isEqualToString:@"UIImagePickerControllerCropRect"]) {
-            value = @{
-                @"x": @([value CGRectValue].origin.x),
-                @"y": @([value CGRectValue].origin.y),
-                @"width": @([value CGRectValue].size.width),
-                @"height": @([value CGRectValue].size.height),
-            };
-        } else {
-            // skip
-            continue;
-        }
-        res[key] = value;
     }
     // @TODO: UIImagePickerControllerMediaURL is deleted as soon as this method returns.
     // @TODO: always copy to temp dir?
+//    data = UIImageJPEGRepresentation(editedImage, [[self.options valueForKey:@"quality"] floatValue]);
+// orientation?
+    
     // take photo:
     //      UIImagePickerControllerEditedImage UIImage
     //      UIImagePickerControllerMediaMetadata
@@ -171,11 +147,29 @@ NSString* hexStringForData(NSData* data) {
     //      UIImagePickerControllerReferenceURL assets-library://
     //      UIImagePickerControllerMediaURL
     //      UIImagePickerControllerMediaType
+
+    NSMutableDictionary* res = [NSMutableDictionary new];
+    res[@"type"] = mimeTypeForUti(info[UIImagePickerControllerMediaType]);
+    res[@"uti"] = info[UIImagePickerControllerMediaType];
+    BOOL done = NO;
+    if (@available(iOS 11.0, *)) {
+        if (info[UIImagePickerControllerReferenceURL] && info[UIImagePickerControllerImageURL]) {
+            res[@"url"] = [info[UIImagePickerControllerImageURL] absoluteURL];
+            done = YES;
+        }
+    }
+    if (!done && info[UIImagePickerControllerReferenceURL] && info[UIImagePickerControllerMediaURL]) {
+        res[@"url"] = [info[UIImagePickerControllerMediaURL] absoluteURL];
+        done = YES;
+    }
+    if (!done) {
+        NSLog(@"HELP");
+    }
     self.resolve(res);
+
     [picker dismissViewControllerAnimated:YES completion:nil];
     [self.refs removeObject:self];
     [self.refs removeObject:picker];
-    sleep(1); // @TODO: bad
 }
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
