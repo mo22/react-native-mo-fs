@@ -120,6 +120,9 @@ NSString* hexStringForData(NSData* data) {
 @end
 @implementation ReactNativeMoFsImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
+    if (ReactNativeMoFs.verbose) {
+        NSLog(@"ReactNativeMoFsImagePickerControllerDelegate.didFinishPickingMedia %@", info);
+    }
     // take photo:
     //      UIImagePickerControllerEditedImage UIImage
     //      UIImagePickerControllerMediaMetadata
