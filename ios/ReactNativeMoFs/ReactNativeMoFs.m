@@ -120,15 +120,6 @@ NSString* hexStringForData(NSData* data) {
 @end
 @implementation ReactNativeMoFsImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
-    for (NSString* key in info.allKeys) {
-        id value = info[key];
-        NSLog(@"XXX %@ %@ %@", key, value, [value class]);
-    }
-    // @TODO: UIImagePickerControllerMediaURL is deleted as soon as this method returns.
-    // @TODO: always copy to temp dir?
-//    data = UIImageJPEGRepresentation(editedImage, [[self.options valueForKey:@"quality"] floatValue]);
-// orientation?
-    
     // take photo:
     //      UIImagePickerControllerEditedImage UIImage
     //      UIImagePickerControllerMediaMetadata
@@ -147,7 +138,6 @@ NSString* hexStringForData(NSData* data) {
     //      UIImagePickerControllerReferenceURL assets-library://
     //      UIImagePickerControllerMediaURL
     //      UIImagePickerControllerMediaType
-
     NSMutableDictionary* res = [NSMutableDictionary new];
     res[@"uti"] = info[UIImagePickerControllerMediaType];
     BOOL done = NO;
@@ -186,10 +176,10 @@ NSString* hexStringForData(NSData* data) {
     }
     if (!done) {
         NSLog(@"HELP");
+        self.resolve(nil);
+    } else {
+        self.resolve(res);
     }
-    NSLog(@"res %@", res);
-    self.resolve(res);
-
     [picker dismissViewControllerAnimated:YES completion:nil];
     [self.refs removeObject:self];
     [self.refs removeObject:picker];

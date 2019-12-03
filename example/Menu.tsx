@@ -88,6 +88,9 @@ export default class Menu extends React.Component<NavigationInjectedProps> {
                 const path = Fs.paths.docs + '/import_' + moment().format('YYYY-MM-DD_HH:mm:ss') + '.' + ext;
                 await Fs.writeFile(path, blob);
                 blob.close();
+                if (res.tempPath) {
+                  await Fs.deleteFile(res.tempPath);
+                }
                 Alert.alert('Success', 'Imported to ' + path);
               }
 
