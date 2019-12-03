@@ -180,7 +180,6 @@ export class Fs {
     if (ios.Events) {
       if (!Fs.initialOpenFileDone) {
         Fs.initialOpenFileDone = true;
-        // @TODO: all urls?
         ios.Module!.getLastOpenURL().then((event) => {
           if (!event) return;
           if (Fs.verbose) console.log('ReactNativeMoFs.openFile initial url', event.url);
@@ -198,8 +197,6 @@ export class Fs {
     } else if (android.Events) {
       if (!Fs.initialOpenFileDone) {
         Fs.initialOpenFileDone = true;
-        // @TODO action.VIEW ?
-        // @TODO subject etc.?
         android.Module!.getInitialIntent().then((event) => {
           if (Fs.verbose) console.log('ReactNativeMoFs.openFile initial intent', event);
           if (event.action === 'android.intent.action.SEND' && event.extras && event.extras['android.intent.extra.STREAM']) {
@@ -751,7 +748,7 @@ export class Fs {
       if (res.length === 0) return undefined;
       return {
         url: res[0],
-        mimeType: '', // @TODO
+        mimeType: await this.getMimeType(res[0]) || '', // @TODO hmmm?
         release: () => {
         },
       };
