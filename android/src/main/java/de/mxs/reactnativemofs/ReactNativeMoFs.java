@@ -837,7 +837,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                         }
                     }
                 }
-
                 @Override
                 public void onNewIntent(Intent intent) {
                 }
@@ -855,20 +854,12 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getCamera(ReadableMap args, final Promise promise) {
         try {
-//            Log.i("XXX", "externalFiles " + getReactApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-            // externalFiles /storage/emulated/0/Android/data/com.example/files/Pictures
-
-            File targetFile = File.createTempFile("temp", "", getReactApplicationContext().getCacheDir());
-//            Log.i("XXX", "targetFile " + targetFile);
-            // targetFile /data/user/0/com.example/cache/temp3003051029901184955dat
-            targetFile.deleteOnExit(); // does not work?
-
-            Uri targetUri = FileProvider.getUriForFile(getReactApplicationContext(), getFileProviderAuthority(), targetFile);
-
+            File pictureFile = File.createTempFile("temp", ".jpg", getReactApplicationContext().getCacheDir());
+            boolean ignore = pictureFile.delete();
             Intent pictureIntent = null;
             if (args.getBoolean("picture")) {
                 pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
+                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getReactApplicationContext(), getFileProviderAuthority(), pictureFile));
             }
 
             Intent videoIntent = null;
@@ -883,7 +874,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 if (args.hasKey("sizeLimit")) {
                     videoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, args.getInt("sizeLimit")); // bytes?
                 }
-                videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, targetUri);
+//                videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoFile);
             }
 
             Intent intent;
@@ -901,14 +892,12 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
                     if (requestCode == 13131) {
                         getReactApplicationContext().removeActivityEventListener(this);
-                        Log.i("XXX", "resultCode " + resultCode + " data " + data + " size " + targetFile.length());
-                        // image or video?
-                        // what kind of file format?
-                        if (!targetFile.exists() || targetFile.length() == 0 || resultCode != Activity.RESULT_OK) {
-                            boolean ignore = targetFile.delete();
-                            promise.resolve(null);
+                        if (resultCode == Activity.RESULT_OK && pictureFile.exists() && pictureFile.length() > 0) {
+                            promise.resolve(getUriForPath(pictureFile.getAbsolutePath()).toString());
+                        } else if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+                            promise.resolve(data.getData().toString());
                         } else {
-                            promise.resolve(targetFile.getAbsolutePath());
+                            promise.resolve(null);
                         }
                     }
                 }
