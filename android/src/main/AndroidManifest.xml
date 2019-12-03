@@ -5,12 +5,7 @@
       android:authorities="${applicationId}.ReactNativeMoFs"
       android:exported="false"
       android:grantUriPermissions="true"
-    >
-      <meta-data
-        android:name="android.support.FILE_PROVIDER_PATHS"
-        android:resource="@xml/reactnativemofs_provider_paths"/>
-    </provider>
-
+    />
 
     <provider
       android:name="androidx.core.content.FileProvider"
