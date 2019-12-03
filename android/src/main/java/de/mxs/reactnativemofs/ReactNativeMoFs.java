@@ -58,6 +58,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
+    private int REQUEST_CODE = 13131;
 
     private boolean verbose = false;
 
@@ -726,8 +727,21 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 Activity activity = getReactApplicationContext().getCurrentActivity();
                 if (activity == null) throw new RuntimeException("activity == null");
                 String title = args.hasKey("title") ? args.getString("title") : "";
-                activity.startActivity(Intent.createChooser(intent, title));
-                promise.resolve(null);
+
+                ActivityEventListener listener = new ActivityEventListener() {
+                    @Override
+                    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+                        if (requestCode == REQUEST_CODE) {
+                            getReactApplicationContext().removeActivityEventListener(this);
+                            promise.resolve(null);
+                        }
+                    }
+                    @Override
+                    public void onNewIntent(Intent intent) {
+                    }
+                };
+                getReactApplicationContext().addActivityEventListener(listener);
+                activity.startActivityForResult(Intent.createChooser(intent, title), REQUEST_CODE);
             } else {
                 throw new Exception("cannot handle file type");
             }
@@ -759,8 +773,21 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 Activity activity = getReactApplicationContext().getCurrentActivity();
                 if (activity == null) throw new RuntimeException("activity == null");
                 String title = args.hasKey("title") ? args.getString("title") : "";
-                activity.startActivity(Intent.createChooser(intent, title));
-                promise.resolve(null);
+
+                ActivityEventListener listener = new ActivityEventListener() {
+                    @Override
+                    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+                        if (requestCode == REQUEST_CODE) {
+                            getReactApplicationContext().removeActivityEventListener(this);
+                            promise.resolve(null);
+                        }
+                    }
+                    @Override
+                    public void onNewIntent(Intent intent) {
+                    }
+                };
+                getReactApplicationContext().addActivityEventListener(listener);
+                activity.startActivityForResult(Intent.createChooser(intent, title), REQUEST_CODE);
             } else {
                 throw new Exception("cannot handle file type");
             }
@@ -810,7 +837,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             ActivityEventListener listener = new ActivityEventListener() {
                 @Override
                 public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-                    if (requestCode == 13131) {
+                    if (requestCode == REQUEST_CODE) {
                         getReactApplicationContext().removeActivityEventListener(this);
                         if (data == null || resultCode != Activity.RESULT_OK) {
                             promise.resolve(null);
@@ -841,7 +868,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             getReactApplicationContext().addActivityEventListener(listener);
             Activity activity = getReactApplicationContext().getCurrentActivity();
             if (activity == null) throw new RuntimeException("activity == null");
-            activity.startActivityForResult(intent, 13131);
+            activity.startActivityForResult(intent, REQUEST_CODE);
         } catch (Exception e) {
             promise.reject(e);
         }
@@ -887,7 +914,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             ActivityEventListener listener = new ActivityEventListener() {
                 @Override
                 public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-                    if (requestCode == 13131) {
+                    if (requestCode == REQUEST_CODE) {
                         getReactApplicationContext().removeActivityEventListener(this);
                         if (resultCode == Activity.RESULT_OK && pictureFile.exists() && pictureFile.length() > 0) {
                             promise.resolve(getUriForPath(pictureFile.getAbsolutePath()).toString());
@@ -906,7 +933,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             getReactApplicationContext().addActivityEventListener(listener);
             Activity activity = getReactApplicationContext().getCurrentActivity();
             if (activity == null) throw new RuntimeException("activity == null");
-            activity.startActivityForResult(intent, 13131);
+            activity.startActivityForResult(intent, REQUEST_CODE);
         } catch (Exception e) {
             promise.reject(e);
         }
