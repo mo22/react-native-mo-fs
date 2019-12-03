@@ -149,22 +149,27 @@ NSString* hexStringForData(NSData* data) {
     //      UIImagePickerControllerMediaType
 
     NSMutableDictionary* res = [NSMutableDictionary new];
-    res[@"type"] = mimeTypeForUti(info[UIImagePickerControllerMediaType]);
     res[@"uti"] = info[UIImagePickerControllerMediaType];
     BOOL done = NO;
     if (@available(iOS 11.0, *)) {
         if (info[UIImagePickerControllerReferenceURL] && info[UIImagePickerControllerImageURL]) {
-            res[@"url"] = [info[UIImagePickerControllerImageURL] absoluteURL];
+            NSURL* url = info[UIImagePickerControllerImageURL];
+            res[@"url"] = [url absoluteString];
+            res[@"type"] = mimeTypeForPath([url absoluteString]);
             done = YES;
         }
     }
     if (!done && info[UIImagePickerControllerReferenceURL] && info[UIImagePickerControllerMediaURL]) {
-        res[@"url"] = [info[UIImagePickerControllerMediaURL] absoluteURL];
+        NSLog(@"X4 %@", info[UIImagePickerControllerMediaURL]);
+        NSURL* url = info[UIImagePickerControllerMediaURL];
+        res[@"url"] = [url absoluteString];
+        res[@"type"] = mimeTypeForPath([url absoluteString]);
         done = YES;
     }
     if (!done) {
         NSLog(@"HELP");
     }
+    NSLog(@"res %@", res);
     self.resolve(res);
 
     [picker dismissViewControllerAnimated:YES completion:nil];
