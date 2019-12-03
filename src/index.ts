@@ -708,6 +708,7 @@ export class Fs {
   /**
    * show a image open dialog
    */
+  // return something that must be closed
   public static async pickImage(args: PickImageArgs): Promise<URL|undefined> {
     const type = args.type || 'all';
     if (Fs.ios.Module) {
@@ -736,5 +737,7 @@ export class Fs {
       throw new Error('platform not supported');
     }
   }
+
+  // pick camera
 
 }
