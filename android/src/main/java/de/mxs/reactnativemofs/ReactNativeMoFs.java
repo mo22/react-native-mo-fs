@@ -917,10 +917,18 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                     if (requestCode == REQUEST_CODE) {
                         getReactApplicationContext().removeActivityEventListener(this);
                         if (resultCode == Activity.RESULT_OK && pictureFile.exists() && pictureFile.length() > 0) {
-                            promise.resolve(getUriForPath(pictureFile.getAbsolutePath()).toString());
+                            WritableMap res = Arguments.createMap();
+                            res.putString("tempPath", pictureFile.getAbsolutePath());
+                            res.putString("type", "image/jpeg");
+                            res.putString("uri", getUriForPath(pictureFile.getAbsolutePath()).toString());
+                            promise.resolve(res);
+
                         } else if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-                            Log.i("XXX", "data " + data.getData() + " " + data.getType());
-                            promise.resolve(data.getData().toString());
+                            WritableMap res = Arguments.createMap();
+                            res.putString("type", data.getType());
+                            res.putString("uri", data.getData().toString());
+                            promise.resolve(res);
+
                         } else {
                             promise.resolve(null);
                         }
