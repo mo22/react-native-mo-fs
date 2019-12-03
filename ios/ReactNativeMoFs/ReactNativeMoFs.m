@@ -158,7 +158,7 @@ NSString* hexStringForData(NSData* data) {
     [picker dismissViewControllerAnimated:YES completion:nil];
     [self.refs removeObject:self];
     [self.refs removeObject:picker];
-    sleep(1);
+    sleep(1); // @TODO: bad
 }
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
