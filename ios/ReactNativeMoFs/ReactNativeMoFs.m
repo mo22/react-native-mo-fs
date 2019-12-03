@@ -165,7 +165,6 @@ NSString* hexStringForData(NSData* data) {
     }
     if (!done && (info[UIImagePickerControllerEditedImage] || info[UIImagePickerControllerOriginalImage])) {
         UIImage* image = info[UIImagePickerControllerEditedImage] ? info[UIImagePickerControllerEditedImage] : info[UIImagePickerControllerOriginalImage];
-        NSLog(@"image %@", image);
         NSData* data = UIImageJPEGRepresentation(image, 0.9);
         NSString* tempPath = [NSString stringWithFormat:@"%@%@.jpeg", NSTemporaryDirectory(), [[NSUUID new] UUIDString]];
         [data writeToFile:tempPath atomically:YES];
@@ -175,7 +174,7 @@ NSString* hexStringForData(NSData* data) {
         done = YES;
     }
     if (!done) {
-        NSLog(@"HELP");
+        NSLog(@"ReactNativeMoFsImagePickerControllerDelegate %@", info);
         self.resolve(nil);
     } else {
         self.resolve(res);
