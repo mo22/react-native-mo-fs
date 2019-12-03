@@ -590,9 +590,17 @@ export class Fs {
    */
   public static async getExif(blob: Blob): Promise<any> {
     if (ios.Module) {
-      return await ios.Module.getExif(blob.data);
+      try {
+        return await ios.Module.getExif(blob.data);
+      } catch (e) {
+        return undefined;
+      }
     } else if (android.Module) {
-      return await android.Module.getExif(blob.data);
+      try {
+        return (await android.Module.getExif(blob.data)) || undefined;
+      } catch (e) {
+        return undefined;
+      }
     } else {
       throw new Error('platform not supported');
     }
