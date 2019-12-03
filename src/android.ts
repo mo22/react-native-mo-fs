@@ -22,6 +22,7 @@ export interface Module {
   paths: {
     externalCache?: string;
     files: string;
+    cache: string;
     packageResource: string;
     data?: string;
   };
@@ -94,11 +95,16 @@ export interface Module {
     types?: string[];
     multiple?: boolean;
     title?: string;
-  }): Promise<null|string[]>;
+  }): Promise<null|string[]>; // url
 
   getCamera(args: {
     title?: string;
-  }): Promise<null|string>;
+    picture: boolean;
+    video: boolean;
+    videoQuality?: number; // 0=low, 1=high
+    durationLimit?: number; // seconds
+    sizeLimit?: number;
+  }): Promise<null|string>; // path
 }
 
 export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoFs as Module : undefined;

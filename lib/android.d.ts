@@ -20,6 +20,7 @@ export interface Module {
     paths: {
         externalCache?: string;
         files: string;
+        cache: string;
         packageResource: string;
         data?: string;
     };
@@ -94,6 +95,11 @@ export interface Module {
     }): Promise<null | string[]>;
     getCamera(args: {
         title?: string;
+        picture: boolean;
+        video: boolean;
+        videoQuality?: number;
+        durationLimit?: number;
+        sizeLimit?: number;
     }): Promise<null | string>;
 }
 export declare const Module: Module | undefined;
