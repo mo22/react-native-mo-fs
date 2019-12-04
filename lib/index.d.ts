@@ -243,6 +243,10 @@ export declare class Fs {
      */
     static resizeImage(blob: Blob, args: ResizeImageArgs): Promise<Blob>;
     /**
+     * try to create thumbnail for image / video
+     */
+    static createThumbnail(blob: Blob, args: ResizeImageArgs): Promise<Blob | undefined>;
+    /**
      * share file to another app
      */
     static shareFile(path: Path, type?: string): Promise<void>;

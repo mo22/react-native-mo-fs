@@ -664,6 +664,37 @@ export class Fs {
   }
 
   /**
+   * try to create thumbnail for image / video
+   */
+  public static async createThumbnail(blob: Blob, args: ResizeImageArgs): Promise<Blob|undefined> {
+    let source;
+    if (blob.type.startsWith('video/')) {
+      if (Fs.ios.Module) {
+        console.log('video ios!');
+        source = new Blob();
+        source.data = await Fs.ios.Module.assetImageGenerator({ url: Fs.getBlobURL(blob) });
+      } else if (Fs.android.Module) {
+        console.log('video android!');
+        await Fs.writeFile(Fs.paths.cache + '/tmp.mp4', blob);
+        try {
+          source = new Blob();
+          source.data = await Fs.android.Module.createThumbnail({ path: Fs.paths.cache + '/tmp.mp4' });
+        } finally {
+          await Fs.deleteFile(Fs.paths.cache + '/tmp.mp4');
+        }
+      }
+    } else if (blob.type.startsWith('image/')) {
+      source = blob.slice();
+    }
+    if (!source) return undefined;
+    try {
+      return await Fs.resizeImage(source, args);
+    } finally {
+      source.close();
+    }
+  }
+
+  /**
    * share file to another app
    */
   public static async shareFile(path: Path, type?: string): Promise<void> {
