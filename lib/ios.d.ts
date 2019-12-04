@@ -80,6 +80,9 @@ export interface Module {
     setAttributes(path: string, attributes: {
         [k: string]: any;
     }): Promise<void>;
+    setResourceValues(url: string, resourceValues: {
+        [k: string]: any;
+    }): Promise<void>;
     getImageSize(blob: BlobData): Promise<{
         width: number;
         height: number;

@@ -272,8 +272,12 @@ Dev builds should be restored after uninstalling and redeploying from android st
 
 For iOS pretty much everything is backed up unless excluded.
 
-`NSURLIsExcludedFromBackupKey` ?
-https://developer.apple.com/documentation/foundation/nsurl/1413819-setresourcevalue?language=objc
+You can use (experimental):
+```
+Fs.ios.Module.setResourceValues('file:///path/to/file', {
+  'NSURLIsExcludedFromBackupKey': true,
+});
+```
 
 You can use app offloading to test backup / restore in dev.
 

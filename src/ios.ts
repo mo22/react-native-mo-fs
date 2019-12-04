@@ -88,6 +88,10 @@ export interface Module {
     [k: string]: any;
   }): Promise<void>;
 
+  setResourceValues(url: string, resourceValues: {
+    [k: string]: any;
+  }): Promise<void>;
+
   getImageSize(blob: BlobData): Promise<{ width: number; height: number; }>;
   getExif(blob: BlobData): Promise<any>;
   updateImage(blob: BlobData, args?: {

@@ -619,6 +619,17 @@ RCT_EXPORT_METHOD(setAttributes:(NSString*)path attributes:(NSDictionary*)attrib
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(setResourceValues:(NSString*)urlStr attributes:(NSDictionary*)resourceValues resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSError* error = nil;
+    NSURL* url = [NSURL URLWithString:urlStr];
+    [url setResourceValues:resourceValues error:&error];
+    if (error) {
+        reject(@"", [error localizedDescription], error);
+        return;
+    }
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(getBlobHash:(NSDictionary<NSString*,id>*)blob algorithm:(NSString*)algorithm resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     NSData* data = [self.blobManager resolve:blob];
     if (!data) {
