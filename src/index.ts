@@ -670,17 +670,21 @@ export class Fs {
     let source;
     if (blob.type.startsWith('video/')) {
       if (Fs.ios.Module) {
-        console.log('video ios!');
-        source = new Blob();
-        source.data = await Fs.ios.Module.assetImageGenerator({ url: Fs.getBlobURL(blob) });
-      } else if (Fs.android.Module) {
-        console.log('video android!');
-        await Fs.writeFile(Fs.paths.cache + '/tmp.mp4', blob);
+        const tempFile = Fs.paths.cache + '/' + blob.data.blobId + '.mov';
+        await Fs.writeFile(tempFile, blob);
         try {
           source = new Blob();
-          source.data = await Fs.android.Module.createThumbnail({ path: Fs.paths.cache + '/tmp.mp4' });
+          source.data = await Fs.ios.Module.assetImageGenerator({ url: 'file://' + tempFile });
         } finally {
-          await Fs.deleteFile(Fs.paths.cache + '/tmp.mp4');
+          await Fs.deleteFile(tempFile);
+        }
+      } else if (Fs.android.Module) {
+        const tempFile = Fs.paths.cache + '/' + blob.data.blobId + '.mp4';
+        try {
+          source = new Blob();
+          source.data = await Fs.android.Module.createThumbnail({ path: tempFile });
+        } finally {
+          await Fs.deleteFile(tempFile);
         }
       }
     } else if (blob.type.startsWith('image/')) {
