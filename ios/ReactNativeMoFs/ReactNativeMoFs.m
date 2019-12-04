@@ -147,20 +147,28 @@ NSString* hexStringForData(NSData* data) {
     if (@available(iOS 11.0, *)) {
         if (info[UIImagePickerControllerImageURL]) {
             NSURL* url = info[UIImagePickerControllerImageURL];
+            if (ReactNativeMoFs.verbose) NSLog(@"using UIImagePickerControllerImageURL %@", url);
             res[@"url"] = [url absoluteString];
             res[@"type"] = mimeTypeForPath([url absoluteString]);
+            // @TODO: should this file be deleted?!
+            res[@"tempPath"] = [url path];
             done = YES;
         }
     }
     if (!done && info[UIImagePickerControllerMediaURL]) {
         NSURL* url = info[UIImagePickerControllerMediaURL];
+        if (ReactNativeMoFs.verbose) NSLog(@"using UIImagePickerControllerMediaURL %@", url);
         res[@"type"] = mimeTypeForPath([url absoluteString]);
         NSString* tempPath = [NSString stringWithFormat:@"%@%@.%@", NSTemporaryDirectory(), [[NSUUID new] UUIDString], [url pathExtension]];
-        NSLog(@"tempPath [%@]", tempPath);
         NSError* error = nil;
-        [[NSFileManager defaultManager] moveItemAtURL:url toURL:[NSURL fileURLWithPath:tempPath] error:&error];
+//        [[NSFileManager defaultManager] moveItemAtURL:url toURL:[NSURL fileURLWithPath:tempPath] error:&error];
+        [[NSFileManager defaultManager] copyItemAtURL:url toURL:[NSURL fileURLWithPath:tempPath] error:&error];
         if (error) {
-            NSLog(@"FAIL %@", error);
+            self.reject(@"", [error localizedDescription], error);
+            [picker dismissViewControllerAnimated:YES completion:nil];
+            [self.refs removeObject:self];
+            [self.refs removeObject:picker];
+            return;
         }
         res[@"url"] = [[NSURL fileURLWithPath:tempPath] absoluteString];
         res[@"tempPath"] = tempPath;
@@ -168,6 +176,7 @@ NSString* hexStringForData(NSData* data) {
     }
     if (!done && (info[UIImagePickerControllerEditedImage] || info[UIImagePickerControllerOriginalImage])) {
         UIImage* image = info[UIImagePickerControllerEditedImage] ? info[UIImagePickerControllerEditedImage] : info[UIImagePickerControllerOriginalImage];
+        if (ReactNativeMoFs.verbose) NSLog(@"using UIImagePickerControllerOriginalImage %@", image);
         NSData* data = UIImageJPEGRepresentation(image, 0.9);
         NSString* tempPath = [NSString stringWithFormat:@"%@%@.jpeg", NSTemporaryDirectory(), [[NSUUID new] UUIDString]];
         [data writeToFile:tempPath atomically:YES];
@@ -177,7 +186,7 @@ NSString* hexStringForData(NSData* data) {
         done = YES;
     }
     if (!done) {
-        NSLog(@"ReactNativeMoFsImagePickerControllerDelegate %@", info);
+        if (ReactNativeMoFs.verbose) NSLog(@"ReactNativeMoFsImagePickerControllerDelegate %@", info);
         self.resolve(nil);
     } else {
         self.resolve(res);
