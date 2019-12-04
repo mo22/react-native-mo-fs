@@ -204,9 +204,12 @@ called as soon as the first subscriber is there.
 #### Mime Types and EXIF
 ```ts
 const mimeType = await Fs.getMimeType('png');
+const mimeType = await Fs.getMimeType('blah.png');
 
 // exif is not really done yet but might work for you ;)
 const exif = await Fs.getExif(myBlob);
+
+const extension = await Fs.getExtensionForMimeType('image/png'); // returns png
 ```
 
 #### Blob hash
@@ -224,14 +227,56 @@ const myImageBlob = await Fs.readFile(Fs.paths.docs + '/image.jpg');
 const size = await Fs.getImageSize(myImageBlob);
 console.log('the image size is', size.width, size.height);
 
-const thumbnailBlob = await Fs.resizeImage(myImageBlob, {
+const smallBlob = await Fs.resizeImage(myImageBlob, {
   maxWidth: 128,
   maxHeight: 128,
   fill: true, // make result 128x128 and keep aspect. otherwise result image is smaller
   encoding: 'jpeg', // or png, or webp
   quality: 0.3, // 0..1
 });
+
+const thumbnail = await Fs.createThumbnail(imageOrVideoBlob, {
+  maxWidth: 128,
+  maxHeight: 128,
+  fill: true,
+});
+
 ```
+
+## Backups
+
+For android you need to specify the files to be backed up in your manifest:
+```
+<application
+  android:fullBackupContent="@xml/backup_descriptor"
+  android:restoreAnyVersion="true"
+/>
+```
+Set restoreAnyVersion only if you are able to migrate from an older backup.
+
+The contents of res/xml/backup_descriptor is something like:
+```
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+  <!-- for asyncstorage -->
+  <include domain="database" path="RKStorage" />
+  <!-- some path relative to data dir -->
+  <include domain="root" path="some/path" />
+</full-backup-content>
+```
+
+You can test backups using:
+`adb shell bmgr backupnow your.package`
+
+Dev builds should be restored after uninstalling and redeploying from android studio.
+
+For iOS pretty much everything is backed up unless excluded.
+
+`NSURLIsExcludedFromBackupKey` ?
+https://developer.apple.com/documentation/foundation/nsurl/1413819-setresourcevalue?language=objc
+
+You can use app offloading to test backup / restore in dev.
+
 
 ## Notes
 - iOS application:openURL: is swizzled on startup.
