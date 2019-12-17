@@ -6,6 +6,13 @@ Provide file system access and integration
 
 Install just like your ordinary react-native module.
 
+## Note
+
+React Native 0.60 has a bug that can unexpectedly free blobs if a
+javascript-side blob handle runs out of scope.
+If you run into unexpected "blob not found" errors, try to keep a
+reference to the javascript blob object.
+
 ## Usage
 
 Please check the [example/](example/) code.
