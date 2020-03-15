@@ -182,11 +182,13 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
   - React-jsinspector (0.61.5)
-  - react-native-cameraroll (1.3.0):
+  - react-native-cameraroll (1.4.1):
     - React
-  - react-native-image-picker (1.1.0):
+  - react-native-image-picker (2.3.1):
     - React
-  - react-native-mo-fs (0.1.23):
+  - react-native-mo-fs (0.1.24):
+    - React
+  - react-native-safe-area-context (0.7.3):
     - React
   - React-RCTActionSheet (0.61.5):
     - React-Core/RCTActionSheetHeaders (= 0.61.5)
@@ -223,9 +225,11 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
     - ReactCommon/jscallinvoker (= 0.61.5)
-  - RNGestureHandler (1.5.2):
+  - RNCMaskedView (0.1.7):
     - React
-  - RNScreens (2.0.0-alpha.12):
+  - RNGestureHandler (1.6.0):
+    - React
+  - RNScreens (2.3.0):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -251,6 +255,7 @@ DEPENDENCIES:
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-mo-fs (from `../node_modules/react-native-mo-fs`)
+  - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -262,6 +267,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -306,6 +312,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-mo-fs:
     :path: "../node_modules/react-native-mo-fs"
+  react-native-safe-area-context:
+    :path: "../node_modules/react-native-safe-area-context"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -326,6 +334,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNCMaskedView:
+    :path: "../node_modules/@react-native-community/masked-view"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNScreens:
@@ -351,9 +361,10 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
-  react-native-cameraroll: ad20f5a93c25cb83a76455df57a2c62fbb63aaed
-  react-native-image-picker: 3637d63fef7e32a230141ab4660d3ceb773c824f
-  react-native-mo-fs: f4a18052583a4e6cc37d03f989c56da0b74a55eb
+  react-native-cameraroll: 035c425c733acd3333e6c673db5ab66a559ca2e0
+  react-native-image-picker: 668e72d0277dc8c12ae90e835507c1eddd2e4f85
+  react-native-mo-fs: 4691a13f433e730286aea3ff6c8b13edabde9e00
+  react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -364,11 +375,12 @@ SPEC CHECKSUMS:
   React-RCTText: 9ccc88273e9a3aacff5094d2175a605efa854dbe
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
-  RNGestureHandler: 946a7691e41df61e2c4b1884deab41a4cdc3afff
-  RNScreens: 254da4b84f25971cbb30ed3ddc84131f23cac812
+  RNCMaskedView: 90dd32f5b786bd562e876e1421ea77c700cbf71e
+  RNGestureHandler: dde546180bf24af0b5f737c8ad04b6f3fa51609a
+  RNScreens: 03bf608b92ac0acf323f47d8f5b63a8f829340c8
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
 PODFILE CHECKSUM: f6ce1b329e88f8e2af9d8bfa6ee42db84175ff98
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1
