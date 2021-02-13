@@ -10,12 +10,9 @@ interface BlobData {
     lastModified?: number;
 }
 declare global {
-    class Blob {
+    interface Blob {
         data: BlobData;
-        slice(start?: number, end?: number): Blob;
         close(): void;
-        readonly size: number;
-        readonly type: string;
     }
 }
 export declare type URL = string;

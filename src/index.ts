@@ -5,10 +5,9 @@ import { Event } from 'mo-core';
 import { PermissionsAndroid } from 'react-native';
 
 
-
-declare var URL: {
-  createObjectURL(blob: Blob): string;
-};
+// declare var URL: {
+//   createObjectURL(blob: Blob): string;
+// };
 
 interface BlobData {
   blobId: string;
@@ -20,15 +19,14 @@ interface BlobData {
 }
 
 declare global {
-  class Blob {
-    public data: BlobData;
-    public slice(start?: number, end?: number): Blob;
-    public close(): void;
-    public readonly size: number;
-    public readonly type: string;
+  interface Blob {
+    data: BlobData;
+    close(): void;
+    // public slice(start?: number, end?: number): Blob;
+    // public readonly size: number;
+    // public readonly type: string;
   }
 }
-
 
 
 export type URL = string;
@@ -36,7 +34,6 @@ export type Path = string;
 export type MimeType = string;
 export type Base64 = string;
 export type HexString = string;
-
 
 
 export interface CryptBlobArgs {
