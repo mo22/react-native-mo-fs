@@ -1,6 +1,6 @@
 {
   "name": "react-native-mo-fs",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "description": "react native file system and image tools",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -24,13 +24,13 @@
   },
   "homepage": "https://github.com/mo22/react-native-mo-fs#readme",
   "devDependencies": {
-    "@types/react-native": "^0.63.49",
-    "react": "17.0.1",
-    "react-native": "0.63.4",
-    "typescript": "^4.1.5"
+    "@types/react-native": "^0.64.13",
+    "react": "^17.0.2",
+    "react-native": "^0.64.2",
+    "typescript": "^4.3.5"
   },
   "dependencies": {
-    "base64-arraybuffer": "^0.2.0",
+    "base64-arraybuffer": "^1.0.1",
     "mo-core": "^0.1.5"
   },
   "peerDependencies": {

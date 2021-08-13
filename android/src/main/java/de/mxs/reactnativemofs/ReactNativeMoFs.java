@@ -289,7 +289,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             blob.putString("name", path); // only last?
             promise.resolve(blob);
         } catch (IOException e) {
-            e.printStackTrace();
             promise.reject(e);
         }
     }
@@ -327,7 +326,6 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             }
             promise.resolve(null);
         } catch (IOException e) {
-            e.printStackTrace();
             promise.reject(e);
         }
     }
