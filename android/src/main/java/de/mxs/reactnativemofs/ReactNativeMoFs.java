@@ -974,4 +974,12 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
             promise.reject(e);
         }
     }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void addListener(String eventName) {}
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void removeListeners(double count) {}
 }
