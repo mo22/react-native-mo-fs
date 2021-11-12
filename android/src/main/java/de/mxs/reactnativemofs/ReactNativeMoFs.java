@@ -58,7 +58,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
-    private int REQUEST_CODE = 13131;
+    private final int REQUEST_CODE = 13131;
 
     private boolean verbose = false;
 
@@ -114,7 +114,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     private boolean deleteRecursive(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory()) {
             boolean res = true;
-            for (File child : fileOrDirectory.listFiles()) {
+            for (File child : Objects.requireNonNull(fileOrDirectory.listFiles())) {
                 res = res && deleteRecursive(child);
             }
             return res;
@@ -224,7 +224,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void readBlob(ReadableMap blob, String mode, Promise promise) {
-        BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+        BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
         byte[] data = blobModule.resolve(blob);
         if (data == null) {
             promise.reject(new Error("blob not found"));
@@ -243,7 +243,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void createBlob(String str, String mode, Promise promise) {
-        BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+        BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
         byte[] buffer;
         if (mode.equals("base64")) {
             buffer = Base64.decode(str, 0);
@@ -266,9 +266,9 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void readFile(ReadableMap args, Promise promise) {
-        BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+        BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
         try {
-            String path = args.getString("path");
+            String path = Objects.requireNonNull(args.getString("path"));
             File file = new File(path);
             long fileSize = file.length();
             int size = args.hasKey("size") ? args.getInt("size") : (int) fileSize;
@@ -297,8 +297,8 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void writeFile(ReadableMap args, Promise promise) {
         try {
-            String path = args.getString("path");
-            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            String path = Objects.requireNonNull(args.getString("path"));
+            BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
             ReadableMap blob = Objects.requireNonNull(args.getMap("blob"));
             byte[] data = blobModule.resolve(blob);
             if (data == null) {
@@ -443,7 +443,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getBlobHash(ReadableMap blob, String algorithm, Promise promise) {
         try {
-            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
             byte[] data = blobModule.resolve(blob);
             if (data == null) {
                 promise.reject(new Error("blob not found"));
@@ -479,7 +479,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getBlobHmac(ReadableMap blob, String algorithm, String key, Promise promise) {
         try {
-            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
             byte[] data = blobModule.resolve(blob);
             if (data == null) {
                 promise.reject(new Error("blob not found"));
@@ -515,7 +515,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void cryptBlob(ReadableMap blob, String algorithm, boolean encrypt, String key, String iv, Promise promise) {
         try {
-            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
             byte[] data = blobModule.resolve(blob);
             if (data == null) {
                 promise.reject(new Error("blob not found"));
@@ -550,7 +550,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getImageSize(ReadableMap blob, Promise promise) {
         try {
-            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
             byte[] data = blobModule.resolve(blob);
             if (data == null) {
                 promise.reject(new Error("blob not found"));
@@ -574,7 +574,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getExif(ReadableMap blob, Promise promise) {
         try {
-            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
             byte[] data = blobModule.resolve(blob);
             if (data == null) {
                 promise.reject(new Error("blob not found"));
@@ -588,7 +588,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                     if (!Modifier.isPublic(field.getModifiers())) continue;
                     if (!field.getName().startsWith("TAG_")) continue;
                     try {
-                        String tag = (String) field.get(exif);
+                        String tag = (String) Objects.requireNonNull(field.get(exif));
                         String value = exif.getAttribute(tag);
                         if (value != null) {
                             res.putString(field.getName(), value);
@@ -608,7 +608,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateImage(ReadableMap blob, ReadableMap args, Promise promise) {
         try {
-            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
             byte[] data = blobModule.resolve(blob);
             if (data == null) {
                 promise.reject(new Error("blob not found"));
@@ -684,7 +684,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
     @ReactMethod
     public void createThumbnail(ReadableMap args, Promise promise) {
         try {
-            BlobModule blobModule = getReactApplicationContext().getNativeModule(BlobModule.class);
+            BlobModule blobModule = Objects.requireNonNull(getReactApplicationContext().getNativeModule(BlobModule.class));
             String path = args.getString("path");
             Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
             int quality = args.hasKey("quality") ? (int) (args.getDouble("quality") * 100) : 100;
