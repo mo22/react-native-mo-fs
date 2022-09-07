@@ -8,7 +8,7 @@
     />
 
     <provider
-      android:name="androidx.core.content.FileProvider"
+      android:name="de.mxs.reactnativemofs.ReactNativeMoFsFileProvider"
       android:authorities="${applicationId}.ReactNativeMoFsFile"
       android:exported="false"
       android:grantUriPermissions="true"
