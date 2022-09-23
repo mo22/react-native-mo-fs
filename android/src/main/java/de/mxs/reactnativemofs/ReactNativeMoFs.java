@@ -546,6 +546,27 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
         }
     }
 
+    private Bitmap decodeBitmap(byte[] data) throws IOException {
+        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+        if (bmp == null) {
+            throw new IOException("failed to decode bitmap");
+        }
+        ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        if (orientation != ExifInterface.ORIENTATION_NORMAL) {
+            Matrix matrix = new Matrix();
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+                matrix.postRotate(90);
+            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+                matrix.postRotate(180);
+            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                matrix.postRotate(270);
+            }
+            bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+        }
+        return bmp;
+    }
+
     @SuppressWarnings("unused")
     @ReactMethod
     public void getImageSize(ReadableMap blob, Promise promise) {
@@ -556,11 +577,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 promise.reject(new Error("blob not found"));
                 return;
             }
-            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-            if (bmp == null) {
-                promise.reject(new Error("blob not an image"));
-                return;
-            }
+            Bitmap bmp = decodeBitmap(data);
             WritableMap res = Arguments.createMap();
             res.putDouble("width", bmp.getWidth());
             res.putDouble("height", bmp.getHeight());
@@ -614,22 +631,7 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                 promise.reject(new Error("blob not found"));
                 return;
             }
-            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-            {
-                ExifInterface exif = new ExifInterface(new ByteArrayInputStream(data));
-                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                if (orientation != ExifInterface.ORIENTATION_NORMAL) {
-                    Matrix matrix = new Matrix();
-                    if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
-                        matrix.postRotate(90);
-                    } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
-                        matrix.postRotate(180);
-                    } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                        matrix.postRotate(270);
-                    }
-                    bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
-                }
-            }
+            Bitmap bmp = decodeBitmap(data);
             int width = args.hasKey("width") ? args.getInt("width") : bmp.getWidth();
             int height = args.hasKey("height") ? args.getInt("height") : bmp.getHeight();
             Matrix m = new Matrix();
