@@ -39,7 +39,7 @@ export interface UpdateImageArgs {
     matrix?: [number, number, number, number, number, number, number, number, number];
     /** image output type */
     encoding?: 'jpeg' | 'png' | 'webp';
-    /** image output quality */
+    /** image output quality: 0(small file) to 1(large file) */
     quality?: number;
 }
 export interface ResizeImageArgs {
@@ -51,7 +51,7 @@ export interface ResizeImageArgs {
     fill?: boolean;
     /** image output type */
     encoding?: 'jpeg' | 'png' | 'webp';
-    /** image output quality */
+    /** image output quality: 0(small file) to 1(large file) */
     quality?: number;
 }
 export interface PickFileArgs {
