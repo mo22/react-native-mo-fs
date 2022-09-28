@@ -109,6 +109,28 @@ export interface Module {
     type: string;
     tempPath?: string; // must be deleted manually
   }>;
+
+  isPackageInstalled(packageId: string): Promise<boolean>;
+  startActivity(args: {
+    action: string;
+    type?: string;
+    package?: string;
+    data?: string;
+    extra_stream?: string;
+    extras?: { [key: string]: string | number | boolean };
+  }): Promise<void>;
+
+  startActivityForResult(args: {
+    action: string;
+    type?: string;
+    package?: string;
+    data?: string;
+    extra_stream?: string;
+    extras?: { [key: string]: string | number | boolean };
+  }): Promise<{
+    result: number;
+  }>;
+
 }
 
 export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoFs as Module : undefined;
