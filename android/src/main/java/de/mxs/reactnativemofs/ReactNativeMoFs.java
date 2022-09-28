@@ -1051,7 +1051,9 @@ public final class ReactNativeMoFs extends ReactContextBaseJavaModule {
                     if (code != requestCode) return;
                     getReactApplicationContext().removeActivityEventListener(this);
                     Log.i("XXX", "onActivityResult code=" + code + " result=" + result + " intent=" + intent);
-                    promise.resolve(result);
+                    WritableMap res = Arguments.createMap();
+                    res.putInt("result", result);
+                    promise.resolve(res);
                 }
                 @Override
                 public void onNewIntent(Intent intent) {
