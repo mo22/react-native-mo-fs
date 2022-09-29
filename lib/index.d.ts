@@ -97,22 +97,6 @@ export interface OpenFileEvent {
     /** the url to be opened */
     url: URL;
 }
-export interface AndroidStartActivityArgs {
-    /** the android intent action. can be a Intent.X constant like "ACTION_SEND" */
-    action: string;
-    /** intent.setType */
-    type?: string;
-    /** intent.setPackage */
-    package?: string;
-    /** intent.setData(Uri) */
-    data?: string;
-    /** intent.setExtra(Intent.EXTRA_STREAM, Uri) */
-    extra_stream?: string;
-    /** intent.setExtra(key, value) */
-    extras?: {
-        [key: string]: string | number | boolean;
-    };
-}
 export declare class Fs {
     /**
      * native ios functions. use with caution
@@ -281,19 +265,5 @@ export declare class Fs {
      * the result must be released by calling res.release()
      */
     static captureMedia(args: PickMediaArgs): Promise<PickMediaResult | undefined>;
-    /**
-     * check if android package is installed
-     */
-    static androidIsPackageInstalled(packageId: string): Promise<boolean>;
-    /**
-     * start android activity
-     */
-    static androidStartActivity(args: AndroidStartActivityArgs): Promise<void>;
-    /**
-     * start android activity for result
-     */
-    static androidStartActivityForResult(args: AndroidStartActivityArgs): Promise<{
-        result: number;
-    }>;
 }
 export {};

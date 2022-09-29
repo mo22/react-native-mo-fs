@@ -123,22 +123,6 @@ export interface OpenFileEvent {
   url: URL;
 }
 
-export interface AndroidStartActivityArgs {
-  /** the android intent action. can be a Intent.X constant like "ACTION_SEND" */
-  action: string;
-  /** intent.setType */
-  type?: string;
-  /** intent.setPackage */
-  package?: string;
-  /** intent.setData(Uri) */
-  data?: string;
-  /** intent.setExtra(Intent.EXTRA_STREAM, Uri) */
-  extra_stream?: string;
-  /** intent.setExtra(key, value) */
-  extras?: { [key: string]: string | number | boolean };
-}
-
-
 
 export class Fs {
   /**
@@ -851,39 +835,6 @@ export class Fs {
           }
         },
       };
-    } else {
-      throw new Error('platform not supported');
-    }
-  }
-
-  /**
-   * check if android package is installed
-   */
-  public static async androidIsPackageInstalled(packageId: string): Promise<boolean> {
-    if (Fs.android.Module) {
-      return await Fs.android.Module.isPackageInstalled(packageId);
-    } else {
-      throw new Error('platform not supported');
-    }
-  }
-
-  /**
-   * start android activity
-   */
-  public static async androidStartActivity(args: AndroidStartActivityArgs): Promise<void> {
-    if (Fs.android.Module) {
-      return await Fs.android.Module.startActivity(args);
-    } else {
-      throw new Error('platform not supported');
-    }
-  }
-
-  /**
-   * start android activity for result
-   */
-  public static async androidStartActivityForResult(args: AndroidStartActivityArgs): Promise<{ result: number; }> {
-    if (Fs.android.Module) {
-      return await Fs.android.Module.startActivityForResult(args);
     } else {
       throw new Error('platform not supported');
     }
