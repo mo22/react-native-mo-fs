@@ -859,7 +859,7 @@ export class Fs {
   /**
    * check if android package is installed
    */
-  public async androidIsPackageInstalled(packageId: string): Promise<boolean> {
+  public static async androidIsPackageInstalled(packageId: string): Promise<boolean> {
     if (Fs.android.Module) {
       return await Fs.android.Module.isPackageInstalled(packageId);
     } else {
@@ -870,7 +870,7 @@ export class Fs {
   /**
    * start android activity
    */
-  public async androidStartActivity(args: AndroidStartActivityArgs): Promise<void> {
+  public static async androidStartActivity(args: AndroidStartActivityArgs): Promise<void> {
     if (Fs.android.Module) {
       return await Fs.android.Module.startActivity(args);
     } else {
@@ -881,7 +881,7 @@ export class Fs {
   /**
    * start android activity for result
    */
-  public async androidStartActivityForResult(args: AndroidStartActivityArgs): Promise<{ result: number; }> {
+  public static async androidStartActivityForResult(args: AndroidStartActivityArgs): Promise<{ result: number; }> {
     if (Fs.android.Module) {
       return await Fs.android.Module.startActivityForResult(args);
     } else {

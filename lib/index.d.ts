@@ -284,15 +284,15 @@ export declare class Fs {
     /**
      * check if android package is installed
      */
-    androidIsPackageInstalled(packageId: string): Promise<boolean>;
+    static androidIsPackageInstalled(packageId: string): Promise<boolean>;
     /**
      * start android activity
      */
-    androidStartActivity(args: AndroidStartActivityArgs): Promise<void>;
+    static androidStartActivity(args: AndroidStartActivityArgs): Promise<void>;
     /**
      * start android activity for result
      */
-    androidStartActivityForResult(args: AndroidStartActivityArgs): Promise<{
+    static androidStartActivityForResult(args: AndroidStartActivityArgs): Promise<{
         result: number;
     }>;
 }
