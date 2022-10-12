@@ -743,7 +743,7 @@ RCT_EXPORT_METHOD(getImageSize:(NSDictionary<NSString*,id>*)blob resolve:(RCTPro
         reject(@"", @"blob not found", nil);
         return;
     }
-    CIImage* image = [CIImage imageWithData:data];
+    CIImage* image = [CIImage imageWithData:data options:@{ kCIImageApplyOrientationProperty: @YES }];
     if (!image) {
         reject(@"", @"blob not an image", nil);
         return;
@@ -775,11 +775,7 @@ RCT_EXPORT_METHOD(updateImage:(NSDictionary<NSString*,id>*)blob args:(NSDictiona
         reject(@"", @"blob not found", nil);
         return;
     }
-    NSMutableDictionary* options = [NSMutableDictionary new];
-    if (@available(iOS 11.0, *)) {
-        options[kCIImageApplyOrientationProperty] = @(YES);
-    }
-    CIImage* image = [CIImage imageWithData:data options:options];
+    CIImage* image = [CIImage imageWithData:data options:@{ kCIImageApplyOrientationProperty: @YES }];
     if (!image) {
         reject(@"", @"blob not an image", nil);
         return;
