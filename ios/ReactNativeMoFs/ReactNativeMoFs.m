@@ -237,7 +237,7 @@ RCT_EXPORT_MODULE()
 
 + (void)swizzleOpenURL {
     if (self.verbose) NSLog(@"ReactNativeMoFs.swizzleOpenURL");
-    assert([NSThread isMainThread]);
+    // assert([NSThread isMainThread]);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
