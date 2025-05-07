@@ -136,6 +136,6 @@ export interface OpenURLEvent {
 }
 export declare const Module: Module | undefined;
 export declare const Events: {
-    addListener(eventType: 'ReactNativeMoFsOpenURL', listener: (event: OpenURLEvent) => void): EmitterSubscription;
+    addListener(eventType: "ReactNativeMoFsOpenURL", listener: (event: OpenURLEvent) => void): EmitterSubscription;
 } | undefined;
 export {};

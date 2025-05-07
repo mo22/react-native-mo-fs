@@ -15,8 +15,7 @@ android {
 
 dependencies {
     // use configurations.all { resolutionStrategy { force 'com.....:version' } } in root gradle to override
-    compileOnly 'com.android.support:support-annotations:28.0.0'
-    implementation 'com.android.support:exifinterface:28.0.0'
+    implementation 'androidx.exifinterface:exifinterface:1.3.2'
 
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'

@@ -15,11 +15,11 @@ declare global {
         close(): void;
     }
 }
-export declare type URL = string;
-export declare type Path = string;
-export declare type MimeType = string;
-export declare type Base64 = string;
-export declare type HexString = string;
+export type URL = string;
+export type Path = string;
+export type MimeType = string;
+export type Base64 = string;
+export type HexString = string;
 export interface CryptBlobArgs {
     /** algorithm and mode */
     algorithm: 'aes-cbc';
