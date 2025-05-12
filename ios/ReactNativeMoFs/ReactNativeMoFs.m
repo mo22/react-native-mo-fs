@@ -31,15 +31,24 @@ static void methodSwizzle(Class cls1, SEL sel1, Class cls2, SEL sel2) {
 }
 
 NSString* utiForPath(NSString* path) {
-    return CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef _Nonnull)([path pathExtension]), nil));
+    return [UTType typeWithFilenameExtension:path].identifier;
+//    return CFBridgingRelease(
+//        UTTypeCreatePreferredIdentifierForTag(
+//            UTTagClassFilenameExtension,
+//            (__bridge CFStringRef _Nonnull)([path pathExtension]),
+//            nil
+//        )
+//    );
 }
 
 NSString* utiForMimeType(NSString* mimeType) {
-    return CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef _Nonnull)(mimeType), NULL));
+    return [UTType typeWithMIMEType:mimeType].identifier;
+//    return CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(UTTagClassMIMEType, (__bridge CFStringRef _Nonnull)(mimeType), NULL));
 }
 
 NSString* mimeTypeForUti(NSString* uti) {
-    return CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef _Nonnull)(uti), kUTTagClassMIMEType));
+    return [UTType typeWithIdentifier:uti].preferredMIMEType;
+//    return CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef _Nonnull)(uti), UTTagClassMIMEType));
 }
 
 NSString* mimeTypeForPath(NSString* path) {
@@ -50,7 +59,8 @@ NSString* mimeTypeForPath(NSString* path) {
 }
 
 NSString* extensionForUti(NSString* uti) {
-    return CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef _Nonnull)(uti), kUTTagClassFilenameExtension));
+    return [UTType typeWithIdentifier:uti].preferredFilenameExtension;
+//    return CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef _Nonnull)(uti), UTTagClassFilenameExtension));
 }
 
 NSString* hexStringForData(NSData* data) {
@@ -240,13 +250,15 @@ RCT_EXPORT_MODULE()
     // assert([NSThread isMainThread]);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
-        assert(appDelegate);
-        methodSwizzle(
-            [appDelegate class], @selector(application:openURL:options:),
-            [self class],@selector(swizzled_application:openURL:options:)
-        );
-        RCTSharedApplication().delegate = appDelegate;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
+            assert(appDelegate);
+            methodSwizzle(
+                          [appDelegate class], @selector(application:openURL:options:),
+                          [self class],@selector(swizzled_application:openURL:options:)
+                          );
+            RCTSharedApplication().delegate = appDelegate;
+        });
     });
 }
 
