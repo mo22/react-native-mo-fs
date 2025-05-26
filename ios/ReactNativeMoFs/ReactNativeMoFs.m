@@ -53,6 +53,7 @@ NSString* mimeTypeForUti(NSString* uti) {
 
 NSString* mimeTypeForPath(NSString* path) {
     NSString* uti = utiForPath(path);
+    if (!uti) return @"application/octet-stream";
     NSString* mime = mimeTypeForUti(uti);
     if (!mime) return @"application/octet-stream";
     return mime;
